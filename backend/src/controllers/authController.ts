@@ -16,12 +16,12 @@ export interface LoginDto {
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body as LoginDto;
-        
-        const {accessToken, refreshToken } = await authService.login(email, password);
+
+        const { accessToken, refreshToken } = await authService.login(email, password);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: false, 
+            secure: false,
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
@@ -48,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
             message: 'User registered successfully. Please verify your email.',
             userId: result.userId,
             email: result.email,
-            verificationCode: result.verificationCode, 
+            verificationCode: result.verificationCode,
             expiresIn: result.expiresIn
         });
     } catch (error: any) {
@@ -56,30 +56,30 @@ export const register = async (req: Request, res: Response) => {
     }
 };
 
-export const refreshToken = async(req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response) => {
     const refreshToken = req.cookies?.refreshToken;
 
     if (!refreshToken) {
         return res.status(401).json({
-        message: "Refresh token not found",
+            message: "Refresh token not found",
         });
     }
 
     try {
         const tokens = await authService.refreshToken(refreshToken);
         res.cookie("refreshToken", tokens.refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
         return res.json({
-        accessToken: tokens.accessToken,
+            accessToken: tokens.accessToken,
         });
     } catch (error: any) {
         return res.status(401).json({
-        message: error.message,
+            message: error.message,
         });
     }
 }
@@ -100,7 +100,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
             email: result.email
         });
     } catch (error: any) {
-       res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 
@@ -123,6 +123,63 @@ export const resendVerificationCode = async (req: Request, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const requestPasswordReset = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        const result = await authService.requestPasswordReset(email);
+
+        res.status(200).json({
+            message: result.message,
+            resetToken: result.resetToken,
+            expiresIn: result.expiresIn
+        });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { email, resetToken, newPassword } = req.body;
+        const userId = (req as any).user?.userId;
+
+        if (!newPassword) {
+            return res.status(400).json({ message: 'New password is required' });
+        }
+
+        const result = await authService.resetPassword(
+            newPassword,
+            email,
+            resetToken,
+            userId
+        );
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+
+        const result = await authService.logout(userId);
+
+        res.clearCookie('refreshToken');
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 
 
 

@@ -1,5 +1,5 @@
 import UserModel from "../models/User";
-import { hashPassword, comparePassword } from "../utils/passwordUtils";
+import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
 import { generateVerificationCode, generateCodeExpiration } from "../utils/verificationUtils";
 
@@ -134,6 +134,85 @@ export const resendVerificationCode = async (email: string) => {
         message: 'Verification code sent successfully',
         verificationCode: verificationCode,
         expiresIn: '10 minutes'
+    };
+};
+
+export const requestPasswordReset = async (email: string) => {
+    const user = await UserModel.findOne({ email: email });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const resetToken = generateResetPwdToken();
+    const resetExpiration = generateResetExpiration();
+
+    user.passwordResetToken = resetToken;
+    user.passwordResetExpires = resetExpiration;
+    await user.save();
+
+    return {
+        message: 'Password reset code sent successfully',
+        resetToken: resetToken, 
+        expiresIn: '1 hour'
+    };
+};
+
+export const resetPassword = async (
+    newPassword: string,
+    email?: string,
+    resetToken?: string,
+    userId?: string
+) => {
+    let user;
+
+    if (userId) {
+        user = await UserModel.findById(userId).select('+password');
+        if (!user) {
+            throw new Error('User not found');
+        }
+    } else if (email && resetToken) {
+        user = await UserModel.findOne({ email: email }).select('+passwordResetToken +passwordResetExpires +password');
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        if (user.passwordResetToken !== resetToken) {
+            throw new Error('Invalid reset token');
+        }
+
+        if (user.passwordResetExpires && user.passwordResetExpires < new Date()) {
+            throw new Error('Reset token has expired');
+        }
+
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+    } else {
+        throw new Error('Invalid parameters for password reset/change');
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+
+    return {
+        message: 'Password updated successfully'
+    };
+};
+
+export const logout = async (userId: string) => {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    user.refreshTokens = undefined;
+    await user.save();
+
+    return {
+        message: 'Logged out successfully'
     };
 };
 

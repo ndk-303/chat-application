@@ -19,3 +19,13 @@ export const comparePassword = async (password: string, hashedPassword: string):
     throw new Error('Error comparing passwords');
   }
 };
+
+export const generateResetPwdToken = (): string => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+export const generateResetExpiration = (): Date => {
+    const expiration = new Date();
+    expiration.setHours(expiration.getHours() + 1);
+    return expiration;
+};

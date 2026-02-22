@@ -11,6 +11,8 @@ export interface User extends Document {
     isEmailVerified?: boolean;
     emailVerificationToken?: string;
     emailVerificationExpires?: Date;
+    passwordResetToken?: string;
+    passwordResetExpires?: Date;
     refreshTokens?: string;
     settings: {
         notifications: {
@@ -24,7 +26,6 @@ export interface User extends Document {
             allowFriendRequests: boolean;
         };
     };
-    blockedUsers: mongoose.Types.ObjectId[];
     isActive: boolean;
     isDeleted: boolean;
     createdAt: Date;
@@ -84,7 +85,15 @@ const userSchema = new Schema<User>(
             type: Date,
             select: false
         },
-        refreshTokens: {type: String, required: false},
+        passwordResetToken: {
+            type: String,
+            select: false
+        },
+        passwordResetExpires: {
+            type: Date,
+            select: false
+        },
+        refreshTokens: { type: String, required: false },
         settings: {
             notifications: {
                 messages: { type: Boolean, default: true },
@@ -97,10 +106,6 @@ const userSchema = new Schema<User>(
                 allowFriendRequests: { type: Boolean, default: true }
             },
         },
-        blockedUsers: [{
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        }],
         isActive: {
             type: Boolean,
             default: true

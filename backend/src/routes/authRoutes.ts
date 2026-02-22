@@ -256,4 +256,10 @@ router.post('/refresh-token', authController.refreshToken);
  */
 router.post('/resend-verification-code', authController.resendVerificationCode);
 
+router.post('/request-password-reset', authController.requestPasswordReset);
+
+router.post('/reset-password', authController.resetPassword);
+
+router.post('/logout', authController.logout);
+
 export default router;
