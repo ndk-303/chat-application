@@ -60,3 +60,23 @@ export const deleteUser = async (id: string) => {
 
     return { message: 'User deleted successfully' };
 }
+
+
+export const searchUsers = async (query: string, userId: string, limit: number = 20): Promise<User[]> => {
+    if (!query || query.trim().length === 0) {
+        throw new Error('Search query is required');
+    }
+
+    const users = await UserModel.find({
+        _id: { $ne: userId },
+        isActive: true,
+        $or: [
+            { displayName: { $regex: query, $options: 'i' } },
+            { email: { $regex: query, $options: 'i' } }
+        ]
+    })
+        .select('-password')
+        .limit(limit);
+
+    return users;
+};

@@ -45,3 +45,23 @@ export const deleteUser = async (req: Request, res: Response) => {
     return res.status(404).json({ message: error.message});
   }
 };
+
+export const searchUsers = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    const query = req.query.q as string;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+
+    if (!query) {
+      return res.status(400).json({ message: 'Search query (q) is required' });
+    }
+
+    const users = await userService.searchUsers(query, userId, limit);
+    res.json({
+      count: users.length,
+      users
+    });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+};

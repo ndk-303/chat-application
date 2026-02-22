@@ -277,5 +277,7 @@ router.patch('/:id', userController.updateUser);
  */
 router.delete('/:id', userController.deleteUser);
 
+router.get('/search', userController.searchUsers);
+
 export default router;
 
