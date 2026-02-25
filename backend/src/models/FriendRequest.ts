@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface FriendRequest extends Document {
     senderId: mongoose.Types.ObjectId;
