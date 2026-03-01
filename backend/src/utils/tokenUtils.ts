@@ -12,7 +12,7 @@ export const generateAccessToken = (payload: any) =>
 
 export const generateRefreshToken = (payload: any) =>
   jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
-    expiresIn: process.env.JWT_ACCESS_EXPIRES as jwt.SignOptions["expiresIn"],
+    expiresIn: process.env.JWT_REFRESH_EXPIRES as jwt.SignOptions["expiresIn"],
 });
 
 export const verifyAccessToken = (token: string) => {
