@@ -1,8 +1,8 @@
-import {BrowserRouter, Route, Routes} from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ChatAppPage from "./pages/ChatAppPage";
-import {Toaster} from "sonner";
+import { Toaster } from "sonner";
 
 function App() {
   return (
