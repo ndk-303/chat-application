@@ -71,14 +71,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({loading: false});
         }
     },
+
     refresh: async () => {
         try {
+            set({loading: true})
             const { user, fetchMe } = get();
             const accessToken = await authService.refresh();
 
             set({ accessToken });
 
-            if (!user) {
+            if(!user){
                 await fetchMe();
             }
         } catch (error) {
@@ -86,7 +88,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             toast.error("Your login session has expired. Please log in again!");
             get().clearState();
         } finally {
-            set({loading: true});
+            set({ loading: true });
         }
     },
 }));

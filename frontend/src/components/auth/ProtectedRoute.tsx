@@ -1,8 +1,28 @@
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoute = () => {
-    const {accessToken, user, loading} = useAuthStore();
+    const { accessToken, user, loading, refresh, fetchMe } = useAuthStore();
+
+    const init = async () => {
+        // có thể xảy ra khi refresh trang
+        if(!accessToken) {
+            await refresh();
+        }
+
+        if(accessToken && !user) {
+            await fetchMe();
+        }
+    }
+
+    useEffect(() => {
+        init();
+    }, [])
+
+    if(loading) {
+        return <div className="flex h-screen items-center justify-center">Loading page...</div>
+    }
 
     if(!accessToken) {
         return (
