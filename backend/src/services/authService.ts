@@ -1,7 +1,6 @@
 import UserModel from "../models/User";
 import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
-import { generateVerificationCode, generateCodeExpiration } from "../utils/verificationUtils";
 
 
 export const login = async(email: string, password: string) => {
@@ -36,25 +35,16 @@ export const register = async (displayName: string, email: string, password: str
     }
 
     const hashedPassword = await hashPassword(password);
-    
-    const verificationCode = generateVerificationCode();
-    const codeExpiration = generateCodeExpiration();
 
     const user = await UserModel.create({
         displayName,
         email,
         password: hashedPassword,
-        emailVerificationToken: verificationCode,
-        emailVerificationExpires: codeExpiration,
-        isEmailVerified: false
     });
 
     return {
         userId: user._id,
         email: user.email,
-        message: 'Please verify your email.',
-        verificationCode: verificationCode,
-        expiresIn: '10 minutes'
     };
 };
 
@@ -85,57 +75,6 @@ export const refreshToken = async(token: string) => {
     };
 }
 
-export const verifyEmail = async (email: string, verifyCode: string) => {
-    const user = await UserModel.findOne({ email: email }).select('+emailVerificationToken +emailVerificationExpires');
-    
-    if (!user) {
-        throw new Error('User not found');
-    }
-
-    if (user.emailVerificationToken !== verifyCode) {
-        throw new Error('Invalid verification code');
-    }
-
-    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
-        throw new Error('Verification code has expired');
-    }
-
-    user.isEmailVerified = true;
-    user.emailVerificationToken = undefined;
-    user.emailVerificationExpires = undefined;
-    await user.save();
-
-    return {
-        message: 'Email verified successfully',
-        userId: user._id,
-        email: user.email
-    };
-};
-
-export const resendVerificationCode = async (email: string) => {
-    const user = await UserModel.findOne({ email: email });
-    
-    if (!user) {
-        throw new Error('User not found');
-    }
-
-    if (user.isEmailVerified) {
-        throw new Error('Email is already verified');
-    }
-
-    const verificationCode = generateVerificationCode();
-    const codeExpiration = generateCodeExpiration();
-
-    user.emailVerificationToken = verificationCode;
-    user.emailVerificationExpires = codeExpiration;
-    await user.save();
-
-    return {
-        message: 'Verification code sent successfully',
-        verificationCode: verificationCode,
-        expiresIn: '10 minutes'
-    };
-};
 
 export const requestPasswordReset = async (email: string) => {
     const user = await UserModel.findOne({ email: email });

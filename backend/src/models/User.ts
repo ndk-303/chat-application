@@ -8,28 +8,11 @@ export interface User extends Document {
     bio?: string;
     status?: 'online' | 'offline' | 'away' | 'busy';
     lastSeen?: Date;
-    isEmailVerified?: boolean;
-    emailVerificationToken?: string;
-    emailVerificationExpires?: Date;
     passwordResetToken?: string;
     passwordResetExpires?: Date;
     refreshTokens?: string;
-    settings: {
-        notifications: {
-            messages: boolean;
-            friendRequests: boolean;
-            calls: boolean;
-        };
-        privacy: {
-            showOnlineStatus: boolean;
-            showLastSeen: boolean;
-            allowFriendRequests: boolean;
-        };
-    };
     isActive: boolean;
     isDeleted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 const userSchema = new Schema<User>(
@@ -73,18 +56,6 @@ const userSchema = new Schema<User>(
             type: Date,
             default: Date.now
         },
-        isEmailVerified: {
-            type: Boolean,
-            default: false
-        },
-        emailVerificationToken: {
-            type: String,
-            select: false
-        },
-        emailVerificationExpires: {
-            type: Date,
-            select: false
-        },
         passwordResetToken: {
             type: String,
             select: false
@@ -93,19 +64,7 @@ const userSchema = new Schema<User>(
             type: Date,
             select: false
         },
-        refreshTokens: { type: String, required: false },
-        settings: {
-            notifications: {
-                messages: { type: Boolean, default: true },
-                friendRequests: { type: Boolean, default: true },
-                calls: { type: Boolean, default: true }
-            },
-            privacy: {
-                showOnlineStatus: { type: Boolean, default: true },
-                showLastSeen: { type: Boolean, default: true },
-                allowFriendRequests: { type: Boolean, default: true }
-            },
-        },
+        refreshTokens: { type: String },
         isActive: {
             type: Boolean,
             default: true
