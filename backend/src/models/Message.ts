@@ -9,6 +9,11 @@ export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
     content: string;
+    files?: {
+        id: string,
+        url: string,
+        type: 'image' | 'video' | 'raw'
+    }[],
     status: 'sent' | 'recieved' | 'seen';
     seenBy: Seen[];
     createdAt: Date;
@@ -35,6 +40,12 @@ const messageSchema = new Schema<Message>(
             trim: true,
             maxlength: [300, 'Content cannot exceed 300 characters']
         },
+        files: [{
+            url: { type: String, required: true },
+            publicId: { type: String, required: true },
+            type: { type: String, enum: ['image', 'video', 'raw'], required: true },
+            name: { type: String }
+        }],
         status: {
             type: String,
             enum: ['sent', 'recieved', 'seen'],

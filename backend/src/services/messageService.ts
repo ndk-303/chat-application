@@ -43,7 +43,8 @@ export const getConversationMessages = async (
 export const createMessage = async (
     conversationId: string,
     senderId: string,
-    content: string
+    content: string,
+    files: { id: string; url: string; type: 'image' | 'video' | 'raw'}[]
 ) => {
     const conversation = await ConversationModel.findById(conversationId);
 
@@ -59,7 +60,7 @@ export const createMessage = async (
         throw new Error('You are not a participant in this conversation');
     }
 
-    if (!content || content.trim().length === 0) {
+    if ((!content || content.trim().length === 0) && (!files || files.length === 0)) {
         throw new Error('Message content cannot be empty');
     }
 
@@ -67,7 +68,8 @@ export const createMessage = async (
         conversationId,
         senderId,
         content: content.trim(),
-        status: 'sent'
+        files: files || [],
+        status: 'sent',
     });
 
     conversation.lastMessageId = message._id as mongoose.Types.ObjectId;
