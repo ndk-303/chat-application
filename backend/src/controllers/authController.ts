@@ -45,11 +45,9 @@ export const register = async (req: Request, res: Response) => {
         const result = await authService.register(displayName, email, password);
 
         res.status(201).json({
-            message: 'User registered successfully. Please verify your email.',
+            message: 'User registered successfully.',
             userId: result.userId,
             email: result.email,
-            verificationCode: result.verificationCode,
-            expiresIn: result.expiresIn
         });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
@@ -83,46 +81,6 @@ export const refreshToken = async (req: Request, res: Response) => {
         });
     }
 }
-
-export const verifyEmail = async (req: Request, res: Response) => {
-    try {
-        const { email, verificationCode } = req.body;
-
-        if (!email || !verificationCode) {
-            res.status(400).json({ message: 'Email and verification code are required' });
-        }
-
-        const result = await authService.verifyEmail(email, verificationCode);
-
-        res.status(200).json({
-            message: result.message,
-            userId: result.userId,
-            email: result.email
-        });
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
-};
-
-export const resendVerificationCode = async (req: Request, res: Response) => {
-    try {
-        const email = req.body.email;
-
-        if (!email) {
-            res.status(400).json({ message: 'Email is required' });
-        }
-
-        const result = await authService.resendVerificationCode(email);
-
-        res.status(200).json({
-            message: result.message,
-            verificationCode: result.verificationCode,
-            expiresIn: result.expiresIn
-        });
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
-};
 
 export const requestPasswordReset = async (req: Request, res: Response) => {
     try {
