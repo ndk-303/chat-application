@@ -4,6 +4,7 @@ import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoute = () => {
     const { accessToken, user, loading, refresh, fetchMe } = useAuthStore();
+    const [starting, setStarting] = useState(true);
 
     const init = async () => {
         // có thể xảy ra khi refresh trang
@@ -14,14 +15,20 @@ const ProtectedRoute = () => {
         if(accessToken && !user) {
             await fetchMe();
         }
+
+        setStarting(false);
     }
 
     useEffect(() => {
         init();
     }, [])
 
-    if(loading) {
-        return <div className="flex h-screen items-center justify-center">Loading page...</div>
+    if(starting || loading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                Loading page...
+            </div>
+        );
     }
 
     if(!accessToken) {
