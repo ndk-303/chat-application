@@ -10,11 +10,14 @@ const userSocketMap = new Map<string, Set<string>>();
 
 export const initSocket = (httpServer: HttpServer): Server => {
     io = new Server(httpServer, {
-        cors: {
-            origin: process.env.CLIENT_URL || '*',
+    cors: {
+            origin: process.env.CLIENT_URL || 'http://localhost:5173',
             methods: ['GET', 'POST'],
-            credentials: true
-        }
+            credentials: true,
+            allowedHeaders: ['Content-Type', 'Authorization'],
+        },
+        pingTimeout: 60000,
+        pingInterval: 25000,
     });
 
     io.use(socketAuth);
