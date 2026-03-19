@@ -6,14 +6,12 @@ const router = Router();
 router.use(authMiddleware);
 
 router.get('/me', userController.getUserById);
-
-router.post('/', userController.creatUser);
-
-router.delete('/:id', userController.deleteUser);
-
+router.patch('/me', userController.updateCurrentProfile);
 router.get('/search', userController.searchUsers);
 
-router.patch('/me', userController.updateCurrentProfile);
+router.post('/', userController.creatUser);
+router.delete('/:id', userController.deleteUser);
 
 export default router;
+
 
