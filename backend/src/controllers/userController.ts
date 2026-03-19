@@ -19,9 +19,19 @@ export const getUsers = async (_: Request, res: Response) => {
   }
 };
 
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    const user = await userService.getUserById(userId);
+    res.json(user);
+  } catch (error: any) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await userService.getUserById(req.params.id[0]);
+    const user = await userService.getUserById(req.params.id as string);
     res.json(user);
   } catch (error: any) {
     return res.status(404).json({ message: error.message });
@@ -43,7 +53,7 @@ export const updateCurrentProfile = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    await userService.deleteUser(req.params.id[0]);
+    await userService.deleteUser(req.params.id as string);
     res.json({ message: 'User deleted successfully' });
   } catch (error: any) {
     return res.status(404).json({ message: error.message});
