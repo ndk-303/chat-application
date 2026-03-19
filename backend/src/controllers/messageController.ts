@@ -37,22 +37,25 @@ export const sendMessage = async (req: Request, res: Response) => {
         const files = [];
 
         if (attachs && attachs.length > 0) {
-            const uploadFiles = attachs.map(async (f) =>{
+            const uploadFiles = attachs.map(async (f) => {
                 let type: 'image' | 'video' | 'raw' = 'raw';
-                if (f.mimetype.startsWith('image/')) type = 'image'
-                else if (f.mimetype.startsWith('video/')) type = 'video'
-            
-                const res = await uploadCloundinary(f.buffer,'chat_app_storage', type)
+                if (f.mimetype.startsWith('image/')) type = 'image';
+                else if (f.mimetype.startsWith('video/')) type = 'video';
+
+                const result = await uploadCloundinary(f.buffer, 'chat_app_storage', type);
 
                 return {
-                    id: res.public_id,
-                    url: res.secure_url,
-                    type: type
+                    url:          result.secure_url,
+                    publicId:     result.public_id,
+                    originalName: f.originalname,
+                    size:         f.size,
+                    mimeType:     f.mimetype,
+                    type,
                 };
             });
 
             const uploaded = await Promise.all(uploadFiles);
-            files.push(... uploaded);
+            files.push(...uploaded);
         }
 
         const message = await messageService.createMessage(conversationId as string, userId, content, files);

@@ -44,7 +44,7 @@ export const createMessage = async (
     conversationId: string,
     senderId: string,
     content: string,
-    files: { id: string; url: string; type: 'image' | 'video' | 'raw'}[]
+    files: { url: string; publicId: string; originalName: string; size: number; mimeType: string; type: 'image' | 'video' | 'raw' }[]
 ) => {
     const conversation = await ConversationModel.findById(conversationId);
 
