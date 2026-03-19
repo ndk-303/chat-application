@@ -1,6 +1,8 @@
 import ConversationModel from '../models/Conversation';
+import MessageModel from '../models/Message';
 import FriendshipModel from '../models/Friendship';
 import mongoose from 'mongoose';
+import { getIO, emitToUser } from '../socket/socketManager';
 
 export const getUserConversations = async (userId: string) => {
     const conversations = await ConversationModel.find({
@@ -161,6 +163,7 @@ export const leaveConversation = async (conversationId: string, userId: string) 
 
     if (conversation.type === 'private') {
         await ConversationModel.deleteOne({ _id: conversationId });
+        await MessageModel.deleteMany({ conversationId });
         return { message: 'Conversation deleted successfully' };
     } else {
         conversation.participants = conversation.participants.filter(
@@ -172,10 +175,15 @@ export const leaveConversation = async (conversationId: string, userId: string) 
         }
         if (conversation.participants.length === 0) {
             await ConversationModel.deleteOne({ _id: conversationId });
+            await MessageModel.deleteMany({ conversationId });
             return { message: 'Group deleted (no members left)' };
         }
 
         await conversation.save();
+
+        try {
+            getIO().to(conversationId).emit('member_left', { conversationId, userId });
+        } catch (_) { }
 
         return { message: 'Left group successfully' };
     }
@@ -222,6 +230,14 @@ export const addGroupMember = async (
     conversation.participants.push(new mongoose.Types.ObjectId(newMemberId));
     await conversation.save();
 
+    try {
+        emitToUser(newMemberId, 'added_to_group', conversation);
+        getIO().to(conversationId).emit('group_member_added', {
+            conversationId,
+            newMemberId
+        });
+    } catch (_) { }
+
     return conversation;
 };
 
@@ -261,6 +277,14 @@ export const removeGroupMember = async (
     );
 
     await conversation.save();
+
+    try {
+        emitToUser(memberId, 'removed_from_group', { conversationId });
+        getIO().to(conversationId).emit('group_member_removed', {
+            conversationId,
+            memberId
+        });
+    } catch (_) { }
 
     return conversation;
 };

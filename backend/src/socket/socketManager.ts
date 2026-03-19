@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
 import { socketAuth } from './socketAuth';
 import registerChatHandlers from './handlers/chatHandler';
+import registerPresenceHandlers from './handlers/presenceHandler';
 
 let io: Server;
 
@@ -28,6 +29,7 @@ export const initSocket = (httpServer: HttpServer): Server => {
         userSocketMap.get(userId)!.add(socket.id);
 
         registerChatHandlers(io, socket);
+        registerPresenceHandlers(io, socket, userSocketMap);
 
         socket.on('disconnect', () => {
             console.log(`[Socket] User ${userId} disconnected — socket ${socket.id}`);
