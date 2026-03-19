@@ -28,14 +28,18 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateUser = async(req: Request, res: Response) => {
+export const updateCurrentProfile = async (req: Request, res: Response) => {
   try {
-    await userService.updateUser(req.params.id[0], req.body);
-    res.json({ message: 'User updated successfully' });
+    const userId = (req as any).user.userId;
+    const user = await userService.updateCurrentUserProfile(userId, req.body);
+    res.json({
+      message: 'Profile updated successfully',
+      user
+    });
   } catch (error: any) {
-    return res.status(404).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
-}
+};
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {

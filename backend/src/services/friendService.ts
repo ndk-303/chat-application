@@ -1,6 +1,7 @@
 import FriendRequestModel from '../models/FriendRequest';
 import FriendshipModel from '../models/Friendship';
 import UserModel from '../models/User';
+import { emitToUser } from '../socket/socketManager';
 
 export const sendFriendRequest = async (senderId: string, receiverId: string) => {
     const sender = await UserModel.findById(senderId);
@@ -51,6 +52,11 @@ export const sendFriendRequest = async (senderId: string, receiverId: string) =>
         status: 'pending'
     });
 
+    try {
+        await friendRequest.populate('senderId', 'displayName email avatar status');
+        emitToUser(receiverId, 'friend_request_received', friendRequest);
+    } catch (_) { }
+
     return friendRequest;
 };
 
@@ -84,6 +90,13 @@ export const acceptFriendRequest = async (requestId: string, userId: string) => 
         user2Id
     });
 
+    try {
+        emitToUser(request.senderId.toString(), 'friend_request_accepted', {
+            requestId: request._id,
+            friendship
+        });
+    } catch (_) { }
+
     return { friendRequest: request, friendship };
 };
 
@@ -105,6 +118,12 @@ export const rejectFriendRequest = async (requestId: string, userId: string) => 
     request.status = 'rejected';
     await request.save();
 
+    try {
+        emitToUser(request.senderId.toString(), 'friend_request_rejected', {
+            requestId: request._id
+        });
+    } catch (_) { }
+
     return request;
 };
 
@@ -116,7 +135,7 @@ export const getFriendsList = async (userId: string) => {
         ]
     }).populate('user1Id user2Id', 'displayName email avatar status lastSeen');
 
-    const friends = friendships.map((friendship: any) => {
+    const friends = friendships.map(friendship => {
         const friend = friendship.user1Id._id.toString() === userId
             ? friendship.user2Id
             : friendship.user1Id;
