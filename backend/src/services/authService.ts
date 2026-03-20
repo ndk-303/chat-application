@@ -1,7 +1,17 @@
 import UserModel from "../models/User";
 import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
+import { sendVerificationEmail } from "../utils/emailUtils";
 
+function generateOTP(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function getOTPExpiry(): Date {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() + 15); // 15 minutes
+    return d;
+}
 
 export const login = async(email: string, password: string) => {
     const user = await UserModel.findOne({ email: email }).select('+password');
@@ -14,9 +24,11 @@ export const login = async(email: string, password: string) => {
         throw new Error('Login failed, wrong password');
     }
 
-    const payload = {
-        userId: user._id
+    if (!user.isVerified) {
+        throw new Error('Email not verified. Please check your inbox for the verification code.');
     }
+
+    const payload = { userId: user._id };
 
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
@@ -25,8 +37,7 @@ export const login = async(email: string, password: string) => {
     await user.save();
 
     return {accessToken, refreshToken};
-}
-
+};
 
 export const register = async (displayName: string, email: string, password: string) => {
     const checked = await UserModel.findOne({ email: email });
@@ -35,17 +46,75 @@ export const register = async (displayName: string, email: string, password: str
     }
 
     const hashedPassword = await hashPassword(password);
+    const code = generateOTP();
+    const expires = getOTPExpiry();
 
     const user = await UserModel.create({
         displayName,
         email,
         password: hashedPassword,
+        isVerified: false,
+        emailVerificationCode: code,
+        emailVerificationExpires: expires,
     });
+
+    try {
+        await sendVerificationEmail(email, code, displayName);
+    } catch (emailErr) {
+        console.error('[Register] Failed to send verification email:', emailErr);
+    }
 
     return {
         userId: user._id,
         email: user.email,
     };
+};
+
+export const verifyEmail = async (email: string, code: string) => {
+    const user = await UserModel.findOne({ email })
+        .select('+emailVerificationCode +emailVerificationExpires');
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+    if (user.isVerified) {
+        return { message: 'Email is already verified' };
+    }
+    if (!user.emailVerificationCode || user.emailVerificationCode !== code) {
+        throw new Error('Invalid verification code');
+    }
+    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
+        throw new Error('Verification code has expired. Please request a new one.');
+    }
+
+    user.isVerified = true;
+    user.emailVerificationCode = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
+
+    return { message: 'Email verified successfully' };
+};
+
+export const resendVerificationCode = async (email: string) => {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+        return { message: 'If this email exists, a new code has been sent.' };
+    }
+    if (user.isVerified) {
+        throw new Error('Email is already verified');
+    }
+
+    const code = generateOTP();
+    const expires = getOTPExpiry();
+
+    user.emailVerificationCode = code;
+    user.emailVerificationExpires = expires;
+    await user.save();
+
+    await sendVerificationEmail(email, code, user.displayName);
+
+    return { message: 'Verification code resent successfully' };
 };
 
 export const refreshToken = async(token: string) => {
@@ -73,8 +142,7 @@ export const refreshToken = async(token: string) => {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
     };
-}
-
+};
 
 export const requestPasswordReset = async (email: string) => {
     const user = await UserModel.findOne({ email: email });
@@ -154,4 +222,3 @@ export const logout = async (userId: string) => {
         message: 'Logged out successfully'
     };
 };
-

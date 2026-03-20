@@ -1,224 +1,114 @@
-import UserModel from "../models/User";
-import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
-import { sendVerificationEmail } from "../utils/emailUtils";
+import UserModel, { User } from "../models/User"
 
-function generateOTP(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
+export const createUser = async (data: User): Promise<Object> => {
+    const checked = await UserModel.findOne({ email: data.email })
 
-function getOTPExpiry(): Date {
-    const d = new Date();
-    d.setMinutes(d.getMinutes() + 15); // 15 minutes
-    return d;
-}
-
-export const login = async(email: string, password: string) => {
-    const user = await UserModel.findOne({ email: email }).select('+password');
-    if (!user) {
-        throw new Error('Login failed, can not find user');
-    }
-
-    const compare = await comparePassword(password, user.password);
-    if (!compare) {
-        throw new Error('Login failed, wrong password');
-    }
-
-    if (!user.isVerified) {
-        throw new Error('Email not verified. Please check your inbox for the verification code.');
-    }
-
-    const payload = { userId: user._id };
-
-    const accessToken = generateAccessToken(payload);
-    const refreshToken = generateRefreshToken(payload);
-
-    user.refreshTokens = refreshToken;
-    await user.save();
-
-    return {accessToken, refreshToken};
-};
-
-export const register = async (displayName: string, email: string, password: string) => {
-    const checked = await UserModel.findOne({ email: email });
     if (checked) {
         throw new Error('Email has existed already');
     }
 
-    const hashedPassword = await hashPassword(password);
-    const code = generateOTP();
-    const expires = getOTPExpiry();
-
-    const user = await UserModel.create({
-        displayName,
-        email,
-        password: hashedPassword,
-        isVerified: false,
-        emailVerificationCode: code,
-        emailVerificationExpires: expires,
-    });
-
-    try {
-        await sendVerificationEmail(email, code, displayName);
-    } catch (emailErr) {
-        console.error('[Register] Failed to send verification email:', emailErr);
-    }
+    const user = await UserModel.create(data);
 
     return {
         userId: user._id,
-        email: user.email,
+        message: 'User created successfully',
     };
-};
+}
 
-export const verifyEmail = async (email: string, code: string) => {
-    const user = await UserModel.findOne({ email })
-        .select('+emailVerificationCode +emailVerificationExpires');
+export const getUsers = async (page?: string, limit?: string, sortBy?: string): Promise<User[]> => {
+    const pagination = page ? Number(page) : 1;
+    const limitation = limit ? Number(limit) : 10;
+    const skip = (pagination - 1) * limitation;
+    const sort = sortBy ?? 'createdAt';
+
+    const users = await UserModel.find().select('-password -updatedAt -deletedAt').skip(skip).limit(limitation).sort(sort);
+
+    if (users.length === 0) {
+        throw new Error('Can not find any user')
+    }
+
+    return users;
+}
+
+export const getUserById = async (id: string): Promise<User> => {
+    const user = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
 
     if (!user) {
-        throw new Error('User not found');
-    }
-    if (user.isVerified) {
-        return { message: 'Email is already verified' };
-    }
-    if (!user.emailVerificationCode || user.emailVerificationCode !== code) {
-        throw new Error('Invalid verification code');
-    }
-    if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
-        throw new Error('Verification code has expired. Please request a new one.');
+        throw new Error('Can not find user')
     }
 
-    user.isVerified = true;
-    user.emailVerificationCode = undefined;
-    user.emailVerificationExpires = undefined;
-    await user.save();
+    return user;
+}
 
-    return { message: 'Email verified successfully' };
-};
 
-export const resendVerificationCode = async (email: string) => {
-    const user = await UserModel.findOne({ email });
+export const updateUser = async (id: string, data: User) => {
+    const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
 
     if (!user) {
-        return { message: 'If this email exists, a new code has been sent.' };
-    }
-    if (user.isVerified) {
-        throw new Error('Email is already verified');
+        throw new Error('Can not update user');
     }
 
-    const code = generateOTP();
-    const expires = getOTPExpiry();
+    return user;
+}
 
-    user.emailVerificationCode = code;
-    user.emailVerificationExpires = expires;
-    await user.save();
-
-    await sendVerificationEmail(email, code, user.displayName);
-
-    return { message: 'Verification code resent successfully' };
-};
-
-export const refreshToken = async(token: string) => {
-    const payload = verifyRefreshToken(token);
-    const checked = await UserModel.findOne({ refreshTokens: token });
-
-    if (!payload) {
-        throw new Error('Expired refresh token');
-    }
-    if (!checked) {
-        throw new Error('Invalid refresh token');
-    }
-    
-    const newAccessToken = generateAccessToken({
-        userId: payload.userId,
-        role: payload.role ?? 'USER',
-    });
-
-    const newRefreshToken = generateRefreshToken({
-        userId: payload.userId,
-        role: payload.role,
-    });
-
-    return {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-    };
-};
-
-export const requestPasswordReset = async (email: string) => {
-    const user = await UserModel.findOne({ email: email });
+export const deleteUser = async (id: string) => {
+    const user = await UserModel.findByIdAndDelete(id);
 
     if (!user) {
-        throw new Error('User not found');
+        throw new Error('Can not update user');
     }
 
-    const resetToken = generateResetPwdToken();
-    const resetExpiration = generateResetExpiration();
+    return { message: 'User deleted successfully' };
+}
 
-    user.passwordResetToken = resetToken;
-    user.passwordResetExpires = resetExpiration;
-    await user.save();
+export const updateCurrentUserProfile = async (userId: string, updates: Partial<User>) => {
+    const allowedUpdates = ['displayName', 'avatar', 'bio'];
+    const filteredUpdates: any = {};
 
-    return {
-        message: 'Password reset code sent successfully',
-        resetToken: resetToken, 
-        expiresIn: '1 hour'
-    };
-};
-
-export const resetPassword = async (
-    newPassword: string,
-    email?: string,
-    resetToken?: string,
-    userId?: string
-) => {
-    let user;
-
-    if (userId) {
-        user = await UserModel.findById(userId).select('+password');
-        if (!user) {
-            throw new Error('User not found');
+    for (const key of allowedUpdates) {
+        if (updates[key as keyof User] !== undefined) {
+            filteredUpdates[key] = updates[key as keyof User];
         }
-    } else if (email && resetToken) {
-        user = await UserModel.findOne({ email: email }).select('+passwordResetToken +passwordResetExpires +password');
-
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        if (user.passwordResetToken !== resetToken) {
-            throw new Error('Invalid reset token');
-        }
-
-        if (user.passwordResetExpires && user.passwordResetExpires < new Date()) {
-            throw new Error('Reset token has expired');
-        }
-
-        user.passwordResetToken = undefined;
-        user.passwordResetExpires = undefined;
-    } else {
-        throw new Error('Invalid parameters for password reset/change');
     }
 
-    const hashedPassword = await hashPassword(newPassword);
-    user.password = hashedPassword;
-    await user.save();
-
-    return {
-        message: 'Password updated successfully'
-    };
-};
-
-export const logout = async (userId: string) => {
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findByIdAndUpdate(userId, filteredUpdates, { new: true }).select('-password');
 
     if (!user) {
-        throw new Error('User not found');
+        throw new Error('Cannot update profile');
     }
 
-    user.refreshTokens = undefined;
-    await user.save();
+    return user;
+};
 
-    return {
-        message: 'Logged out successfully'
-    };
+export const updateUserStatus = async (userId: string, status: 'online' | 'offline' | 'away' | 'busy') => {
+    const user = await UserModel.findByIdAndUpdate(
+        userId,
+        { status, lastSeen: new Date() },
+        { new: true }
+    ).select('-password');
+
+    if (!user) {
+        throw new Error('Cannot update status');
+    }
+
+    return user;
+};
+
+export const searchUsers = async (query: string, userId: string, limit: number = 20): Promise<User[]> => {
+    if (!query || query.trim().length === 0) {
+        throw new Error('Search query is required');
+    }
+
+    const users = await UserModel.find({
+        _id: { $ne: userId }, // Exclude current user
+        isActive: true,
+        $or: [
+            { displayName: { $regex: query, $options: 'i' } },
+            { email: { $regex: query, $options: 'i' } }
+        ]
+    })
+        .select('-password')
+        .limit(limit);
+
+    return users;
 };

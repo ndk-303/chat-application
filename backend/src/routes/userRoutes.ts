@@ -1,22 +1,20 @@
 import { Router } from "express";
-import * as authController from '../controllers/authController'
+import * as userController from '../controllers/userController'
+import { authMiddleware } from "../middlewares/authMiddleware";
+import multer from 'multer';
 
+const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
+router.use(authMiddleware);
 
-router.post('/login', authController.login);
+router.get('/me', userController.getMe);
+router.patch('/me', userController.updateCurrentProfile);
+router.patch('/me/avatar', upload.single('avatar'), userController.uploadAvatar);
+router.patch('/me/status', userController.updateStatus);
+router.get('/search', userController.searchUsers);
 
-router.post('/register', authController.register);
-
-router.post('/verify-email', authController.verifyEmail);
-
-router.post('/resend-verification', authController.resendVerificationCode);
-
-router.post('/refresh-token', authController.refreshToken);
-
-router.post('/request-password-reset', authController.requestPasswordReset);
-
-router.post('/reset-password', authController.resetPassword);
-
-router.post('/logout', authController.logout);
+router.get('/:id', userController.getUserById);
+router.post('/', userController.creatUser);
+router.delete('/:id', userController.deleteUser);
 
 export default router;
