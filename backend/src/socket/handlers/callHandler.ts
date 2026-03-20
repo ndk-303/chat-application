@@ -1,21 +1,22 @@
 import { Server, Socket } from 'socket.io';
 
+type GetUserSocketsFn = (userId: string) => Promise<string[]>;
+
 const registerCallHandlers = (
     io: Server,
     socket: Socket,
-    userSocketMap: Map<string, Set<string>>
+    getUserSockets: GetUserSocketsFn
 ): void => {
     const callerId = socket.data.userId as string;
 
-    const emitToUser = (userId: string, event: string, data: any) => {
-        const sockets = userSocketMap.get(userId);
-        if (!sockets) return;
+    const emitToUser = async (userId: string, event: string, data: any) => {
+        const sockets = await getUserSockets(userId);
         for (const socketId of sockets) {
             io.to(socketId).emit(event, data);
         }
     };
 
-    socket.on('call:offer', (data: {
+    socket.on('call:offer', async (data: {
         targetUserId: string;
         offer: RTCSessionDescriptionInit;
         callType: 'audio' | 'video';
@@ -23,55 +24,36 @@ const registerCallHandlers = (
     }) => {
         const { targetUserId, offer, callType, callerInfo } = data;
         console.log(`[Call] ${callerId} → offer to ${targetUserId} (${callType})`);
-
-        emitToUser(targetUserId, 'call:incoming', {
-            callerId,
-            callerInfo,
-            offer,
-            callType,
-        });
+        await emitToUser(targetUserId, 'call:incoming', { callerId, callerInfo, offer, callType });
     });
 
-    socket.on('call:answer', (data: {
+    socket.on('call:answer', async (data: {
         targetUserId: string;
         answer: RTCSessionDescriptionInit;
     }) => {
         const { targetUserId, answer } = data;
         console.log(`[Call] ${callerId} → answer to ${targetUserId}`);
-
-        emitToUser(targetUserId, 'call:answered', {
-            answererId: callerId,
-            answer,
-        });
+        await emitToUser(targetUserId, 'call:answered', { answererId: callerId, answer });
     });
 
-    socket.on('call:ice-candidate', (data: {
+    socket.on('call:ice-candidate', async (data: {
         targetUserId: string;
         candidate: RTCIceCandidateInit;
     }) => {
         const { targetUserId, candidate } = data;
-        emitToUser(targetUserId, 'call:ice-candidate', {
-            senderId: callerId,
-            candidate,
-        });
+        await emitToUser(targetUserId, 'call:ice-candidate', { senderId: callerId, candidate });
     });
 
-    socket.on('call:reject', (data: { targetUserId: string }) => {
+    socket.on('call:reject', async (data: { targetUserId: string }) => {
         const { targetUserId } = data;
         console.log(`[Call] ${callerId} rejected call from ${targetUserId}`);
-
-        emitToUser(targetUserId, 'call:rejected', {
-            rejectedBy: callerId,
-        });
+        await emitToUser(targetUserId, 'call:rejected', { rejectedBy: callerId });
     });
 
-    socket.on('call:end', (data: { targetUserId: string }) => {
+    socket.on('call:end', async (data: { targetUserId: string }) => {
         const { targetUserId } = data;
         console.log(`[Call] ${callerId} ended call with ${targetUserId}`);
-
-        emitToUser(targetUserId, 'call:ended', {
-            endedBy: callerId,
-        });
+        await emitToUser(targetUserId, 'call:ended', { endedBy: callerId });
     });
 };
 

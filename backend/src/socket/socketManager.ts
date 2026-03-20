@@ -1,16 +1,37 @@
 import { Server, Socket } from 'socket.io';
 import { Server as HttpServer } from 'http';
+import { createAdapter } from '@socket.io/redis-adapter';
 import { socketAuth } from './socketAuth';
 import registerChatHandlers from './handlers/chatHandler';
 import registerPresenceHandlers from './handlers/presenceHandler';
+import registerCallHandlers from './handlers/callHandler';
+import { pubClient, subClient, redisClient } from '../config/redis';
 
 let io: Server;
 
-const userSocketMap = new Map<string, Set<string>>();
+// Redis key helpers
+const userSocketsKey = (userId: string) => `user:sockets:${userId}`;
+
+/**
+ * Register a socket for a user in Redis.
+ * Uses a Redis Hash: user:sockets:{userId} → { [socketId]: '1' }
+ */
+const addUserSocket = async (userId: string, socketId: string): Promise<void> => {
+    await redisClient.hset(userSocketsKey(userId), socketId, '1');
+    // Expire after 24h as safety net (socket disconnect should clean it up)
+    await redisClient.expire(userSocketsKey(userId), 86400);
+};
+
+/**
+ * Remove a single socket for a user from Redis.
+ */
+const removeUserSocket = async (userId: string, socketId: string): Promise<void> => {
+    await redisClient.hdel(userSocketsKey(userId), socketId);
+};
 
 export const initSocket = (httpServer: HttpServer): Server => {
     io = new Server(httpServer, {
-    cors: {
+        cors: {
             origin: process.env.CLIENT_URL || 'http://localhost:5173',
             methods: ['GET', 'POST'],
             credentials: true,
@@ -20,29 +41,24 @@ export const initSocket = (httpServer: HttpServer): Server => {
         pingInterval: 25000,
     });
 
+    io.adapter(createAdapter(pubClient, subClient));
+    console.log('[Socket] Redis adapter initialized');
+
     io.use(socketAuth);
 
-    io.on('connection', (socket: Socket) => {
+    io.on('connection', async (socket: Socket) => {
         const userId = socket.data.userId as string;
         console.log(`[Socket] User ${userId} connected — socket ${socket.id}`);
 
-        if (!userSocketMap.has(userId)) {
-            userSocketMap.set(userId, new Set());
-        }
-        userSocketMap.get(userId)!.add(socket.id);
+        await addUserSocket(userId, socket.id);
 
         registerChatHandlers(io, socket);
-        registerPresenceHandlers(io, socket, userSocketMap);
+        registerPresenceHandlers(io, socket, getUserSockets);
+        registerCallHandlers(io, socket, getUserSockets);
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             console.log(`[Socket] User ${userId} disconnected — socket ${socket.id}`);
-            const sockets = userSocketMap.get(userId);
-            if (sockets) {
-                sockets.delete(socket.id);
-                if (sockets.size === 0) {
-                    userSocketMap.delete(userId);
-                }
-            }
+            await removeUserSocket(userId, socket.id);
         });
     });
 
@@ -56,18 +72,32 @@ export const getIO = (): Server => {
     return io;
 };
 
-export const getUserSockets = (userId: string): string[] => {
-    const sockets = userSocketMap.get(userId);
-    return sockets ? Array.from(sockets) : [];
+export const getUserSockets = async (userId: string): Promise<string[]> => {
+    try {
+        const hash = await redisClient.hgetall(userSocketsKey(userId));
+        return hash ? Object.keys(hash) : [];
+    } catch {
+        return [];
+    }
 };
 
-export const emitToUser = (userId: string, event: string, data: any): void => {
-    const socketIds = getUserSockets(userId);
+/**
+ * Emit an event to all sockets of a specific user across all instances.
+ * With the Redis adapter, io.to() already broadcasts to all instances,
+ * so we just need the socket IDs from Redis.
+ */
+export const emitToUser = async (userId: string, event: string, data: any): Promise<void> => {
+    const socketIds = await getUserSockets(userId);
     socketIds.forEach(socketId => {
         io.to(socketId).emit(event, data);
     });
 };
 
-export const isUserOnline = (userId: string): boolean => {
-    return userSocketMap.has(userId);
+export const isUserOnline = async (userId: string): Promise<boolean> => {
+    try {
+        const count = await redisClient.hlen(userSocketsKey(userId));
+        return count > 0;
+    } catch {
+        return false;
+    }
 };

@@ -3,10 +3,12 @@ import UserModel from '../../models/User';
 import FriendshipModel from '../../models/Friendship';
 import { emitToUser } from '../socketManager';
 
+type GetUserSocketsFn = (userId: string) => Promise<string[]>;
+
 const registerPresenceHandlers = (
     io: Server,
     socket: Socket,
-    userSocketMap: Map<string, Set<string>>
+    getUserSockets: GetUserSocketsFn
 ): void => {
     const userId = socket.data.userId as string;
 
@@ -18,19 +20,20 @@ const registerPresenceHandlers = (
             });
 
             const friendIds = await getFriendIds(userId);
-            friendIds.forEach(friendId => {
-                emitToUser(friendId, 'user_online', { userId });
-            });
+            for (const friendId of friendIds) {
+                await emitToUser(friendId, 'user_online', { userId });
+            }
         } catch (err) {
             console.error('[Presence] Error on connect:', err);
         }
     };
 
     socket.on('disconnect', async () => {
+        // Short delay: wait for Redis socket cleanup to propagate
         setTimeout(async () => {
-            const remainingSockets = userSocketMap.get(userId);
-            if (!remainingSockets || remainingSockets.size === 0) {
-                try {
+            try {
+                const remainingSockets = await getUserSockets(userId);
+                if (remainingSockets.length === 0) {
                     const lastSeen = new Date();
                     await UserModel.findByIdAndUpdate(userId, {
                         status: 'offline',
@@ -38,14 +41,14 @@ const registerPresenceHandlers = (
                     });
 
                     const friendIds = await getFriendIds(userId);
-                    friendIds.forEach(friendId => {
-                        emitToUser(friendId, 'user_offline', { userId, lastSeen });
-                    });
-                } catch (err) {
-                    console.error('[Presence] Error on disconnect:', err);
+                    for (const friendId of friendIds) {
+                        await emitToUser(friendId, 'user_offline', { userId, lastSeen });
+                    }
                 }
+            } catch (err) {
+                console.error('[Presence] Error on disconnect:', err);
             }
-        }, 500);
+        }, 1000); // 1s delay to let Redis propagate the socket removal
     });
 
     socket.on('set_status', async (data: { status: 'online' | 'away' | 'busy' }) => {
@@ -56,9 +59,9 @@ const registerPresenceHandlers = (
             await UserModel.findByIdAndUpdate(userId, { status });
 
             const friendIds = await getFriendIds(userId);
-            friendIds.forEach(friendId => {
-                emitToUser(friendId, 'user_status_changed', { userId, status });
-            });
+            for (const friendId of friendIds) {
+                await emitToUser(friendId, 'user_status_changed', { userId, status });
+            }
         } catch (err) {
             console.error('[Presence] Error setting status:', err);
         }
