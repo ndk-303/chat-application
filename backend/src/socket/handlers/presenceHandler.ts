@@ -3,7 +3,7 @@ import UserModel from '../../models/User';
 import FriendshipModel from '../../models/Friendship';
 import { emitToUser } from '../socketManager';
 
-export const registerPresenceHandlers = (
+const registerPresenceHandlers = (
     io: Server,
     socket: Socket,
     userSocketMap: Map<string, Set<string>>
@@ -78,3 +78,5 @@ const getFriendIds = async (userId: string): Promise<string[]> => {
             : f.user1Id.toString()
     );
 };
+
+export default registerPresenceHandlers;

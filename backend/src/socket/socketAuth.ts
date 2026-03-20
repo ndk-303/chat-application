@@ -9,7 +9,7 @@ export const socketAuth = (socket: Socket, next: (err?: Error) => void): void =>
     }
 
     try {
-        const secret = process.env.JWT_SECRET;
+        const secret = process.env.JWT_ACCESS_SECRET;
         if (!secret) {
             return next(new Error('Server configuration error'));
         }

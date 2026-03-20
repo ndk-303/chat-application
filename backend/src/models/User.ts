@@ -13,6 +13,9 @@ export interface User extends Document {
     refreshTokens?: string;
     isActive: boolean;
     isDeleted: boolean;
+    isVerified: boolean;
+    emailVerificationCode?: string;
+    emailVerificationExpires?: Date;
 }
 
 const userSchema = new Schema<User>(
@@ -72,6 +75,18 @@ const userSchema = new Schema<User>(
         isDeleted: {
             type: Boolean,
             default: false,
+            select: false
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
+        },
+        emailVerificationCode: {
+            type: String,
+            select: false
+        },
+        emailVerificationExpires: {
+            type: Date,
             select: false
         }
     },

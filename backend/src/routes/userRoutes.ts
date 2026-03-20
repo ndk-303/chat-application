@@ -1,16 +1,22 @@
 import { Router } from "express";
-import * as userController from '../controllers/userController'
-import { authMiddleware } from "../middlewares/authMiddleware";
+import * as authController from '../controllers/authController'
 
 const router = Router();
-router.use(authMiddleware);
 
-router.get('/me', userController.getMe);
-router.patch('/me', userController.updateCurrentProfile);
-router.get('/search', userController.searchUsers);
+router.post('/login', authController.login);
 
-router.get('/:id', userController.getUserById);
-router.post('/', userController.creatUser);
-router.delete('/:id', userController.deleteUser);
+router.post('/register', authController.register);
+
+router.post('/verify-email', authController.verifyEmail);
+
+router.post('/resend-verification', authController.resendVerificationCode);
+
+router.post('/refresh-token', authController.refreshToken);
+
+router.post('/request-password-reset', authController.requestPasswordReset);
+
+router.post('/reset-password', authController.resetPassword);
+
+router.post('/logout', authController.logout);
 
 export default router;
