@@ -18,6 +18,7 @@ export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
     content: string;
+    type: 'text' | 'system';
     files?: MessageFile[];
     status: 'sent' | 'delivered' | 'seen';
     seenBy: Seen[];
@@ -45,13 +46,19 @@ const messageSchema = new Schema<Message>(
             trim: true,
             maxlength: [3000, 'Content cannot exceed 3000 characters']
         },
+        type: {
+            type: String,
+            enum: ['text', 'system'],
+            default: 'text',
+            index: true
+        },
         files: [{
-            url: { type: String, required: true },
-            publicId: { type: String, required: true },
+            url:          { type: String, required: true },
+            publicId:     { type: String, required: true },
             originalName: { type: String, default: 'file' },
-            size: { type: Number, default: 0 },
-            mimeType: { type: String, default: 'application/octet-stream' },
-            type: { type: String, enum: ['image', 'video', 'raw'], required: true },
+            size:         { type: Number, default: 0 },
+            mimeType:     { type: String, default: 'application/octet-stream' },
+            type:         { type: String, enum: ['image', 'video', 'raw'], required: true },
         }],
         status: {
             type: String,

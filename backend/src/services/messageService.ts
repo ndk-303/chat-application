@@ -1,7 +1,7 @@
 import MessageModel from '../models/Message';
 import ConversationModel from '../models/Conversation';
 import mongoose from 'mongoose';
-import { getIO } from '../socket/socketManager';
+import { getIO, emitToUser } from '../socket/socketManager';
 
 export const getConversationMessages = async (
     conversationId: string,
@@ -78,7 +78,40 @@ export const createMessage = async (
     await message.populate('senderId', 'displayName email avatar');
 
     try {
-        getIO().to(conversationId).emit('new_message', message);
+        const io = getIO();
+        io.to(conversationId).emit('new_message', message);
+
+        // Nếu đây là tin nhắn ĐẦU TIÊN trong private conversation,
+        // emit private_conversation_created để người nhận thấy conversation mới trong sidebar
+        const isFirstMessage = (await MessageModel.countDocuments({ conversationId })) === 1;
+        if (isFirstMessage && conversation.type === 'private') {
+            const populatedConv = await ConversationModel.findById(conversationId)
+                .populate('participants', 'displayName email avatar status lastSeen')
+                .populate('lastMessageId');
+            if (populatedConv) {
+                for (const participantId of conversation.participants) {
+                    const pId = participantId.toString();
+                    if (pId !== senderId) {
+                        await emitToUser(pId, 'private_conversation_created', populatedConv);
+                    }
+                }
+            }
+        }
+
+        // Emit conversation_updated cho participants không ở trong socket room
+        // (người chưa mở conversation — sidebar cần cập nhật last message)
+        const room = io.sockets.adapter.rooms.get(conversationId);
+        const socketsInRoom = room ? Array.from(room) : [];
+
+        for (const participantId of conversation.participants) {
+            const pId = participantId.toString();
+            if (pId === senderId) continue; // người gửi tự xử lý
+            await emitToUser(pId, 'conversation_updated', {
+                conversationId,
+                lastMessage: message,
+                lastMessageAt: message.createdAt,
+            });
+        }
     } catch (_) { }
 
     return message;

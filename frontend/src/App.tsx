@@ -1,47 +1,33 @@
-import { BrowserRouter, Route, Routes } from "react-router";
-import SignInPage from "./pages/SignInPage";
-import SignUpPage from "./pages/SignUpPage";
-import ChatAppPage from "./pages/ChatAppPage";
-import { Toaster } from "sonner";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import { useThemeStore } from "./stores/useThemeStore";
-import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
+import ChatPage from './pages/app/ChatPage';
 
 function App() {
-  const {isDark, setTheme} = useThemeStore();
-
-  useEffect(() => {
-    setTheme(isDark);
-  }, [isDark]);
-
   return (
-    <>
-      <Toaster richColors />
-      <BrowserRouter>
-        <Routes>
-          {/* public routes */}
-          <Route
-            path="/signin"
-            element={<SignInPage/>}
-          />
-          <Route
-            path="/signup"
-            element={<SignUpPage/>}
-          />
+    <BrowserRouter>
+      <Routes>
+        {/* Auth routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-          {/* protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path="/"
-              element={<ChatAppPage/>}
-            />
-          </Route>
-        </Routes>
-        
+        {/* App routes */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
 
-      </BrowserRouter>
-    </>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default App
+export default App;

@@ -18,4 +18,8 @@ router.post('/:conversationId/members', conversationController.addMember);
 
 router.delete('/:conversationId/members/:memberId', conversationController.removeMember);
 
+router.delete('/:conversationId/dissolve', conversationController.dissolveGroup);
+
+router.post('/:conversationId/hide', conversationController.hideConversation);
+
 export default router;

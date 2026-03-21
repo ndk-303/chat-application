@@ -13,7 +13,13 @@ export const getUserConversations = async (userId: string) => {
         .populate('lastMessageId')
         .sort({ lastMessageAt: -1 });
 
-    return conversations;
+    return conversations.filter((conv) => {
+        const entry = conv.hiddenFor?.find(
+            (h: any) => h.userId.toString() === userId
+        );
+        if (!entry) return true; // not hidden
+        return conv.lastMessageAt && conv.lastMessageAt > entry.hiddenAt;
+    });
 };
 
 export const getConversationById = async (conversationId: string, userId: string) => {
@@ -67,6 +73,8 @@ export const createPrivateConversation = async (userId: string, targetUserId: st
         participants: [userId, targetUserId]
     });
 
+    await conversation.populate('participants', 'displayName email avatar status lastSeen');
+
     return conversation;
 };
 
@@ -108,6 +116,17 @@ export const createGroupConversation = async (
         participants: allParticipants,
         adminId: userId
     });
+
+    await conversation.populate('participants', 'displayName email avatar status lastSeen');
+    await conversation.populate('adminId', 'displayName email');
+
+    try {
+        for (const participantId of participantIds) {
+            if (participantId !== userId) {
+                emitToUser(participantId, 'group_created', conversation);
+            }
+        }
+    } catch (_) { }
 
     return conversation;
 };
@@ -182,7 +201,26 @@ export const leaveConversation = async (conversationId: string, userId: string) 
         await conversation.save();
 
         try {
-            getIO().to(conversationId).emit('member_left', { conversationId, userId });
+            // Get leaving user's name for system message
+            const UserModel = (await import('../models/User')).default;
+            const leavingUser = await UserModel.findById(userId).select('displayName');
+            const displayName = leavingUser?.displayName || 'Ai đó';
+
+            const systemMsg = await MessageModel.create({
+                conversationId,
+                senderId: userId,
+                content: `${displayName} đã rời khỏi nhóm`,
+                type: 'system',
+                status: 'sent',
+            });
+            await systemMsg.populate('senderId', 'displayName email avatar');
+
+            conversation.lastMessageId = systemMsg._id as mongoose.Types.ObjectId;
+            conversation.lastMessageAt = systemMsg.createdAt;
+            await conversation.save();
+
+            getIO().to(conversationId).emit('new_message', systemMsg);
+            getIO().to(conversationId).emit('member_left', { conversationId, userId, memberId: userId });
         } catch (_) { }
 
         return { message: 'Left group successfully' };
@@ -279,12 +317,88 @@ export const removeGroupMember = async (
     await conversation.save();
 
     try {
-        emitToUser(memberId, 'removed_from_group', { conversationId });
-        getIO().to(conversationId).emit('group_member_removed', {
+        const UserModel = (await import('../models/User')).default;
+        const [adminUser, kickedUser] = await Promise.all([
+            UserModel.findById(userId).select('displayName'),
+            UserModel.findById(memberId).select('displayName'),
+        ]);
+        const adminName = adminUser?.displayName || 'Admin';
+        const kickedName = kickedUser?.displayName || 'Thành viên';
+
+        const systemMsg = await MessageModel.create({
             conversationId,
-            memberId
+            senderId: userId,
+            content: `${adminName} đã xóa ${kickedName} khỏi nhóm`,
+            type: 'system',
+            status: 'sent',
         });
+        await systemMsg.populate('senderId', 'displayName email avatar');
+
+        conversation.lastMessageId = systemMsg._id as mongoose.Types.ObjectId;
+        conversation.lastMessageAt = systemMsg.createdAt;
+        await conversation.save();
+
+        emitToUser(memberId, 'removed_from_group', { conversationId });
+        getIO().to(conversationId).emit('new_message', systemMsg);
+        getIO().to(conversationId).emit('group_member_removed', { conversationId, memberId });
     } catch (_) { }
 
     return conversation;
 };
+
+export const dissolveGroup = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+
+    if (!conversation) {
+        throw new Error('Conversation not found');
+    }
+
+    if (conversation.type !== 'group') {
+        throw new Error('Can only dissolve group conversations');
+    }
+
+    if (conversation.adminId?.toString() !== userId) {
+        throw new Error('Only group admin can dissolve the group');
+    }
+
+    const participantIds = conversation.participants.map((p: any) => p.toString());
+
+    await ConversationModel.deleteOne({ _id: conversationId });
+    await MessageModel.deleteMany({ conversationId });
+
+    try {
+        for (const participantId of participantIds) {
+            emitToUser(participantId, 'group_dissolved', { conversationId });
+        }
+    } catch (_) { }
+
+    return { message: 'Nhóm đã được giải tán' };
+};
+
+export const hideConversation = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+
+    if (!conversation) {
+        throw new Error('Conversation not found');
+    }
+
+    const isParticipant = conversation.participants.some(
+        (p: any) => p.toString() === userId
+    );
+
+    if (!isParticipant) {
+        throw new Error('You are not a participant in this conversation');
+    }
+
+    conversation.hiddenFor = (conversation.hiddenFor || []).filter(
+        (h: any) => h.userId.toString() !== userId
+    ) as any;
+
+    (conversation.hiddenFor as any[]).push({ userId, hiddenAt: new Date() });
+
+    await conversation.save();
+
+    return { message: 'Đã xóa cuộc trò chuyện' };
+};
+
+

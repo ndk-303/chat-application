@@ -9,30 +9,30 @@ import { pubClient, subClient, redisClient } from '../config/redis';
 
 let io: Server;
 
-// Redis key helpers
 const userSocketsKey = (userId: string) => `user:sockets:${userId}`;
 
-/**
- * Register a socket for a user in Redis.
- * Uses a Redis Hash: user:sockets:{userId} → { [socketId]: '1' }
- */
 const addUserSocket = async (userId: string, socketId: string): Promise<void> => {
     await redisClient.hset(userSocketsKey(userId), socketId, '1');
-    // Expire after 24h as safety net (socket disconnect should clean it up)
     await redisClient.expire(userSocketsKey(userId), 86400);
 };
 
-/**
- * Remove a single socket for a user from Redis.
- */
+
 const removeUserSocket = async (userId: string, socketId: string): Promise<void> => {
     await redisClient.hdel(userSocketsKey(userId), socketId);
 };
 
 export const initSocket = (httpServer: HttpServer): Server => {
+    const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173,http://localhost')
+        .split(',').map(o => o.trim());
+
     io = new Server(httpServer, {
         cors: {
-            origin: process.env.CLIENT_URL || 'http://localhost:5173',
+            origin: (origin, callback) => {
+                if (!origin) return callback(null, true);
+                if (origin.includes('ngrok')) return callback(null, true);
+                if (allowedOrigins.includes(origin)) return callback(null, true);
+                callback(new Error(`CORS: origin ${origin} không được phép`));
+            },
             methods: ['GET', 'POST'],
             credentials: true,
             allowedHeaders: ['Content-Type', 'Authorization'],
@@ -40,6 +40,7 @@ export const initSocket = (httpServer: HttpServer): Server => {
         pingTimeout: 60000,
         pingInterval: 25000,
     });
+
 
     io.adapter(createAdapter(pubClient, subClient));
     console.log('[Socket] Redis adapter initialized');
@@ -81,11 +82,6 @@ export const getUserSockets = async (userId: string): Promise<string[]> => {
     }
 };
 
-/**
- * Emit an event to all sockets of a specific user across all instances.
- * With the Redis adapter, io.to() already broadcasts to all instances,
- * so we just need the socket IDs from Redis.
- */
 export const emitToUser = async (userId: string, event: string, data: any): Promise<void> => {
     const socketIds = await getUserSockets(userId);
     socketIds.forEach(socketId => {

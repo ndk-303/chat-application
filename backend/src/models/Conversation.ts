@@ -1,5 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface HiddenForEntry {
+    userId: mongoose.Types.ObjectId;
+    hiddenAt: Date;
+}
+
 export interface Conversation extends Document {
     type: 'private' | 'group';
     participants: mongoose.Types.ObjectId[];
@@ -8,6 +13,7 @@ export interface Conversation extends Document {
     adminId?: mongoose.Types.ObjectId;
     lastMessageId?: mongoose.Types.ObjectId;
     lastMessageAt?: Date;
+    hiddenFor: HiddenForEntry[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -45,7 +51,11 @@ const conversationSchema = new Schema<Conversation>(
         lastMessageAt: {
             type: Date,
             index: true
-        }
+        },
+        hiddenFor: [{
+            userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+            hiddenAt: { type: Date, required: true }
+        }]
     },
     {
         timestamps: true
@@ -53,9 +63,7 @@ const conversationSchema = new Schema<Conversation>(
 );
 
 conversationSchema.index({ participants: 1 });
-
 conversationSchema.index({ lastMessageAt: -1 });
-
 conversationSchema.index({ type: 1, participants: 1 });
 
 const ConversationModel = mongoose.model<Conversation>('Conversation', conversationSchema);
