@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router";
 
 const Logout = () => {
