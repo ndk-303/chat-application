@@ -1,4 +1,4 @@
-import type { Conversation } from "./chat";
+import type { Conversation, Message } from "./chat";
 import type { User } from "./user";
 
 export interface AuthState {
@@ -42,4 +42,5 @@ export interface ChatState {
     reset: () => void;
 
     setActiveConversation: (id: string | null) => void;
+    fetchConversations: () => Promise<void>;
 }
