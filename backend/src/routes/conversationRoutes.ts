@@ -5,6 +5,7 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 const router = Router();
 router.use(authMiddleware);
 
+router.get('/', conversationController.getConversations);
 router.get('/:conversationId', conversationController.getConversationById);
 
 router.post('/', conversationController.createConversation);
@@ -16,5 +17,9 @@ router.delete('/:conversationId', conversationController.leaveConversation);
 router.post('/:conversationId/members', conversationController.addMember);
 
 router.delete('/:conversationId/members/:memberId', conversationController.removeMember);
+
+router.delete('/:conversationId/dissolve', conversationController.dissolveGroup);
+
+router.post('/:conversationId/hide', conversationController.hideConversation);
 
 export default router;

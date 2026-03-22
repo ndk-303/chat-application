@@ -1,4 +1,5 @@
 import UserModel, { User } from "../models/User"
+import { getCache, setCache, delCache } from '../utils/cacheUtils';
 
 export const createUser = async (data: User): Promise<Object> => {
     const checked = await UserModel.findOne({ email: data.email })
@@ -31,11 +32,21 @@ export const getUsers = async (page?: string, limit?: string, sortBy?: string): 
 }
 
 export const getUserById = async (id: string): Promise<User> => {
+    const cacheKey = `cache:user:${id}`;
+
+    // 1. Cache hit
+    const cached = await getCache<User>(cacheKey);
+    if (cached) return cached;
+
+    // 2. Cache miss — query MongoDB
     const user = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
 
     if (!user) {
-        throw new Error('Can not find user')
+        throw new Error('Can not find user');
     }
+
+    // 3. Populate cache (5 minutes)
+    await setCache(cacheKey, user.toObject(), 300);
 
     return user;
 }
@@ -76,6 +87,9 @@ export const updateCurrentUserProfile = async (userId: string, updates: Partial<
     if (!user) {
         throw new Error('Cannot update profile');
     }
+
+    // Invalidate cached profile so next read fetches fresh data
+    await delCache(`cache:user:${userId}`);
 
     return user;
 };

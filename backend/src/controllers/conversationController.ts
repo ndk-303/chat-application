@@ -147,3 +147,31 @@ export const removeMember = async (req: Request, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const dissolveGroup = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+
+        const result = await conversationService.dissolveGroup(conversationId as string, userId);
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const hideConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+
+        const result = await conversationService.hideConversation(conversationId as string, userId);
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as userService from '../services/userService'
+import { uploadCloundinary } from '../utils/uploadUtils';
 
 export const creatUser = async (req: Request, res: Response) => {
     try {
@@ -19,9 +20,19 @@ export const getUsers = async (_: Request, res: Response) => {
   }
 };
 
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    const user = await userService.getUserById(userId);
+    res.json(user);
+  } catch (error: any) {
+    return res.status(404).json({ message: error.message });
+  }
+};
+
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await userService.getUserById(req.params.id[0]);
+    const user = await userService.getUserById(req.params.id as string);
     res.json(user);
   } catch (error: any) {
     return res.status(404).json({ message: error.message });
@@ -41,9 +52,32 @@ export const updateCurrentProfile = async (req: Request, res: Response) => {
   }
 };
 
+export const uploadAvatar = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: 'No avatar file provided' });
+    }
+
+    const result = await uploadCloundinary(file.buffer, 'avatars', 'image');
+    const avatarUrl = result.secure_url;
+
+    const user = await userService.updateCurrentUserProfile(userId, { avatar: avatarUrl });
+    return res.json({
+      message: 'Avatar updated successfully',
+      avatar: avatarUrl,
+      user
+    });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    await userService.deleteUser(req.params.id[0]);
+    await userService.deleteUser(req.params.id as string);
     res.json({ message: 'User deleted successfully' });
   } catch (error: any) {
     return res.status(404).json({ message: error.message});
@@ -65,6 +99,20 @@ export const searchUsers = async (req: Request, res: Response) => {
       count: users.length,
       users
     });
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+export const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.userId;
+    const { status } = req.body;
+    if (!['online', 'offline', 'away', 'busy'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+    const user = await userService.updateUserStatus(userId, status);
+    return res.json({ message: 'Status updated', user });
   } catch (error: any) {
     return res.status(400).json({ message: error.message });
   }

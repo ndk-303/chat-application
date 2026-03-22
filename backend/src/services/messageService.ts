@@ -1,7 +1,7 @@
 import MessageModel from '../models/Message';
 import ConversationModel from '../models/Conversation';
 import mongoose from 'mongoose';
-import { getIO } from '../socket/socketManager';
+import { getIO, emitToUser } from '../socket/socketManager';
 
 export const getConversationMessages = async (
     conversationId: string,
@@ -25,10 +25,18 @@ export const getConversationMessages = async (
 
     const query: any = { conversationId };
 
+    // If user has hidden this conversation, only show messages after hiddenAt
+    const hiddenEntry = (conversation.hiddenFor || []).find(
+        (h: any) => h.userId.toString() === userId
+    );
+    if (hiddenEntry) {
+        query.createdAt = { ...(query.createdAt || {}), $gt: hiddenEntry.hiddenAt };
+    }
+
     if (before) {
         const beforeMessage = await MessageModel.findById(before);
         if (beforeMessage) {
-            query.createdAt = { $lt: beforeMessage.createdAt };
+            query.createdAt = { ...(query.createdAt || {}), $lt: beforeMessage.createdAt };
         }
     }
 
@@ -44,7 +52,7 @@ export const createMessage = async (
     conversationId: string,
     senderId: string,
     content: string,
-    files: { id: string; url: string; type: 'image' | 'video' | 'raw'}[]
+    files: { url: string; publicId: string; originalName: string; size: number; mimeType: string; type: 'image' | 'video' | 'raw' }[]
 ) => {
     const conversation = await ConversationModel.findById(conversationId);
 
@@ -78,7 +86,40 @@ export const createMessage = async (
     await message.populate('senderId', 'displayName email avatar');
 
     try {
-        getIO().to(conversationId).emit('new_message', message);
+        const io = getIO();
+        io.to(conversationId).emit('new_message', message);
+
+        // Nếu đây là tin nhắn ĐẦU TIÊN trong private conversation,
+        // emit private_conversation_created để người nhận thấy conversation mới trong sidebar
+        const isFirstMessage = (await MessageModel.countDocuments({ conversationId })) === 1;
+        if (isFirstMessage && conversation.type === 'private') {
+            const populatedConv = await ConversationModel.findById(conversationId)
+                .populate('participants', 'displayName email avatar status lastSeen')
+                .populate('lastMessageId');
+            if (populatedConv) {
+                for (const participantId of conversation.participants) {
+                    const pId = participantId.toString();
+                    if (pId !== senderId) {
+                        await emitToUser(pId, 'private_conversation_created', populatedConv);
+                    }
+                }
+            }
+        }
+
+        // Emit conversation_updated cho participants không ở trong socket room
+        // (người chưa mở conversation — sidebar cần cập nhật last message)
+        const room = io.sockets.adapter.rooms.get(conversationId);
+        const socketsInRoom = room ? Array.from(room) : [];
+
+        for (const participantId of conversation.participants) {
+            const pId = participantId.toString();
+            if (pId === senderId) continue; // người gửi tự xử lý
+            await emitToUser(pId, 'conversation_updated', {
+                conversationId,
+                lastMessage: message,
+                lastMessageAt: message.createdAt,
+            });
+        }
     } catch (_) { }
 
     return message;
@@ -142,6 +183,34 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     }
 
     return message;
+};
+
+export const markConversationDelivered = async (
+    conversationId: string,
+    userId: string
+): Promise<string[]> => {
+    const result = await MessageModel.updateMany(
+        {
+            conversationId,
+            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
+            status: 'sent',
+        },
+        { $set: { status: 'delivered' } }
+    );
+
+    if (result.modifiedCount === 0) return [];
+
+    // Return the IDs of messages that were just updated
+    const updated = await MessageModel.find(
+        {
+            conversationId,
+            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
+            status: 'delivered',
+        },
+        '_id'
+    ).lean();
+
+    return updated.map((m: any) => m._id.toString());
 };
 
 export const deleteUserMessage = async (messageId: string, userId: string) => {

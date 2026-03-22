@@ -5,16 +5,22 @@ interface Seen {
     seenAt: Date;
 }
 
+export interface MessageFile {
+    url: string;
+    publicId: string;
+    originalName: string;
+    size: number;
+    mimeType: string;
+    type: 'image' | 'video' | 'raw';
+}
+
 export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
     content: string;
-    files?: {
-        id: string,
-        url: string,
-        type: 'image' | 'video' | 'raw'
-    }[],
-    status: 'sent' | 'recieved' | 'seen';
+    type: 'text' | 'system';
+    files?: MessageFile[];
+    status: 'sent' | 'delivered' | 'seen';
     seenBy: Seen[];
     createdAt: Date;
     updatedAt: Date;
@@ -36,19 +42,27 @@ const messageSchema = new Schema<Message>(
         },
         content: {
             type: String,
-            required: [true, 'Content is required'],
+            default: '',
             trim: true,
-            maxlength: [300, 'Content cannot exceed 300 characters']
+            maxlength: [3000, 'Content cannot exceed 3000 characters']
+        },
+        type: {
+            type: String,
+            enum: ['text', 'system'],
+            default: 'text',
+            index: true
         },
         files: [{
-            url: { type: String, required: true },
-            publicId: { type: String, required: true },
-            type: { type: String, enum: ['image', 'video', 'raw'], required: true },
-            name: { type: String }
+            url:          { type: String, required: true },
+            publicId:     { type: String, required: true },
+            originalName: { type: String, default: 'file' },
+            size:         { type: Number, default: 0 },
+            mimeType:     { type: String, default: 'application/octet-stream' },
+            type:         { type: String, enum: ['image', 'video', 'raw'], required: true },
         }],
         status: {
             type: String,
-            enum: ['sent', 'recieved', 'seen'],
+            enum: ['sent', 'delivered', 'seen'],
             default: 'sent',
             index: true
         },

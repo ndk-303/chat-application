@@ -1,42 +1,44 @@
-import api from "@/lib/axios";
+import api from '../lib/axios';
+import type { LoginRequest, RegisterRequest, AuthResponse } from '../types';
 
 export const authService = {
-    signUp: async (
-        username: string, 
-        password: string, 
-        email: string, 
-        firstName: string, 
-        lastName: string
-    ) => {
-        const res = await api.post(
-            "auth/signup", 
-            {username, password, email, firstName, lastName}, 
-            {withCredentials: true}
-        );
+  async login(data: LoginRequest): Promise<AuthResponse> {
+    const res = await api.post('/auth/login', data);
+    return res.data;
+  },
 
-        return res.data;
-    },
+  async register(data: RegisterRequest) {
+    const res = await api.post('/auth/register', data);
+    return res.data;
+  },
 
-    signIn: async (username: string, password: string) => {
-        const res = await api.post(
-            "auth/signin", 
-            {username, password}, 
-            {withCredentials: true}
-        );
-        return res.data; // access token
-    },
+  async verifyEmail(email: string, code: string) {
+    const res = await api.post('/auth/verify-email', { email, code });
+    return res.data;
+  },
 
-    signOut: async () => {
-        return api.post("/auth/signout", {}, {withCredentials: true});
-    },
+  async resendVerificationCode(email: string) {
+    const res = await api.post('/auth/resend-verification', { email });
+    return res.data;
+  },
 
-    fetchMe: async () => {
-        const res = await api.get("/users/me", {withCredentials: true});
-        return res.data.user;
-    },
+  async logout() {
+    const res = await api.post('/auth/logout');
+    return res.data;
+  },
 
-    refresh: async () => {
-        const res = await api.post("/auth/refresh", {withCredential: true});
-        return res.data.accessToken;    
-    },
+  async refreshToken() {
+    const res = await api.post('/auth/refresh-token');
+    return res.data;
+  },
+
+  async requestPasswordReset(email: string) {
+    const res = await api.post('/auth/request-password-reset', { email });
+    return res.data;
+  },
+
+  async resetPassword(data: { email?: string; resetToken?: string; newPassword: string }) {
+    const res = await api.post('/auth/reset-password', data);
+    return res.data;
+  },
 };

@@ -9,10 +9,23 @@ import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const app = express();
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+    .split(',')
+    .map(o => o.trim());
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000', // Update with frontend URL if different
+    origin: (origin, callback) => {
+        // Cho phép requests không có origin (mobile apps, curl, server-to-server)
+        if (!origin) return callback(null, true);
+        // Cho phép tất cả ngrok URLs
+        if (origin.includes('ngrok')) return callback(null, true);
+        // Cho phép các origins trong whitelist
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        callback(new Error(`CORS: origin ${origin} không được phép`));
+    },
     credentials: true,
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 

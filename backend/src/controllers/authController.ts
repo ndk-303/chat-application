@@ -45,12 +45,42 @@ export const register = async (req: Request, res: Response) => {
         const result = await authService.register(displayName, email, password);
 
         res.status(201).json({
-            message: 'User registered successfully.',
+            message: 'User registered successfully. Please check your email for the verification code.',
             userId: result.userId,
             email: result.email,
         });
     } catch (error: any) {
         res.status(400).json({ message: error.message });
+    }
+};
+
+export const verifyEmail = async (req: Request, res: Response) => {
+    try {
+        const { email, code } = req.body;
+
+        if (!email || !code) {
+            return res.status(400).json({ message: 'Email and verification code are required' });
+        }
+
+        const result = await authService.verifyEmail(email, code);
+        return res.status(200).json(result);
+    } catch (error: any) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
+export const resendVerificationCode = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        const result = await authService.resendVerificationCode(email);
+        return res.status(200).json(result);
+    } catch (error: any) {
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -80,7 +110,7 @@ export const refreshToken = async (req: Request, res: Response) => {
             message: error.message,
         });
     }
-}
+};
 
 export const requestPasswordReset = async (req: Request, res: Response) => {
     try {
@@ -137,7 +167,3 @@ export const logout = async (req: Request, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
-
-
-
-

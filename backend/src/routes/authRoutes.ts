@@ -7,6 +7,10 @@ router.post('/login', authController.login);
 
 router.post('/register', authController.register);
 
+router.post('/verify-email', authController.verifyEmail);
+
+router.post('/resend-verification', authController.resendVerificationCode);
+
 router.post('/refresh-token', authController.refreshToken);
 
 router.post('/request-password-reset', authController.requestPasswordReset);
