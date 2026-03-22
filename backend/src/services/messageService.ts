@@ -25,10 +25,18 @@ export const getConversationMessages = async (
 
     const query: any = { conversationId };
 
+    // If user has hidden this conversation, only show messages after hiddenAt
+    const hiddenEntry = (conversation.hiddenFor || []).find(
+        (h: any) => h.userId.toString() === userId
+    );
+    if (hiddenEntry) {
+        query.createdAt = { ...(query.createdAt || {}), $gt: hiddenEntry.hiddenAt };
+    }
+
     if (before) {
         const beforeMessage = await MessageModel.findById(before);
         if (beforeMessage) {
-            query.createdAt = { $lt: beforeMessage.createdAt };
+            query.createdAt = { ...(query.createdAt || {}), $lt: beforeMessage.createdAt };
         }
     }
 
@@ -175,6 +183,34 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     }
 
     return message;
+};
+
+export const markConversationDelivered = async (
+    conversationId: string,
+    userId: string
+): Promise<string[]> => {
+    const result = await MessageModel.updateMany(
+        {
+            conversationId,
+            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
+            status: 'sent',
+        },
+        { $set: { status: 'delivered' } }
+    );
+
+    if (result.modifiedCount === 0) return [];
+
+    // Return the IDs of messages that were just updated
+    const updated = await MessageModel.find(
+        {
+            conversationId,
+            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
+            status: 'delivered',
+        },
+        '_id'
+    ).lean();
+
+    return updated.map((m: any) => m._id.toString());
 };
 
 export const deleteUserMessage = async (messageId: string, userId: string) => {

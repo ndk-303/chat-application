@@ -1,5 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import ConversationModel from '../../models/Conversation';
+import { markConversationDelivered, markMessageSeen } from '../../services/messageService';
 
 const registerChatHandlers = (io: Server, socket: Socket): void => {
     const userId = socket.data.userId as string;
@@ -22,6 +23,15 @@ const registerChatHandlers = (io: Server, socket: Socket): void => {
 
             socket.join(conversationId);
             console.log(`[Socket] User ${userId} joined conversation ${conversationId}`);
+
+            // Mark all 'sent' messages from others as 'delivered'
+            const deliveredIds = await markConversationDelivered(conversationId, userId);
+            if (deliveredIds.length > 0) {
+                io.to(conversationId).emit('messages_delivered', {
+                    conversationId,
+                    messageIds: deliveredIds,
+                });
+            }
         } catch (err) {
             socket.emit('error', { message: 'Failed to join conversation' });
         }
@@ -31,6 +41,17 @@ const registerChatHandlers = (io: Server, socket: Socket): void => {
         const { conversationId } = data;
         socket.leave(conversationId);
         console.log(`[Socket] User ${userId} left conversation ${conversationId}`);
+    });
+
+    // Client emits this when the user reads messages in a conversation
+    socket.on('mark_seen', async (data: { conversationId: string; messageId: string }) => {
+        const { conversationId, messageId } = data;
+        try {
+            await markMessageSeen(messageId, userId);
+            // markMessageSeen already emits 'message_seen' to the room via getIO()
+        } catch (err) {
+            console.error('[Socket] mark_seen error:', err);
+        }
     });
 
     socket.on('typing_start', (data: { conversationId: string }) => {
@@ -52,4 +73,4 @@ const registerChatHandlers = (io: Server, socket: Socket): void => {
     });
 };
 
-export default registerChatHandlers
+export default registerChatHandlers;

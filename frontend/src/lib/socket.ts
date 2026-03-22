@@ -9,6 +9,7 @@ export const getSocket = (): Socket | null => socket;
 export const initSocket = (accessToken: string): Socket => {
   if (socket?.connected) return socket;
 
+  // If a stale socket exists, clean it up first
   if (socket) {
     socket.disconnect();
   }
@@ -59,4 +60,12 @@ export const emitTypingStart = (conversationId: string): void => {
 
 export const emitTypingStop = (conversationId: string): void => {
   socket?.emit('typing_stop', { conversationId });
+};
+
+export const emitMarkSeen = (conversationId: string, messageId: string): void => {
+  socket?.emit('mark_seen', { conversationId, messageId });
+};
+
+export const emitSetStatus = (status: 'online' | 'offline'): void => {
+  socket?.emit('set_status', { status });
 };

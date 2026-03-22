@@ -14,15 +14,25 @@ const registerPresenceHandlers = (
 
     const handleConnect = async () => {
         try {
-            await UserModel.findByIdAndUpdate(userId, {
-                status: 'online',
-                lastSeen: new Date()
-            });
+            // Read the user's current status BEFORE overriding it.
+            // If they manually set "offline" (ẩn trạng thái) we must respect that
+            // and NOT broadcast them as online to friends.
+            const user = await UserModel.findById(userId).select('status').lean();
+            const isHiding = user?.status === 'offline';
 
-            const friendIds = await getFriendIds(userId);
-            for (const friendId of friendIds) {
-                await emitToUser(friendId, 'user_online', { userId });
+            if (!isHiding) {
+                // Normal connect: mark online and notify friends
+                await UserModel.findByIdAndUpdate(userId, {
+                    status: 'online',
+                    lastSeen: new Date(),
+                });
+
+                const friendIds = await getFriendIds(userId);
+                for (const friendId of friendIds) {
+                    await emitToUser(friendId, 'user_online', { userId });
+                }
             }
+            // If hiding: do nothing — friends continue to see them as offline
         } catch (err) {
             console.error('[Presence] Error on connect:', err);
         }
@@ -34,33 +44,48 @@ const registerPresenceHandlers = (
             try {
                 const remainingSockets = await getUserSockets(userId);
                 if (remainingSockets.length === 0) {
-                    const lastSeen = new Date();
-                    await UserModel.findByIdAndUpdate(userId, {
-                        status: 'offline',
-                        lastSeen
-                    });
+                    // Only update lastSeen; preserve manual 'offline' status
+                    const user = await UserModel.findById(userId).select('status').lean();
+                    const isHiding = user?.status === 'offline';
 
-                    const friendIds = await getFriendIds(userId);
-                    for (const friendId of friendIds) {
-                        await emitToUser(friendId, 'user_offline', { userId, lastSeen });
+                    const lastSeen = new Date();
+                    await UserModel.findByIdAndUpdate(userId, { lastSeen });
+
+                    if (!isHiding) {
+                        // Was genuinely online — mark offline and notify friends
+                        await UserModel.findByIdAndUpdate(userId, { status: 'offline' });
+                        const friendIds = await getFriendIds(userId);
+                        for (const friendId of friendIds) {
+                            await emitToUser(friendId, 'user_offline', { userId, lastSeen });
+                        }
                     }
+                    // If already hiding: friends see no change — still "offline"
                 }
             } catch (err) {
                 console.error('[Presence] Error on disconnect:', err);
             }
-        }, 1000); // 1s delay to let Redis propagate the socket removal
+        }, 1000);
     });
 
-    socket.on('set_status', async (data: { status: 'online' | 'away' | 'busy' }) => {
+    // Allow 'offline' so the frontend can set "ẩn trạng thái"
+    socket.on('set_status', async (data: { status: 'online' | 'offline' }) => {
         const { status } = data;
-        if (!['online', 'away', 'busy'].includes(status)) return;
+        if (!['online', 'offline'].includes(status)) return;
 
         try {
-            await UserModel.findByIdAndUpdate(userId, { status });
+            await UserModel.findByIdAndUpdate(userId, { status, lastSeen: new Date() });
 
             const friendIds = await getFriendIds(userId);
-            for (const friendId of friendIds) {
-                await emitToUser(friendId, 'user_status_changed', { userId, status });
+            if (status === 'online') {
+                for (const friendId of friendIds) {
+                    await emitToUser(friendId, 'user_online', { userId });
+                }
+            } else {
+                // status === 'offline' — tell friends user is now invisible
+                const lastSeen = new Date();
+                for (const friendId of friendIds) {
+                    await emitToUser(friendId, 'user_offline', { userId, lastSeen });
+                }
             }
         } catch (err) {
             console.error('[Presence] Error setting status:', err);

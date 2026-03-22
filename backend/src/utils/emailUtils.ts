@@ -1,24 +1,24 @@
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: Number(process.env.EMAIL_PORT) || 587,
-    secure: false, // TLS
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: Number(process.env.EMAIL_PORT) || 587,
+  secure: false, // TLS
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 export const sendVerificationEmail = async (to: string, code: string, displayName?: string): Promise<void> => {
-    const appName = 'Vibe';
-    const senderName = displayName || 'there';
+  const appName = 'Kapta';
+  const senderName = displayName || 'there';
 
-    await transporter.sendMail({
-        from: `"${appName}" <${process.env.EMAIL_USER}>`,
-        to,
-        subject: `Your Vibe verification code: ${code}`,
-        html: `
+  await transporter.sendMail({
+    from: `"${appName}" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `Your Kapta verification code: ${code}`,
+    html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,5 +68,5 @@ export const sendVerificationEmail = async (to: string, code: string, displayNam
 </body>
 </html>
         `.trim(),
-    });
+  });
 };

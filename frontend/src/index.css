@@ -277,6 +277,7 @@
     @apply absolute inset-0 rounded-full bg-primary/30 animate-ping duration-[2000ms];
   }
 
+  /* Message bounce in animation */
   .message-bounce {
     animation: messageSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   }
@@ -293,6 +294,7 @@
     }
   }
 
+  /* Custom Scrollbar */
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
@@ -309,8 +311,18 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 104, 255, 0.3);
   }
+
+  /* Hide scrollbar but keep scrollability */
+  .no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
 }
 
+/* Hide browser native password reveal button */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
