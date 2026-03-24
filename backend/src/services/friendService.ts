@@ -139,8 +139,9 @@ export const getFriendsList = async (userId: string) => {
         const friend = friendship.user1Id._id.toString() === userId
             ? friendship.user2Id
             : friendship.user1Id;
+        const friendObj = (friend as any).toObject ? (friend as any).toObject() : friend;
         return {
-            ...friend,
+            ...friendObj,
             friendshipCreatedAt: friendship.createdAt
         };
     });

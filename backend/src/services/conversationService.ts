@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import { getIO, emitToUser } from '../socket/socketManager';
 
 export const getUserConversations = async (userId: string) => {
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
     const conversations = await ConversationModel.find({
         participants: userId
     })
@@ -13,14 +15,46 @@ export const getUserConversations = async (userId: string) => {
         .populate('lastMessageId')
         .sort({ lastMessageAt: -1 });
 
-    return conversations.filter((conv) => {
+    const visible = conversations.filter((conv) => {
         const entry = conv.hiddenFor?.find(
             (h: any) => h.userId.toString() === userId
         );
-        if (!entry) return true; // not hidden
+        if (!entry) return true;
         return conv.lastMessageAt && conv.lastMessageAt > entry.hiddenAt;
     });
+
+    // Compute unreadCount for each visible conversation via aggregation
+    const conversationIds = visible.map((c) => c._id);
+    const unreadAgg = await MessageModel.aggregate([
+        {
+            $match: {
+                conversationId: { $in: conversationIds },
+                senderId: { $ne: userObjectId },
+                'seenBy.userId': { $ne: userObjectId },
+            }
+        },
+        {
+            $group: {
+                _id: '$conversationId',
+                count: { $sum: 1 }
+            }
+        }
+    ]);
+
+    // Build a map: conversationId → unreadCount
+    const unreadMap: Record<string, number> = {};
+    for (const row of unreadAgg) {
+        unreadMap[row._id.toString()] = row.count;
+    }
+
+    // Attach unreadCount to each conversation (as a plain object)
+    return visible.map((conv) => {
+        const obj = conv.toObject() as any;
+        obj.unreadCount = unreadMap[conv._id.toString()] ?? 0;
+        return obj;
+    });
 };
+
 
 export const getConversationById = async (conversationId: string, userId: string) => {
     const conversation = await ConversationModel.findById(conversationId)
