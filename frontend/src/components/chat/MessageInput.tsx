@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useImperativeHandle, forwardRef, type KeyboardEvent } from 'react';
 import { useChatStore } from '../../stores/chatStore';
 import { emitTypingStart, emitTypingStop } from '../../lib/socket';
+import { EmojiPicker } from './EmojiPicker';
 
 interface MessageInputProps {
   conversationId: string;
@@ -20,10 +21,28 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
     const [text, setText] = useState('');
     const [files, setFiles] = useState<FilePreview[]>([]);
     const [isSending, setIsSending] = useState(false);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const emojiButtonRef = useRef<HTMLButtonElement>(null);
     const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const sendMessage = useChatStore((s) => s.sendMessage);
+
+    const handleEmojiSelect = useCallback((emoji: string) => {
+      const ta = textareaRef.current;
+      if (!ta) {
+        setText((prev) => prev + emoji);
+        return;
+      }
+      const start = ta.selectionStart ?? text.length;
+      const end = ta.selectionEnd ?? text.length;
+      const next = text.slice(0, start) + emoji + text.slice(end);
+      setText(next);
+      requestAnimationFrame(() => {
+        ta.focus();
+        ta.setSelectionRange(start + emoji.length, start + emoji.length);
+      });
+    }, [text]);
 
     // Exposed to parent (ChatWindow) so drag-drop can inject files
     useImperativeHandle(ref, () => ({
@@ -96,7 +115,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
     const canSend = (text.trim().length > 0 || files.length > 0) && !isSending;
 
     return (
-      <div className="bg-white border-t border-gray-100 p-4">
+      <div className="bg-white border-t border-gray-100 p-4 relative">
         {/* File Previews */}
         {files.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
@@ -164,12 +183,30 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
             />
           </div>
 
-          {/* Emoji button */}
-          <button title="Emoji" className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all mb-0.5">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" />
-            </svg>
-          </button>
+          {/* Emoji button + picker */}
+          <div className="relative">
+            <button
+              ref={emojiButtonRef}
+              title="Emoji"
+              onClick={() => setShowEmojiPicker((v) => !v)}
+              className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all mb-0.5 ${
+                showEmojiPicker
+                  ? 'text-[#0068FF] bg-[#0068FF]/10'
+                  : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'
+              }`}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg>
+            </button>
+            {showEmojiPicker && (
+              <EmojiPicker
+                onSelect={handleEmojiSelect}
+                onClose={() => setShowEmojiPicker(false)}
+                triggerRef={emojiButtonRef}
+              />
+            )}
+          </div>
 
           {/* Send */}
           <button

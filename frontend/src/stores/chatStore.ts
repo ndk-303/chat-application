@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Conversation, Message } from '../types';
+import type { Conversation, Message, MessageReaction } from '../types';
 import { conversationService } from '@/services/conversationService';
 import { messageService } from '@/services/mesageService'; 
 import { useAuthStore } from './authStore';
@@ -24,6 +24,7 @@ interface ChatState {
   updateMessagesDelivered: (conversationId: string, messageIds: string[]) => void;
   incrementConversationUnread: (conversationId: string) => void;
   clearConversationUnread: (conversationId: string) => void;
+  updateMessageReactions: (conversationId: string, messageId: string, reactions: MessageReaction[]) => void;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -168,6 +169,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
       conversations: state.conversations.map((c) =>
         c._id === conversationId ? { ...c, unreadCount: 0 } : c
       ),
+    }));
+  },
+
+  updateMessageReactions: (conversationId, messageId, reactions) => {
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        [conversationId]: (state.messages[conversationId] ?? []).map((m) =>
+          m._id === messageId ? { ...m, reactions } : m
+        ),
+      },
     }));
   },
 }));

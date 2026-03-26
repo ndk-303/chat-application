@@ -21,6 +21,11 @@ export interface MessageFile {
   type?: 'image' | 'video' | 'raw';
 }
 
+export interface MessageReaction {
+  emoji: string;
+  userIds: string[];
+}
+
 export interface Message {
   _id: string;
   conversationId: string;
@@ -30,6 +35,7 @@ export interface Message {
   files?: MessageFile[];
   status: 'sent' | 'delivered' | 'seen';
   seenBy: Array<{ userId: string; seenAt: string }>;
+  reactions?: MessageReaction[];
   createdAt: string;
   updatedAt: string;
 }

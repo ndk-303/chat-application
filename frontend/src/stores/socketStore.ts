@@ -47,6 +47,14 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       useChatStore.getState().deleteMessage(conversationId, messageId);
     });
 
+    socket.on('message_reaction_updated', ({ messageId, conversationId, reactions }: {
+      messageId: string;
+      conversationId: string;
+      reactions: import('../types').MessageReaction[];
+    }) => {
+      useChatStore.getState().updateMessageReactions(conversationId, messageId, reactions);
+    });
+
     socket.on('typing', ({ userId, conversationId, isTyping }: TypingInfo & { isTyping: boolean }) => {
       get().setTyping({ userId, conversationId, isTyping });
     });

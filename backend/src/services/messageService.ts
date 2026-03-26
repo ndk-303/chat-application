@@ -251,3 +251,65 @@ export const deleteUserMessage = async (messageId: string, userId: string) => {
 
     return { message: 'Message deleted successfully' };
 };
+
+export const toggleReaction = async (messageId: string, userId: string, emoji: string) => {
+    const message = await MessageModel.findById(messageId);
+    if (!message) throw new Error('Message not found');
+
+    const conversation = await ConversationModel.findById(message.conversationId);
+    if (!conversation) throw new Error('Conversation not found');
+
+    const isParticipant = conversation.participants.some(
+        (p: any) => p.toString() === userId
+    );
+    if (!isParticipant) throw new Error('You are not a participant in this conversation');
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    // Find existing reaction group for this emoji
+    const existingGroup = message.reactions.find((r: any) => r.emoji === emoji);
+
+    if (existingGroup) {
+        const alreadyReacted = existingGroup.userIds.some(
+            (uid: any) => uid.toString() === userId
+        );
+        if (alreadyReacted) {
+            // Toggle OFF — remove userId from this emoji's group
+            existingGroup.userIds = existingGroup.userIds.filter(
+                (uid: any) => uid.toString() !== userId
+            );
+            // Remove group if no users left
+            if (existingGroup.userIds.length === 0) {
+                message.reactions = message.reactions.filter(
+                    (r: any) => r.emoji !== emoji
+                );
+            }
+        } else {
+            // Toggle ON — add userId to existing emoji group
+            existingGroup.userIds.push(userObjectId);
+        }
+    } else {
+        // New emoji reaction
+        message.reactions.push({ emoji, userIds: [userObjectId] } as any);
+    }
+
+    await message.save();
+
+    // Serialize reactions for frontend: [{ emoji, userIds: string[] }]
+    const serializedReactions = message.reactions.map((r: any) => ({
+        emoji: r.emoji,
+        userIds: r.userIds.map((uid: any) => uid.toString()),
+    }));
+
+    try {
+        getIO()
+            .to(message.conversationId.toString())
+            .emit('message_reaction_updated', {
+                messageId: message._id.toString(),
+                conversationId: message.conversationId.toString(),
+                reactions: serializedReactions,
+            });
+    } catch (_) { }
+
+    return serializedReactions;
+};

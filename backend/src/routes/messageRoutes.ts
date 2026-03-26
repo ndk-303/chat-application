@@ -12,6 +12,9 @@ router.post('/:conversationId', uploadMiddleware.array('files', 5), messageContr
 
 router.patch('/:messageId/seen', messageController.markAsSeen);
 
+router.patch('/:messageId/react', messageController.reactToMessage);
+
 router.delete('/:messageId', messageController.deleteMessage);
 
 export default router;
+

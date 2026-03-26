@@ -97,3 +97,21 @@ export const deleteMessage = async (req: Request, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const reactToMessage = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { messageId } = req.params;
+        const { emoji } = req.body;
+
+        if (!emoji || typeof emoji !== 'string') {
+            return res.status(400).json({ message: 'emoji is required' });
+        }
+
+        const reactions = await messageService.toggleReaction(messageId as string, userId, emoji);
+        res.status(200).json({ reactions });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+

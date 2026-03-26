@@ -1,5 +1,8 @@
-import type { Message } from '../../types';
+import { useState, useCallback } from 'react';
+import type { Message, MessageReaction } from '../../types';
 import { useUIStore } from '../../stores/uiStore';
+import { useAuthStore } from '../../stores/authStore';
+import api from '../../lib/axios';
 
 interface MessageBubbleProps {
   message: Message;
@@ -48,7 +51,6 @@ function FileIcon({ file }: { file: { mimeType?: string; type?: string } }) {
 
 function SeenIcon({ status }: { status: Message['status'] }) {
   if (status === 'seen') {
-    // Double blue ticks — seen by recipient
     return (
       <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
         <polyline points="1,5 4,8 9,1" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -57,7 +59,6 @@ function SeenIcon({ status }: { status: Message['status'] }) {
     );
   }
   if (status === 'delivered') {
-    // Double grey ticks — delivered to device
     return (
       <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
         <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -65,7 +66,6 @@ function SeenIcon({ status }: { status: Message['status'] }) {
       </svg>
     );
   }
-  // Single grey tick — sent (not yet delivered)
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
       <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -73,11 +73,85 @@ function SeenIcon({ status }: { status: Message['status'] }) {
   );
 }
 
+// ── Quick reaction bar shown on hover ─────────────────────────────────────────
+const QUICK_EMOJIS = ['👍', '❤️', '😂', '😮', '😢', '😡'];
 
+function QuickReactBar({ onReact }: { onReact: (emoji: string) => void }) {
+  return (
+    <div
+      className="absolute z-20 flex items-center gap-0.5 bg-white border border-[#E5E7EB] rounded-full px-1.5 py-1 shadow-lg"
+      style={{ boxShadow: '0 4px 16px rgba(0,104,255,0.12)' }}
+    >
+      {QUICK_EMOJIS.map((emoji) => (
+        <button
+          key={emoji}
+          onClick={(e) => { e.stopPropagation(); onReact(emoji); }}
+          className="w-8 h-8 flex items-center justify-center text-lg rounded-full hover:bg-[#EEF5FF] transition-all hover:scale-125 active:scale-90"
+        >
+          {emoji}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ── Reaction Pills row ─────────────────────────────────────────────────────────
+function ReactionPills({
+  reactions,
+  currentUserId,
+  isSent,
+  onToggle,
+}: {
+  reactions: MessageReaction[];
+  currentUserId: string;
+  isSent: boolean;
+  onToggle: (emoji: string) => void;
+}) {
+  const nonEmpty = reactions.filter((r) => r.userIds.length > 0);
+  if (nonEmpty.length === 0) return null;
+  return (
+    <div className={`flex flex-wrap gap-1 mt-1 ${isSent ? 'justify-end' : 'justify-start'}`}>
+      {nonEmpty.map((r) => {
+        const isMine = r.userIds.includes(currentUserId);
+        return (
+          <button
+            key={r.emoji}
+            onClick={() => onToggle(r.emoji)}
+            className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-sm border transition-all hover:scale-105 active:scale-95 ${
+              isMine
+                ? 'bg-[#EEF5FF] border-[#0068FF]/30 text-[#0068FF]'
+                : 'bg-white border-[#E5E7EB] text-gray-600 hover:border-[#0068FF]/30'
+            }`}
+          >
+            <span>{r.emoji}</span>
+            <span className="text-xs font-medium">{r.userIds.length}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Main Component ─────────────────────────────────────────────────────────────
 export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageBubbleProps) {
   const hasContent = message.content?.trim().length > 0;
+  const [isHovered, setIsHovered] = useState(false);
+  const [showQuickReact, setShowQuickReact] = useState(false);
 
-  // ── System message (e.g. member left, kicked) ──────────────────────────────
+  const currentUserId = useAuthStore((s) => s.user?._id ?? '');
+  const { openLightbox } = useUIStore();
+
+  const handleReact = useCallback(async (emoji: string) => {
+    setShowQuickReact(false);
+    try {
+      await api.patch(`/messages/${message._id}/react`, { emoji });
+      // Socket event will update the store — no need to mutate locally
+    } catch (err) {
+      console.error('[Reaction] Failed to react', err);
+    }
+  }, [message._id]);
+
+  // ── System message ───────────────────────────────────────────────────────────
   if (message.type === 'system') {
     return (
       <div className="flex justify-center my-2">
@@ -98,11 +172,13 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
     (f) => f.type !== 'image' && !f.mimeType?.startsWith('image/')
   );
 
-  const { openLightbox } = useUIStore();
-
   return (
-    <div className={`flex items-end gap-2 mb-1.5 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
-      {/* Avatar (for received messages or group) */}
+    <div
+      className={`flex items-end gap-2 mb-1.5 group ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => { setIsHovered(false); setShowQuickReact(false); }}
+    >
+      {/* Avatar */}
       {!isSent && (
         <div className="flex-shrink-0 mb-1">
           {showAvatar ? (
@@ -119,15 +195,16 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
         </div>
       )}
 
+      {/* Bubble + reactions */}
       <div className={`max-w-[60%] flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
-        {/* Sender name (group only, received) */}
+        {/* Sender name (group only) */}
         {isGroup && !isSent && showAvatar && (
           <span className="text-xs font-semibold text-[#0068FF] mb-1 px-1">
             {message.senderId.displayName}
           </span>
         )}
 
-        {/* Image files — click opens lightbox */}
+        {/* Images */}
         {imageFiles.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-1 max-w-full">
             {imageFiles.map((file, i) => (
@@ -147,7 +224,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
           </div>
         )}
 
-
+        {/* Non-image files */}
         {otherFiles.map((file, i) => (
           <a
             key={i}
@@ -181,11 +258,40 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
           </div>
         )}
 
-        {/* Timestamp & seen status */}
+        {/* Reactions pills */}
+        {(message.reactions?.length ?? 0) > 0 && (
+          <ReactionPills
+            reactions={message.reactions!}
+            currentUserId={currentUserId}
+            isSent={isSent}
+            onToggle={handleReact}
+          />
+        )}
+
+        {/* Timestamp & seen */}
         <div className={`flex items-center gap-1 mt-1 px-1 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
           <span className="text-[10px] text-gray-400">{formatTime(message.createdAt)}</span>
           {isSent && <SeenIcon status={message.status} />}
         </div>
+      </div>
+
+      {/* Like button shown on hover */}
+      <div className={`relative flex-shrink-0 self-center transition-opacity duration-150 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <button
+          onClick={() => setShowQuickReact((v) => !v)}
+          title="React"
+          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-all active:scale-90"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 10v12" />
+            <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+          </svg>
+        </button>
+        {showQuickReact && (
+          <div className={`absolute bottom-full mb-1 ${isSent ? 'right-0' : 'left-0'}`}>
+            <QuickReactBar onReact={handleReact} />
+          </div>
+        )}
       </div>
     </div>
   );

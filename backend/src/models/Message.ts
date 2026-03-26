@@ -5,6 +5,11 @@ interface Seen {
     seenAt: Date;
 }
 
+export interface MessageReaction {
+    emoji: string;
+    userIds: mongoose.Types.ObjectId[];
+}
+
 export interface MessageFile {
     url: string;
     publicId: string;
@@ -22,6 +27,7 @@ export interface Message extends Document {
     files?: MessageFile[];
     status: 'sent' | 'delivered' | 'seen';
     seenBy: Seen[];
+    reactions: MessageReaction[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -75,6 +81,10 @@ const messageSchema = new Schema<Message>(
                 type: Date,
                 default: Date.now
             }
+        }],
+        reactions: [{
+            emoji: { type: String, required: true },
+            userIds: [{ type: Schema.Types.ObjectId, ref: 'User' }]
         }]
     },
     {
