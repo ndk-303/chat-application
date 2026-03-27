@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import type { Message, MessageReaction } from '../../types';
+import type { Message } from '../../types';
 import { useUIStore } from '../../stores/uiStore';
-import { useAuthStore } from '../../stores/authStore';
+
 import api from '../../lib/axios';
 
 interface MessageBubbleProps {
@@ -31,20 +31,20 @@ function FileIcon({ file }: { file: { mimeType?: string; type?: string } }) {
   if (isImage) {
     return (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+        <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
       </svg>
     );
   }
   if (isVideo) {
     return (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
       </svg>
     );
   }
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><polyline points="13 2 13 9 20 9" />
     </svg>
   );
 }
@@ -53,22 +53,22 @@ function SeenIcon({ status }: { status: Message['status'] }) {
   if (status === 'seen') {
     return (
       <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
-        <polyline points="1,5 4,8 9,1" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <polyline points="6,5 9,8 15,1" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <polyline points="1,5 4,8 9,1" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points="6,5 9,8 15,1" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
   if (status === 'delivered') {
     return (
       <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
-        <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <polyline points="6,5 9,8 15,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points="6,5 9,8 15,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
   return (
     <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <polyline points="1,5 4,8 9,1" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -95,42 +95,7 @@ function QuickReactBar({ onReact }: { onReact: (emoji: string) => void }) {
   );
 }
 
-// ── Reaction Pills row ─────────────────────────────────────────────────────────
-function ReactionPills({
-  reactions,
-  currentUserId,
-  isSent,
-  onToggle,
-}: {
-  reactions: MessageReaction[];
-  currentUserId: string;
-  isSent: boolean;
-  onToggle: (emoji: string) => void;
-}) {
-  const nonEmpty = reactions.filter((r) => r.userIds.length > 0);
-  if (nonEmpty.length === 0) return null;
-  return (
-    <div className={`flex flex-wrap gap-1 mt-1 ${isSent ? 'justify-end' : 'justify-start'}`}>
-      {nonEmpty.map((r) => {
-        const isMine = r.userIds.includes(currentUserId);
-        return (
-          <button
-            key={r.emoji}
-            onClick={() => onToggle(r.emoji)}
-            className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-sm border transition-all hover:scale-105 active:scale-95 ${
-              isMine
-                ? 'bg-[#EEF5FF] border-[#0068FF]/30 text-[#0068FF]'
-                : 'bg-white border-[#E5E7EB] text-gray-600 hover:border-[#0068FF]/30'
-            }`}
-          >
-            <span>{r.emoji}</span>
-            <span className="text-xs font-medium">{r.userIds.length}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageBubbleProps) {
@@ -138,7 +103,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
   const [isHovered, setIsHovered] = useState(false);
   const [showQuickReact, setShowQuickReact] = useState(false);
 
-  const currentUserId = useAuthStore((s) => s.user?._id ?? '');
+
   const { openLightbox } = useUIStore();
 
   const handleReact = useCallback(async (emoji: string) => {
@@ -157,7 +122,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
       <div className="flex justify-center my-2">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-gray-500 text-xs">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           {message.content}
         </span>
@@ -196,7 +161,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
       )}
 
       {/* Bubble + reactions */}
-      <div className={`max-w-[60%] flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
+      <div className={`relative max-w-[60%] flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
         {/* Sender name (group only) */}
         {isGroup && !isSent && showAvatar && (
           <span className="text-xs font-semibold text-[#0068FF] mb-1 px-1">
@@ -231,13 +196,11 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
             href={file.url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-3 p-3 rounded-xl mb-1 no-underline transition-opacity hover:opacity-80 ${
-              isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
-            }`}
+            className={`flex items-center gap-3 p-3 rounded-xl mb-1 no-underline transition-opacity hover:opacity-80 ${isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
+              }`}
           >
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-              isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
-            }`}>
+            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
+              }`}>
               <FileIcon file={file} />
             </div>
             <div className="min-w-0">
@@ -249,23 +212,12 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
         {/* Text content */}
         {hasContent && (
-          <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
-            isSent
-              ? 'bg-[#0068FF] text-white rounded-br-sm shadow-sm shadow-[#0068FF]/20'
-              : 'bg-white text-[#1F2937] border border-[#E5E7EB] rounded-bl-sm shadow-sm'
-          }`}>
+          <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${isSent
+            ? 'bg-[#0068FF] text-white rounded-br-sm shadow-sm shadow-[#0068FF]/20'
+            : 'bg-white text-[#1F2937] border border-[#E5E7EB] rounded-bl-sm shadow-sm'
+            }`}>
             {message.content}
           </div>
-        )}
-
-        {/* Reactions pills */}
-        {(message.reactions?.length ?? 0) > 0 && (
-          <ReactionPills
-            reactions={message.reactions!}
-            currentUserId={currentUserId}
-            isSent={isSent}
-            onToggle={handleReact}
-          />
         )}
 
         {/* Timestamp & seen */}
@@ -273,26 +225,49 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
           <span className="text-[10px] text-gray-400">{formatTime(message.createdAt)}</span>
           {isSent && <SeenIcon status={message.status} />}
         </div>
+
+        {/* Reaction / Like button — shown on hover OR when reactions exist */}
+        {(() => {
+          const nonEmpty = (message.reactions ?? []).filter((r) => r.userIds.length > 0);
+          const totalCount = nonEmpty.reduce((s, r) => s + r.userIds.length, 0);
+          const topEmoji = nonEmpty[0]?.emoji ?? null;
+          const hasReaction = nonEmpty.length > 0;
+
+          return (
+            <div className={`absolute -bottom-1 ${isSent ? 'left-2' : 'right-2'} transition-opacity duration-150 ${hasReaction || isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+              <button
+                onClick={() => setShowQuickReact((v) => !v)}
+                title="React"
+                className={`flex items-center gap-1 px-1.5 h-6 rounded-full border shadow-sm transition-all hover:scale-110 active:scale-90 ${hasReaction
+                    ? 'bg-white border-gray-200 text-gray-700'
+                    : 'bg-white border-gray-200'
+                  }`}
+              >
+                {hasReaction ? (
+                  <>
+                    <span className="text-sm leading-none">{topEmoji}</span>
+                    {totalCount > 1 && (
+                      <span className="text-[11px] font-semibold text-gray-500 leading-none">{totalCount}</span>
+                    )}
+                  </>
+                ) : (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 10v12" />
+                    <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                  </svg>
+                )}
+              </button>
+              {showQuickReact && (
+                <div className="absolute bottom-full mb-1 right-0">
+                  <QuickReactBar onReact={handleReact} />
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
-      {/* Like button shown on hover */}
-      <div className={`relative flex-shrink-0 self-center transition-opacity duration-150 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <button
-          onClick={() => setShowQuickReact((v) => !v)}
-          title="React"
-          className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-all active:scale-90"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M7 10v12" />
-            <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
-          </svg>
-        </button>
-        {showQuickReact && (
-          <div className={`absolute bottom-full mb-1 ${isSent ? 'right-0' : 'left-0'}`}>
-            <QuickReactBar onReact={handleReact} />
-          </div>
-        )}
-      </div>
+
     </div>
   );
 }

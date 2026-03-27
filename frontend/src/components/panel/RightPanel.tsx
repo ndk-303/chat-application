@@ -37,12 +37,19 @@ export function RightPanel({ conversation }: RightPanelProps) {
   const avatar = conversation.type === 'group' ? conversation.avatar : other?.avatar;
 
   // Collect all shared files from messages
-  const sharedFiles = messages
-    .flatMap((m) => m.files ?? [])
+  const allSharedFiles = messages.flatMap((m) => m.files ?? []);
+
+  // Separate media (images/videos) from other files
+  const mediaFiles = allSharedFiles
+    .filter((f) => f.type === 'image' || f.mimeType?.startsWith('image/') || f.type === 'video' || f.mimeType?.startsWith('video/'))
+    .slice(-12);
+
+  const docFiles = allSharedFiles
+    .filter((f) => !(f.type === 'image' || f.mimeType?.startsWith('image/') || f.type === 'video' || f.mimeType?.startsWith('video/')))
     .slice(-10);
 
   // All image files for lightbox gallery navigation
-  const imageGallery = sharedFiles
+  const imageGallery = mediaFiles
     .filter((f) => f.type === 'image' || f.mimeType?.startsWith('image/'))
     .map((f) => ({ url: f.url, name: f.originalName ?? 'image' }));
 
@@ -161,45 +168,98 @@ export function RightPanel({ conversation }: RightPanelProps) {
         </div>
       )}
 
-      {/* Shared Files */}
-      <div className="px-4 py-4">
-        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-          Shared Files {sharedFiles.length > 0 && `(${sharedFiles.length})`}
+      {/* Ảnh & Video */}
+      <div className="px-4 py-4 border-b border-gray-100">
+        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+          </svg>
+          Ảnh &amp; Video
+          {mediaFiles.length > 0 && (
+            <span className="ml-auto text-[10px] bg-gray-100 text-gray-500 font-semibold px-1.5 py-0.5 rounded-full">
+              {mediaFiles.length}
+            </span>
+          )}
         </h4>
-        {sharedFiles.length === 0 ? (
-          <p className="text-xs text-gray-400">No files shared yet</p>
+        {mediaFiles.length === 0 ? (
+          <p className="text-xs text-gray-400">Chưa có ảnh hoặc video nào</p>
         ) : (
-          <div className="space-y-2">
-            {sharedFiles.map((file, i) => {
-              const isImage = file.type === 'image' || file.mimeType?.startsWith('image/');
-              const galleryIndex = isImage
-                ? imageGallery.findIndex((g) => g.url === file.url)
-                : -1;
+          <div className="grid grid-cols-3 gap-1.5">
+            {mediaFiles.map((file, i) => {
+              const isImg = file.type === 'image' || file.mimeType?.startsWith('image/');
+              const isVid = file.type === 'video' || file.mimeType?.startsWith('video/');
+              const galleryIndex = isImg ? imageGallery.findIndex((g) => g.url === file.url) : -1;
 
-              if (isImage) {
+              if (isImg) {
                 return (
                   <button
                     key={i}
                     type="button"
                     onClick={() => openLightbox(imageGallery, galleryIndex >= 0 ? galleryIndex : 0)}
-                    className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 transition-colors w-full text-left group"
+                    className="relative aspect-square rounded-lg overflow-hidden group focus:outline-none"
+                    title={file.originalName ?? 'image'}
                   >
                     <img
                       src={file.url}
                       alt={file.originalName ?? 'image'}
-                      className="w-10 h-10 rounded-lg object-cover flex-shrink-0 group-hover:ring-2 group-hover:ring-[#0068FF] transition-all"
+                      className="w-full h-full object-cover transition-transform group-hover:scale-105"
                     />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-700 truncate group-hover:text-[#0068FF] transition-colors">{file.originalName ?? 'image'}</p>
-                      <p className="text-[10px] text-gray-400">{file.size ? formatFileSize(file.size) : ''}</p>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <svg className="text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      </svg>
                     </div>
-                    <svg className="text-gray-300 group-hover:text-[#0068FF] transition-colors shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    </svg>
                   </button>
                 );
               }
 
+              if (isVid) {
+                return (
+                  <a
+                    key={i}
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative aspect-square rounded-lg overflow-hidden group bg-gray-900 flex items-center justify-center"
+                    title={file.originalName ?? 'video'}
+                  >
+                    <video src={file.url} className="w-full h-full object-cover opacity-70" muted />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#0068FF">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                );
+              }
+
+              return null;
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Files */}
+      <div className="px-4 py-4">
+        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
+          </svg>
+          Files
+          {docFiles.length > 0 && (
+            <span className="ml-auto text-[10px] bg-gray-100 text-gray-500 font-semibold px-1.5 py-0.5 rounded-full">
+              {docFiles.length}
+            </span>
+          )}
+        </h4>
+        {docFiles.length === 0 ? (
+          <p className="text-xs text-gray-400">Chưa có file nào được chia sẻ</p>
+        ) : (
+          <div className="space-y-1.5">
+            {docFiles.map((file, i) => {
+              const ext = file.originalName?.split('.').pop()?.toUpperCase() ?? 'FILE';
               return (
                 <a
                   key={i}
@@ -208,15 +268,21 @@ export function RightPanel({ conversation }: RightPanelProps) {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 transition-colors no-underline group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-[#0068FF]/10 flex items-center justify-center flex-shrink-0">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
+                  <div className="w-9 h-9 rounded-lg bg-[#0068FF]/10 flex flex-col items-center justify-center flex-shrink-0 gap-0.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
                       <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/>
                     </svg>
+                    <span className="text-[8px] font-bold text-[#0068FF] leading-none">{ext.slice(0, 4)}</span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium text-gray-700 truncate group-hover:text-[#0068FF] transition-colors">{file.originalName ?? 'file'}</p>
+                    <p className="text-xs font-medium text-gray-700 truncate group-hover:text-[#0068FF] transition-colors">
+                      {file.originalName ?? 'file'}
+                    </p>
                     <p className="text-[10px] text-gray-400">{file.size ? formatFileSize(file.size) : ''}</p>
                   </div>
+                  <svg className="text-gray-300 group-hover:text-[#0068FF] transition-colors shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
                 </a>
               );
             })}

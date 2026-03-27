@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useChatStore } from '../../stores/chatStore';
+import { useAuthStore } from '../../stores/authStore';
 import { friendService } from '../../services/friendService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
@@ -24,6 +25,21 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const conversations = useChatStore((s) => s.conversations);
+  const currentUserId = useAuthStore((s) => s.user?._id);
+
+  // Tính set các friendId đã có nhóm chung với user hiện tại
+  const inGroupFriendIds = useMemo(() => {
+    const ids = new Set<string>();
+    conversations
+      .filter((c) => c.type === 'group')
+      .forEach((c) => {
+        c.participants.forEach((p) => {
+          if (p._id !== currentUserId) ids.add(p._id);
+        });
+      });
+    return ids;
+  }, [conversations, currentUserId]);
 
   // Load all friends once on mount, sort A-Z
   useEffect(() => {
@@ -54,7 +70,6 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
     return () => observer.disconnect();
   }, [loadingFriends]);
 
-  // Reset pagination on search
   useEffect(() => { setVisibleCount(PAGE_SIZE); }, [query]);
 
   const filtered = allFriends.filter((u) => {
@@ -174,8 +189,13 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                       return (
                         <button
                           key={u._id}
-                          onClick={() => toggleUser(u)}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors ${isSelected ? 'bg-[#EEF5FF]' : 'hover:bg-slate-50'}`}
+                          onClick={() => !inGroupFriendIds.has(u._id) && toggleUser(u)}
+                          disabled={inGroupFriendIds.has(u._id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors
+                            ${inGroupFriendIds.has(u._id)
+                              ? 'opacity-50 cursor-default'
+                              : isSelected ? 'bg-[#EEF5FF]' : 'hover:bg-slate-50'
+                            }`}
                         >
                           <div className="relative shrink-0">
                             <Avatar src={u.avatar} name={u.displayName || u.email} size={8} />
@@ -185,16 +205,20 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-slate-800 truncate">{u.displayName || u.email}</p>
-                            <p className="text-xs text-slate-400 truncate">{u.email}</p>
+                            <p className="text-xs text-slate-400 truncate">
+                              {inGroupFriendIds.has(u._id) ? 'Đã có nhóm chung' : u.email}
+                            </p>
                           </div>
-                          {/* Circular checkbox */}
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? 'bg-[#0068FF] border-[#0068FF]' : 'border-slate-300'}`}>
-                            {isSelected && (
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
-                            )}
-                          </div>
+                          {/* Không hiển thị checkbox nếu đã có nhóm chung */}
+                          {!inGroupFriendIds.has(u._id) && (
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? 'bg-[#0068FF] border-[#0068FF]' : 'border-slate-300'}`}>
+                              {isSelected && (
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                                  <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                              )}
+                            </div>
+                          )}
                         </button>
                       );
                     })}
@@ -231,12 +255,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                 Đang tạo…
               </>
             ) : (
-              <>
-                Tạo nhóm
-                {selected.length >= 2 && (
-                  <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full">{selected.length + 1} người</span>
-                )}
-              </>
+              <>Tạo nhóm</>
             )}
           </button>
         </div>
