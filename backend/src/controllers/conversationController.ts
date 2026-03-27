@@ -174,4 +174,43 @@ export const hideConversation = async (req: Request, res: Response) => {
     }
 };
 
+export const generateInvite = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
 
+        const result = await conversationService.generateInviteToken(conversationId as string, userId);
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const getInviteInfo = async (req: Request, res: Response) => {
+    try {
+        const { token } = req.params;
+
+        const info = await conversationService.getInviteInfo(token as string);
+
+        res.status(200).json(info);
+    } catch (error: any) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+export const joinByInvite = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { token } = req.params;
+
+        const conversation = await conversationService.joinByInvite(token as string, userId);
+
+        res.status(200).json({
+            message: 'Joined group successfully',
+            conversation
+        });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};

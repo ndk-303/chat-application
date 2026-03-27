@@ -14,6 +14,7 @@ export interface Conversation extends Document {
     lastMessageId?: mongoose.Types.ObjectId;
     lastMessageAt?: Date;
     hiddenFor: HiddenForEntry[];
+    inviteToken?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -55,7 +56,13 @@ const conversationSchema = new Schema<Conversation>(
         hiddenFor: [{
             userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
             hiddenAt: { type: Date, required: true }
-        }]
+        }],
+        inviteToken: {
+            type: String,
+            unique: true,
+            sparse: true,
+            default: null
+        }
     },
     {
         timestamps: true

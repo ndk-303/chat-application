@@ -2,6 +2,7 @@ import ConversationModel from '../models/Conversation';
 import MessageModel from '../models/Message';
 import FriendshipModel from '../models/Friendship';
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 import { getIO, emitToUser } from '../socket/socketManager';
 
 export const getUserConversations = async (userId: string) => {
@@ -435,4 +436,82 @@ export const hideConversation = async (conversationId: string, userId: string) =
     return { message: 'Đã xóa cuộc trò chuyện' };
 };
 
+// ─── Invite Link ──────────────────────────────────────────────────────────────
 
+export const generateInviteToken = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new Error('Conversation not found');
+    if (conversation.type !== 'group') throw new Error('Only group conversations support invite links');
+    if (conversation.adminId?.toString() !== userId) throw new Error('Only admin can generate invite links');
+
+    // Reuse existing token if available
+    if (conversation.inviteToken) {
+        return { inviteToken: conversation.inviteToken };
+    }
+
+    const token = crypto.randomBytes(16).toString('hex');
+    conversation.inviteToken = token;
+    await conversation.save();
+    return { inviteToken: token };
+};
+
+export const getInviteInfo = async (token: string) => {
+    const conversation = await ConversationModel.findOne({ inviteToken: token })
+        .populate('participants', 'displayName email avatar status')
+        .populate('adminId', 'displayName email');
+
+    if (!conversation) throw new Error('Invalid or expired invite link');
+
+    return {
+        _id: conversation._id,
+        name: conversation.name,
+        avatar: conversation.avatar,
+        participantCount: conversation.participants.length,
+        participants: (conversation.participants as any[]).slice(0, 5),
+    };
+};
+
+export const joinByInvite = async (token: string, userId: string) => {
+    const conversation = await ConversationModel.findOne({ inviteToken: token });
+    if (!conversation) throw new Error('Invalid or expired invite link');
+    if (conversation.type !== 'group') throw new Error('Invalid invite link');
+
+    const isAlready = conversation.participants.some((p: any) => p.toString() === userId);
+    if (isAlready) throw new Error('You are already a member');
+
+    conversation.participants.push(new mongoose.Types.ObjectId(userId));
+    await conversation.save();
+
+    // System message
+    try {
+        const UserModel = (await import('../models/User')).default;
+        const joiner = await UserModel.findById(userId).select('displayName');
+        const displayName = joiner?.displayName || 'Ai đó';
+
+        const systemMsg = await MessageModel.create({
+            conversationId: conversation._id,
+            senderId: userId,
+            content: `${displayName} đã tham gia nhóm qua link mời`,
+            type: 'system',
+            status: 'sent',
+        });
+        await systemMsg.populate('senderId', 'displayName email avatar');
+
+        conversation.lastMessageId = systemMsg._id as mongoose.Types.ObjectId;
+        conversation.lastMessageAt = systemMsg.createdAt;
+        await conversation.save();
+
+        getIO().to(conversation._id.toString()).emit('new_message', systemMsg);
+        getIO().to(conversation._id.toString()).emit('group_member_added', {
+            conversationId: conversation._id,
+            newMemberId: userId
+        });
+    } catch (_) { }
+
+    await conversation.populate('participants', 'displayName email avatar status lastSeen');
+    await conversation.populate('adminId', 'displayName email');
+
+    emitToUser(userId, 'added_to_group', conversation);
+
+    return conversation;
+};
