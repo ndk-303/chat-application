@@ -27,7 +27,7 @@ export const login = async (req: Request, res: Response) => {
         });
 
         res.status(200).json({
-            message: 'Login successful',
+            message: 'Đăng nhập thành công',
             accessToken: accessToken
         });
     } catch (error: any) {
@@ -40,12 +40,12 @@ export const register = async (req: Request, res: Response) => {
         const { email, password, displayName } = req.body as RegisterDto;
 
         if (!email || !password || !displayName) {
-            res.status(400).json({ message: 'Email, password, and displayName are required' });
+            res.status(400).json({ message: 'Vui lòng nhập email, mật khẩu và tên hiển thị' });
         }
         const result = await authService.register(displayName, email, password);
 
         res.status(201).json({
-            message: 'User registered successfully. Please check your email for the verification code.',
+            message: 'Đăng ký thành công. Vui lòng kiểm tra email để lấy mã xác thực.',
             userId: result.userId,
             email: result.email,
         });
@@ -59,7 +59,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
         const { email, code } = req.body;
 
         if (!email || !code) {
-            return res.status(400).json({ message: 'Email and verification code are required' });
+            return res.status(400).json({ message: 'Vui lòng nhập email và mã xác thực' });
         }
 
         const result = await authService.verifyEmail(email, code);
@@ -74,7 +74,7 @@ export const resendVerificationCode = async (req: Request, res: Response) => {
         const { email } = req.body;
 
         if (!email) {
-            return res.status(400).json({ message: 'Email is required' });
+            return res.status(400).json({ message: 'Vui lòng nhập email' });
         }
 
         const result = await authService.resendVerificationCode(email);
@@ -89,7 +89,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     if (!refreshToken) {
         return res.status(401).json({
-            message: "Refresh token not found",
+            message: 'Không tìm thấy refresh token',
         });
     }
 
@@ -117,7 +117,7 @@ export const requestPasswordReset = async (req: Request, res: Response) => {
         const { email } = req.body;
 
         if (!email) {
-            return res.status(400).json({ message: 'Email is required' });
+            return res.status(400).json({ message: 'Vui lòng nhập email' });
         }
 
         const result = await authService.requestPasswordReset(email);
@@ -138,7 +138,7 @@ export const resetPassword = async (req: Request, res: Response) => {
         const userId = (req as any).user?.userId;
 
         if (!newPassword) {
-            return res.status(400).json({ message: 'New password is required' });
+            return res.status(400).json({ message: 'Vui lòng nhập mật khẩu mới' });
         }
 
         const result = await authService.resetPassword(

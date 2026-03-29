@@ -12,7 +12,7 @@ export const getConversationMessages = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -20,7 +20,7 @@ export const getConversationMessages = async (
     );
 
     if (!isParticipant) {
-        throw new Error('You are not a participant in this conversation');
+        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
     }
 
     const query: any = { conversationId };
@@ -57,7 +57,7 @@ export const createMessage = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -65,11 +65,11 @@ export const createMessage = async (
     );
 
     if (!isParticipant) {
-        throw new Error('You are not a participant in this conversation');
+        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
     }
 
     if ((!content || content.trim().length === 0) && (!files || files.length === 0)) {
-        throw new Error('Message content cannot be empty');
+        throw new Error('Nội dung tin nhắn không được để trống');
     }
 
     const message = await MessageModel.create({
@@ -129,13 +129,13 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     const message = await MessageModel.findById(messageId);
 
     if (!message) {
-        throw new Error('Message not found');
+        throw new Error('Không tìm thấy tin nhắn');
     }
 
     const conversation = await ConversationModel.findById(message.conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -143,7 +143,7 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     );
 
     if (!isParticipant) {
-        throw new Error('You are not a participant in this conversation');
+        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
     }
 
     if (message.senderId.toString() === userId) {
@@ -217,11 +217,11 @@ export const deleteUserMessage = async (messageId: string, userId: string) => {
     const message = await MessageModel.findById(messageId);
 
     if (!message) {
-        throw new Error('Message not found');
+        throw new Error('Không tìm thấy tin nhắn');
     }
 
     if (message.senderId.toString() !== userId) {
-        throw new Error('You can only delete your own messages');
+        throw new Error('Bạn chỉ có thể xóa tin nhắn của chính mình');
     }
 
     await MessageModel.deleteOne({ _id: messageId });
@@ -249,20 +249,20 @@ export const deleteUserMessage = async (messageId: string, userId: string) => {
         });
     } catch (_) { }
 
-    return { message: 'Message deleted successfully' };
+    return { message: 'Xóa tin nhắn thành công' };
 };
 
 export const toggleReaction = async (messageId: string, userId: string, emoji: string) => {
     const message = await MessageModel.findById(messageId);
-    if (!message) throw new Error('Message not found');
+    if (!message) throw new Error('Không tìm thấy tin nhắn');
 
     const conversation = await ConversationModel.findById(message.conversationId);
-    if (!conversation) throw new Error('Conversation not found');
+    if (!conversation) throw new Error('Không tìm thấy cuộc trò chuyện');
 
     const isParticipant = conversation.participants.some(
         (p: any) => p.toString() === userId
     );
-    if (!isParticipant) throw new Error('You are not a participant in this conversation');
+    if (!isParticipant) throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 

@@ -5,14 +5,14 @@ export const createUser = async (data: User): Promise<Object> => {
     const checked = await UserModel.findOne({ email: data.email })
 
     if (checked) {
-        throw new Error('Email has existed already');
+        throw new Error('Email đã được sử dụng');
     }
 
     const user = await UserModel.create(data);
 
     return {
         userId: user._id,
-        message: 'User created successfully',
+        message: 'Tạo người dùng thành công',
     };
 }
 
@@ -25,7 +25,7 @@ export const getUsers = async (page?: string, limit?: string, sortBy?: string): 
     const users = await UserModel.find().select('-password -updatedAt -deletedAt').skip(skip).limit(limitation).sort(sort);
 
     if (users.length === 0) {
-        throw new Error('Can not find any user')
+        throw new Error('Không tìm thấy người dùng nào')
     }
 
     return users;
@@ -42,10 +42,10 @@ export const getUserById = async (id: string): Promise<User> => {
     const user = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
 
     if (!user) {
-        throw new Error('Can not find user');
+        throw new Error('Không tìm thấy người dùng');
     }
 
-    // 3. Populate cache (5 minutes)
+    // 3. Populate cache (5 phút)
     await setCache(cacheKey, user.toObject(), 300);
 
     return user;
@@ -56,7 +56,7 @@ export const updateUser = async (id: string, data: User) => {
     const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
 
     if (!user) {
-        throw new Error('Can not update user');
+        throw new Error('Không thể cập nhật người dùng');
     }
 
     return user;
@@ -66,10 +66,10 @@ export const deleteUser = async (id: string) => {
     const user = await UserModel.findByIdAndDelete(id);
 
     if (!user) {
-        throw new Error('Can not update user');
+        throw new Error('Không thể xóa người dùng');
     }
 
-    return { message: 'User deleted successfully' };
+    return { message: 'Xóa người dùng thành công' };
 }
 
 export const updateCurrentUserProfile = async (userId: string, updates: Partial<User>) => {
@@ -85,10 +85,10 @@ export const updateCurrentUserProfile = async (userId: string, updates: Partial<
     const user = await UserModel.findByIdAndUpdate(userId, filteredUpdates, { new: true }).select('-password');
 
     if (!user) {
-        throw new Error('Cannot update profile');
+        throw new Error('Không thể cập nhật hồ sơ');
     }
 
-    // Invalidate cached profile so next read fetches fresh data
+    // Xóa cache để lần đọc tiếp theo lấy dữ liệu mới
     await delCache(`cache:user:${userId}`);
 
     return user;
@@ -102,7 +102,7 @@ export const updateUserStatus = async (userId: string, status: 'online' | 'offli
     ).select('-password');
 
     if (!user) {
-        throw new Error('Cannot update status');
+        throw new Error('Không thể cập nhật trạng thái');
     }
 
     return user;
@@ -110,11 +110,11 @@ export const updateUserStatus = async (userId: string, status: 'online' | 'offli
 
 export const searchUsers = async (query: string, userId: string, limit: number = 20): Promise<User[]> => {
     if (!query || query.trim().length === 0) {
-        throw new Error('Search query is required');
+        throw new Error('Vui lòng nhập từ khóa tìm kiếm');
     }
 
     const users = await UserModel.find({
-        _id: { $ne: userId }, // Exclude current user
+        _id: { $ne: userId },
         isActive: true,
         $or: [
             { displayName: { $regex: query, $options: 'i' } },

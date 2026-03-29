@@ -64,7 +64,7 @@ export const getConversationById = async (conversationId: string, userId: string
         .populate('lastMessageId');
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -72,7 +72,7 @@ export const getConversationById = async (conversationId: string, userId: string
     );
 
     if (!isParticipant) {
-        throw new Error('You are not a participant in this conversation');
+        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
     }
 
     return conversation;
@@ -80,7 +80,7 @@ export const getConversationById = async (conversationId: string, userId: string
 
 export const createPrivateConversation = async (userId: string, targetUserId: string) => {
     if (userId === targetUserId) {
-        throw new Error('Cannot create conversation with yourself');
+        throw new Error('Không thể tạo cuộc trò chuyện với chính mình');
     }
 
     const friendship = await FriendshipModel.findOne({
@@ -91,7 +91,7 @@ export const createPrivateConversation = async (userId: string, targetUserId: st
     });
 
     if (!friendship) {
-        throw new Error('Can only create conversations with friends');
+        throw new Error('Chỉ có thể tạo cuộc trò chuyện với bạn bè');
     }
 
     const existingConversation = await ConversationModel.findOne({
@@ -120,11 +120,11 @@ export const createGroupConversation = async (
     avatar?: string
 ) => {
     if (!name || name.trim().length === 0) {
-        throw new Error('Group name is required');
+        throw new Error('Tên nhóm không được để trống');
     }
 
     if (participantIds.length < 2) {
-        throw new Error('Group must have at least 2 members besides creator');
+        throw new Error('Nhóm phải có ít nhất 2 thành viên ngoài người tạo');
     }
 
     const allParticipants = [userId, ...participantIds.filter(id => id !== userId)];
@@ -139,7 +139,7 @@ export const createGroupConversation = async (
             });
 
             if (!friendship) {
-                throw new Error(`User ${participantId} is not your friend`);
+                throw new Error(`Người dùng ${participantId} không phải bạn bè của bạn`);
             }
         }
     }
@@ -174,20 +174,20 @@ export const updateGroupDetails = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     if (conversation.type !== 'group') {
-        throw new Error('Can only update group conversations');
+        throw new Error('Chỉ có thể cập nhật cuộc trò chuyện nhóm');
     }
 
     if (conversation.adminId?.toString() !== userId) {
-        throw new Error('Only group admin can update group details');
+        throw new Error('Chỉ quản trị viên mới có thể cập nhật thông tin nhóm');
     }
 
     if (updates.name !== undefined) {
         if (updates.name.trim().length === 0) {
-            throw new Error('Group name cannot be empty');
+            throw new Error('Tên nhóm không được để trống');
         }
         conversation.name = updates.name.trim();
     }
@@ -204,7 +204,7 @@ export const leaveConversation = async (conversationId: string, userId: string) 
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -212,13 +212,13 @@ export const leaveConversation = async (conversationId: string, userId: string) 
     );
 
     if (!isParticipant) {
-        throw new Error('You are not a participant in this conversation');
+        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
     }
 
     if (conversation.type === 'private') {
         await ConversationModel.deleteOne({ _id: conversationId });
         await MessageModel.deleteMany({ conversationId });
-        return { message: 'Conversation deleted successfully' };
+        return { message: 'Xóa cuộc trò chuyện thành công' };
     } else {
         conversation.participants = conversation.participants.filter(
             (p: any) => p.toString() !== userId
@@ -230,7 +230,7 @@ export const leaveConversation = async (conversationId: string, userId: string) 
         if (conversation.participants.length === 0) {
             await ConversationModel.deleteOne({ _id: conversationId });
             await MessageModel.deleteMany({ conversationId });
-            return { message: 'Group deleted (no members left)' };
+            return { message: 'Nhóm đã bị xóa (không còn thành viên)' };
         }
 
         await conversation.save();
@@ -258,7 +258,7 @@ export const leaveConversation = async (conversationId: string, userId: string) 
             getIO().to(conversationId).emit('member_left', { conversationId, userId, memberId: userId });
         } catch (_) { }
 
-        return { message: 'Left group successfully' };
+        return { message: 'Rời nhóm thành công' };
     }
 };
 
@@ -270,15 +270,15 @@ export const addGroupMember = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     if (conversation.type !== 'group') {
-        throw new Error('Can only add members to group conversations');
+        throw new Error('Chỉ có thể thêm thành viên vào cuộc trò chuyện nhóm');
     }
 
     if (conversation.adminId?.toString() !== userId) {
-        throw new Error('Only group admin can add members');
+        throw new Error('Chỉ quản trị viên mới có thể thêm thành viên');
     }
 
     const isAlreadyMember = conversation.participants.some(
@@ -286,7 +286,7 @@ export const addGroupMember = async (
     );
 
     if (isAlreadyMember) {
-        throw new Error('User is already a member');
+        throw new Error('Người dùng đã là thành viên của nhóm');
     }
 
     const friendship = await FriendshipModel.findOne({
@@ -297,7 +297,7 @@ export const addGroupMember = async (
     });
 
     if (!friendship) {
-        throw new Error('Can only add friends to group');
+        throw new Error('Chỉ có thể thêm bạn bè vào nhóm');
     }
 
     conversation.participants.push(new mongoose.Types.ObjectId(newMemberId));
@@ -322,19 +322,19 @@ export const removeGroupMember = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     if (conversation.type !== 'group') {
-        throw new Error('Can only remove members from group conversations');
+        throw new Error('Chỉ có thể xóa thành viên khỏi cuộc trò chuyện nhóm');
     }
 
     if (conversation.adminId?.toString() !== userId) {
-        throw new Error('Only group admin can remove members');
+        throw new Error('Chỉ quản trị viên mới có thể xóa thành viên');
     }
 
     if (memberId === userId) {
-        throw new Error('Admin cannot remove themselves, use leave instead');
+        throw new Error('Quản trị viên không thể tự xóa mình, hãy dùng chức năng rời nhóm');
     }
 
     const isMember = conversation.participants.some(
@@ -342,7 +342,7 @@ export const removeGroupMember = async (
     );
 
     if (!isMember) {
-        throw new Error('User is not a member of this group');
+        throw new Error('Người dùng không phải thành viên của nhóm');
     }
 
     conversation.participants = conversation.participants.filter(
@@ -385,15 +385,15 @@ export const dissolveGroup = async (conversationId: string, userId: string) => {
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     if (conversation.type !== 'group') {
-        throw new Error('Can only dissolve group conversations');
+        throw new Error('Chỉ có thể giải tán cuộc trò chuyện nhóm');
     }
 
     if (conversation.adminId?.toString() !== userId) {
-        throw new Error('Only group admin can dissolve the group');
+        throw new Error('Chỉ quản trị viên mới có thể giải tán nhóm');
     }
 
     const participantIds = conversation.participants.map((p: any) => p.toString());
@@ -414,7 +414,7 @@ export const hideConversation = async (conversationId: string, userId: string) =
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Conversation not found');
+        throw new Error('Không tìm thấy cuộc trò chuyện');
     }
 
     const isParticipant = conversation.participants.some(
@@ -440,9 +440,9 @@ export const hideConversation = async (conversationId: string, userId: string) =
 
 export const generateInviteToken = async (conversationId: string, userId: string) => {
     const conversation = await ConversationModel.findById(conversationId);
-    if (!conversation) throw new Error('Conversation not found');
-    if (conversation.type !== 'group') throw new Error('Only group conversations support invite links');
-    if (conversation.adminId?.toString() !== userId) throw new Error('Only admin can generate invite links');
+    if (!conversation) throw new Error('Không tìm thấy cuộc trò chuyện');
+    if (conversation.type !== 'group') throw new Error('Chỉ cuộc trò chuyện nhóm mới có thể dùng link mời');
+    if (conversation.adminId?.toString() !== userId) throw new Error('Chỉ quản trị viên mới có thể tạo link mời');
 
     // Reuse existing token if available
     if (conversation.inviteToken) {
@@ -473,11 +473,11 @@ export const getInviteInfo = async (token: string) => {
 
 export const joinByInvite = async (token: string, userId: string) => {
     const conversation = await ConversationModel.findOne({ inviteToken: token });
-    if (!conversation) throw new Error('Invalid or expired invite link');
-    if (conversation.type !== 'group') throw new Error('Invalid invite link');
+    if (!conversation) throw new Error('Link mời không hợp lệ hoặc đã hết hạn');
+    if (conversation.type !== 'group') throw new Error('Link mời không hợp lệ');
 
     const isAlready = conversation.participants.some((p: any) => p.toString() === userId);
-    if (isAlready) throw new Error('You are already a member');
+    if (isAlready) throw new Error('Bạn đã là thành viên của nhóm này');
 
     conversation.participants.push(new mongoose.Types.ObjectId(userId));
     await conversation.save();

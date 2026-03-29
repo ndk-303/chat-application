@@ -56,4 +56,19 @@ export const conversationService = {
     const res = await api.post(`/conversations/${conversationId}/hide`);
     return res.data;
   },
+
+  async generateInvite(conversationId: string): Promise<{ inviteToken: string }> {
+    const res = await api.post(`/conversations/${conversationId}/invite`);
+    return res.data;
+  },
+
+  async getInviteInfo(token: string) {
+    const res = await api.get(`/conversations/invite/${token}`);
+    return res.data;
+  },
+
+  async joinByInvite(token: string) {
+    const res = await api.post(`/conversations/invite/${token}/join`);
+    return res.data;
+  },
 };
