@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useCallStore } from '../../stores/callStore';
+import { VideoOff, MicOff, Mic, PhoneMissed, Video } from 'lucide-react';
 
 interface Props {
   remoteUserId: string;
@@ -133,11 +134,7 @@ export function CallOverlay({
           />
           {!cameraEnabled && (
             <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
-                <line x1="1" y1="1" x2="23" y2="23"/>
-                <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34"/>
-                <circle cx="12" cy="13" r="3"/>
-              </svg>
+              <VideoOff size={28} color="white" strokeWidth={1.5} />
             </div>
           )}
         </div>
@@ -154,14 +151,9 @@ export function CallOverlay({
           }`}
         >
           {micEnabled ? (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
+            <Mic size={22} />
           ) : (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="1" y1="1" x2="23" y2="23"/>
-              <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
-            </svg>
+            <MicOff size={22} />
           )}
         </button>
 
@@ -171,10 +163,7 @@ export function CallOverlay({
           title="Kết thúc cuộc gọi"
           className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white shadow-xl transition-all active:scale-95"
         >
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-            <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.42 19.42 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.38 2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72A12 12 0 0 0 9.25 5.5a2 2 0 0 1-.45 2.11L7.51 8.9"/>
-            <line x1="1" y1="1" x2="23" y2="23"/>
-          </svg>
+          <PhoneMissed size={26} color="white" strokeWidth={2.5} />
         </button>
 
         {/* Camera (video calls only) */}
@@ -187,14 +176,9 @@ export function CallOverlay({
             }`}
           >
             {cameraEnabled ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-              </svg>
+              <Video size={22} />
             ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="1" y1="1" x2="23" y2="23"/>
-                <path d="M21 21H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3m3-3h6l2 3h4a2 2 0 0 1 2 2v9.34"/><circle cx="12" cy="13" r="3"/>
-              </svg>
+              <VideoOff size={22} />
             )}
           </button>
         )}

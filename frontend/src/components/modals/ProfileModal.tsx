@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { userService } from '../../services/userService';
 import { emitSetStatus } from '../../lib/socket';
+import { Camera, AlertCircle, Check, Loader2 } from 'lucide-react';
 
 const STATUS_OPTIONS = [
   { value: 'online',  label: 'Trực tuyến',    color: '#22C55E' },
@@ -138,10 +139,7 @@ export function ProfileModal({ isOpen, onClose }: Props) {
                 onClick={() => fileInputRef.current?.click()}
                 className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
-                </svg>
+                <Camera size={20} color="white" />
               </button>
             </div>
             <input
@@ -219,13 +217,13 @@ export function ProfileModal({ isOpen, onClose }: Props) {
           {/* Feedback */}
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <AlertCircle size={14} strokeWidth={2} />
               {error}
             </div>
           )}
           {success && (
             <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <Check size={14} strokeWidth={2} />
               {success}
             </div>
           )}
@@ -246,10 +244,7 @@ export function ProfileModal({ isOpen, onClose }: Props) {
           >
             {isSaving ? (
               <>
-                <svg className="animate-spin" width="15" height="15" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3"/>
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-                </svg>
+                <Loader2 size={15} className="animate-spin" />
                 Đang lưu…
               </>
             ) : 'Lưu thay đổi'}

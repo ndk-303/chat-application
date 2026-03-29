@@ -4,6 +4,7 @@ import { useChatStore } from '../../stores/chatStore';
 import { userService } from '../../services/userService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
+import { X, Search, Check, Loader2 } from 'lucide-react';
 
 export function NewChatModal() {
   const isOpen = useUIStore((s) => s.isNewChatModalOpen);
@@ -94,7 +95,7 @@ export function NewChatModal() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-800">Cuộc trò chuyện mới</h2>
           <button onClick={handleClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <X size={16} strokeWidth={2.5} />
           </button>
         </div>
 
@@ -131,7 +132,7 @@ export function NewChatModal() {
         {/* Search */}
         <div className="px-5 pb-3">
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Tìm kiếm mọi người..."
@@ -185,9 +186,7 @@ export function NewChatModal() {
                     <p className="text-sm font-semibold text-gray-800 truncate">{u.displayName}</p>
                     <p className="text-xs text-gray-400 truncate">{u.email}</p>
                   </div>
-                  {isSelected && (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  )}
+                  {isSelected && <Check size={16} color="#0068FF" strokeWidth={2.5} />}
                 </button>
               );
             })
@@ -207,7 +206,7 @@ export function NewChatModal() {
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin" width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                <Loader2 size={15} className="animate-spin" />
                 Đang tạo...
               </>
             ) : tab === 'direct' ? 'Bắt đầu chat' : `Tạo nhóm${selectedUsers.length > 0 ? ` (${selectedUsers.length})` : ''}`}

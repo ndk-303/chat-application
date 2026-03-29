@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useImperativeHandle, forwardRef, type Ke
 import { useChatStore } from '../../stores/chatStore';
 import { emitTypingStart, emitTypingStop } from '../../lib/socket';
 import { EmojiPicker } from './EmojiPicker';
+import { File, X, Paperclip, Smile, Loader2, SendHorizonal } from 'lucide-react';
 
 interface MessageInputProps {
   conversationId: string;
@@ -129,9 +130,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
                   />
                 ) : (
                   <div className="w-20 h-14 rounded-xl bg-gray-100 border border-gray-200 flex flex-col items-center justify-center px-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-                      <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><polyline points="13 2 13 9 20 9" />
-                    </svg>
+                    <File size={18} color="#0068FF" />
                     <span className="text-[10px] text-gray-500 truncate w-full text-center mt-1">{fp.file.name.slice(0, 8)}...</span>
                   </div>
                 )}
@@ -139,9 +138,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
                   onClick={() => removeFile(i)}
                   className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-800 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
+                  <X size={10} strokeWidth={3} />
                 </button>
               </div>
             ))}
@@ -156,9 +153,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
             title="Attach files"
             className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all mb-0.5"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-            </svg>
+            <Paperclip size={20} />
           </button>
           <input
             type="file"
@@ -195,9 +190,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
                   : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'
               }`}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10" /><path d="M8 14s1.5 2 4 2 4-2 4-2" /><line x1="9" y1="9" x2="9.01" y2="9" /><line x1="15" y1="9" x2="15.01" y2="9" />
-              </svg>
+              <Smile size={20} />
             </button>
             {showEmojiPicker && (
               <EmojiPicker
@@ -218,14 +211,9 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
               }`}
           >
             {isSending ? (
-              <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
-                <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-              </svg>
+              <Loader2 size={16} className="animate-spin" />
             ) : (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
+              <SendHorizonal size={18} />
             )}
           </button>
         </div>

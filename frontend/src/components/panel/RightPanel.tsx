@@ -6,6 +6,11 @@ import { conversationService } from '../../services/conversationService';
 import { friendService } from '../../services/friendService';
 import { QRCodeSVG } from 'qrcode.react';
 import type { Conversation, User } from '../../types';
+import {
+  ChevronDown, X, Users, Search, Link, UserPlus,
+  Image, File, Play, Pencil, Check, Trash2, LogOut,
+  Download, Loader2
+} from 'lucide-react';
 
 interface RightPanelProps {
   conversation: Conversation;
@@ -37,12 +42,10 @@ function Section({ title, icon, count, defaultOpen = true, children }: {
         {count !== undefined && count > 0 && (
           <span className="text-[10px] bg-gray-100 text-gray-500 font-semibold px-1.5 py-0.5 rounded-full">{count}</span>
         )}
-        <svg
-          className={`w-3.5 h-3.5 text-gray-400 transition-transform ${open ? 'rotate-0' : '-rotate-90'}`}
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
+        <ChevronDown
+          size={14}
+          className={`text-gray-400 transition-transform ${open ? 'rotate-0' : '-rotate-90'}`}
+        />
       </button>
       {open && <div className="px-4 pb-4">{children}</div>}
     </div>
@@ -135,9 +138,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
             {conversation.type === 'group' ? 'Thông tin nhóm' : 'Thông tin liên hệ'}
           </h3>
           <button onClick={() => setRightPanelOpen(false)} className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+            <X size={14} strokeWidth={2.5} />
           </button>
         </div>
 
@@ -148,9 +149,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
           ) : (
             <div className="w-20 h-20 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center text-xl font-bold mb-3">
               {conversation.type === 'group' ? (
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
+                <Users size={30} fill="currentColor" />
               ) : getInitials(name)}
             </div>
           )}
@@ -167,7 +166,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                 disabled={savingName}
               />
               <button onClick={handleRename} disabled={savingName} className="text-[#0068FF] hover:text-[#0052CC]">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <Check size={16} strokeWidth={2.5} />
               </button>
             </div>
           ) : (
@@ -177,9 +176,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
             >
               {name}
               {isAdmin && (
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5l3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
+                <Pencil size={12} className="text-gray-400" />
               )}
             </button>
           )}
@@ -204,7 +201,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
             className={`flex flex-col items-center gap-1 transition-colors ${searchOpen ? 'text-[#0068FF]' : 'text-gray-500 hover:text-[#0068FF]'}`}
           >
             <div className={`w-9 h-9 rounded-full flex items-center justify-center ${searchOpen ? 'bg-[#0068FF]/15' : 'bg-gray-100'}`}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <Search size={16} />
             </div>
             <span className="text-[10px] font-medium">Tìm kiếm</span>
           </button>
@@ -214,7 +211,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
               className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#0068FF] transition-colors"
             >
               <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <Link size={16} />
               </div>
               <span className="text-[10px] font-medium">Mời</span>
             </button>
@@ -225,7 +222,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
               className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#0068FF] transition-colors"
             >
               <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <UserPlus size={16} />
               </div>
               <span className="text-[10px] font-medium">Thêm</span>
             </button>
@@ -273,7 +270,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
         {conversation.type === 'group' && (
           <Section
             title="Thành viên" count={conversation.participants.length} defaultOpen={true}
-            icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+            icon={<Users size={13} strokeWidth={2.5} />}
           >
             <div className="space-y-1.5">
               {conversation.participants.map((p) => (
@@ -308,11 +305,9 @@ export function RightPanel({ conversation }: RightPanelProps) {
                       className="p-1 rounded-md text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50 shrink-0"
                     >
                       {kickingId === p._id ? (
-                        <svg className="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.2"/><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-                        </svg>
+                        <Loader2 size={12} className="animate-spin" />
                       ) : (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <X size={12} strokeWidth={2.5} />
                       )}
                     </button>
                   )}
@@ -325,7 +320,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
         {/* Ảnh & Video */}
         <Section
           title="Ảnh & Video" count={mediaFiles.length}
-          icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>}
+          icon={<Image size={13} strokeWidth={2.5} />}
         >
           {mediaFiles.length === 0 ? (
             <p className="text-xs text-gray-400">Chưa có ảnh hoặc video nào</p>
@@ -348,7 +343,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                       <video src={file.url} className="w-full h-full object-cover opacity-70" muted />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="#0068FF"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                          <Play size={14} fill="#0068FF" color="#0068FF" />
                         </div>
                       </div>
                     </a>
@@ -373,7 +368,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
         {/* Files */}
         <Section
           title="Files" count={docFiles.length}
-          icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>}
+          icon={<File size={13} strokeWidth={2.5} />}
         >
           {docFiles.length === 0 ? (
             <p className="text-xs text-gray-400">Chưa có file nào được chia sẻ</p>
@@ -384,16 +379,14 @@ export function RightPanel({ conversation }: RightPanelProps) {
                 return (
                   <a key={i} href={file.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-gray-50 transition-colors no-underline group">
                     <div className="w-9 h-9 rounded-lg bg-[#0068FF]/10 flex flex-col items-center justify-center flex-shrink-0 gap-0.5">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                      <File size={14} color="#0068FF" strokeWidth={2} />
                       <span className="text-[8px] font-bold text-[#0068FF] leading-none">{ext.slice(0, 4)}</span>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-gray-700 truncate group-hover:text-[#0068FF] transition-colors">{file.originalName ?? 'file'}</p>
                       <p className="text-[10px] text-gray-400">{file.size ? formatFileSize(file.size) : ''}</p>
                     </div>
-                    <svg className="text-gray-300 group-hover:text-[#0068FF] transition-colors shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
+                    <Download size={13} className="text-gray-300 group-hover:text-[#0068FF] transition-colors shrink-0" strokeWidth={2} />
                   </a>
                 );
               })}
@@ -413,7 +406,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
               }}
               className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              <Trash2 size={16} strokeWidth={2} />
               Giải tán nhóm
             </button>
           )}
@@ -433,12 +426,10 @@ export function RightPanel({ conversation }: RightPanelProps) {
             }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors text-sm font-medium"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {conversation.type === 'group'
-                ? <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>
-                : <><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></>
-              }
-            </svg>
+            {conversation.type === 'group'
+              ? <LogOut size={16} strokeWidth={2} />
+              : <Trash2 size={16} strokeWidth={2} />
+            }
             {conversation.type === 'group' ? 'Rời nhóm' : 'Xóa cuộc trò chuyện'}
           </button>
         </div>
@@ -502,7 +493,7 @@ function AddMemberModal({ conversationId, existingIds, onClose }: { conversation
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h2 className="text-base font-bold text-slate-900">Thêm Thành Viên</h2>
           <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <X size={14} strokeWidth={2.5} />
           </button>
         </div>
         <div className="px-5 pb-3">
@@ -510,7 +501,7 @@ function AddMemberModal({ conversationId, existingIds, onClose }: { conversation
         </div>
         <div className="flex-1 overflow-y-auto px-2 pb-4">
           {loading ? (
-            <div className="py-8 flex justify-center"><svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0068FF" strokeWidth="3" strokeOpacity="0.2"/><path d="M12 2a10 10 0 0 1 10 10" stroke="#0068FF" strokeWidth="3" strokeLinecap="round"/></svg></div>
+            <div className="py-8 flex justify-center"><Loader2 size={20} className="animate-spin text-[#0068FF]" /></div>
           ) : filtered.length === 0 ? (
             <p className="text-sm text-gray-400 text-center py-6">Không có bạn bè nào để thêm</p>
           ) : (
@@ -569,12 +560,12 @@ function InviteLinkModal({ conversationId, groupName, onClose }: { conversationI
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-bold text-slate-900">Mời vào nhóm</h2>
           <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <X size={14} strokeWidth={2.5} />
           </button>
         </div>
 
         {loading ? (
-          <div className="py-8 flex justify-center"><svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0068FF" strokeWidth="3" strokeOpacity="0.2"/><path d="M12 2a10 10 0 0 1 10 10" stroke="#0068FF" strokeWidth="3" strokeLinecap="round"/></svg></div>
+          <div className="py-8 flex justify-center"><Loader2 size={20} className="animate-spin text-[#0068FF]" /></div>
         ) : (
           <>
             <p className="text-sm text-gray-500 mb-4 text-center">Chia sẻ link hoặc mã QR để mời bạn bè vào <strong>{groupName}</strong></p>

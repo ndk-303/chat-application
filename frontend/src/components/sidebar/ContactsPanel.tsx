@@ -6,6 +6,7 @@ import { friendService } from '../../services/friendService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
 import { Avatar, Spinner } from './SidebarShared';
+import { Search, Users, Phone, Video } from 'lucide-react';
 
 // ─── Contacts Panel — sorted A-Z with letter dividers ─────────────────────────
 
@@ -120,9 +121,7 @@ export function ContactsPanel() {
         </div>
         <div className="relative group">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search size={17} />
           </div>
           <input
             type="text"
@@ -141,12 +140,7 @@ export function ContactsPanel() {
         {!loading && friends.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 gap-3 px-4 text-center">
             <div className="w-12 h-12 rounded-xl bg-[#0068FF]/10 flex items-center justify-center">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <Users size={22} color="#0068FF" strokeWidth={2} />
             </div>
             <p className="text-sm text-slate-400">Chưa có bạn bè</p>
             <button onClick={() => setSidebarView('friends')} className="text-xs text-[#0068FF] font-medium hover:underline">
@@ -204,9 +198,7 @@ export function ContactsPanel() {
                       onClick={(e) => { e.stopPropagation(); handleCall(friend, 'audio'); }}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-colors cursor-pointer"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.37a16 16 0 0 0 6.72 6.72l1.76-1.76a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.04z" />
-                      </svg>
+                      <Phone size={16} strokeLinecap="round" strokeLinejoin="round" />
                     </span>
 
                     {/* Video call */}
@@ -216,10 +208,7 @@ export function ContactsPanel() {
                       onClick={(e) => { e.stopPropagation(); handleCall(friend, 'video'); }}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-colors cursor-pointer"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="23 7 16 12 23 17 23 7" />
-                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                      </svg>
+                      <Video size={16} strokeLinecap="round" strokeLinejoin="round" />
                     </span>
                   </div>
                 </button>

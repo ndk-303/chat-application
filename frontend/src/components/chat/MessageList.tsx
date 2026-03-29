@@ -4,6 +4,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { MessageBubble } from './MessageBubble';
 import type { Message } from '../../types';
 import { emitMarkSeen } from '../../lib/socket';
+import { Loader2, MessageSquare } from 'lucide-react';
 
 interface MessageListProps {
   conversationId: string;
@@ -64,10 +65,7 @@ export function MessageList({ conversationId, isGroup }: MessageListProps) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#E9EBEE]">
         <div className="flex flex-col items-center gap-3">
-          <svg className="animate-spin text-[#0068FF]" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-          </svg>
+          <Loader2 size={24} className="animate-spin text-[#0068FF]" />
           <span className="text-sm text-[#6B7280]">Loading messages...</span>
         </div>
       </div>
@@ -79,9 +77,7 @@ export function MessageList({ conversationId, isGroup }: MessageListProps) {
       <div className="flex-1 flex items-center justify-center bg-[#E9EBEE]">
         <div className="text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-3">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-            </svg>
+            <MessageSquare size={28} color="#0068FF" strokeWidth={2} />
           </div>
           <p className="text-sm font-medium text-[#1F2937]">No messages yet</p>
           <p className="text-xs text-[#9CA3AF] mt-1">Say hello! 👋</p>

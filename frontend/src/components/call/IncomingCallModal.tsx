@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCallStore } from '../../stores/callStore';
 import { getSocket } from '../../lib/socket';
+import { PhoneMissed, Phone, Video } from 'lucide-react';
 
 interface Props {
   onAccept: () => void;
@@ -90,10 +91,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
             className="flex-1 py-5 flex flex-col items-center gap-1.5 hover:bg-red-50 transition-colors group"
           >
             <span className="w-12 h-12 rounded-full bg-red-500 group-hover:bg-red-600 flex items-center justify-center transition-colors">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.42 19.42 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.38 2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72A12 12 0 0 0 9.25 5.5a2 2 0 0 1-.45 2.11L7.51 8.9"/>
-                <line x1="1" y1="1" x2="23" y2="23"/>
-              </svg>
+              <PhoneMissed size={20} color="white" strokeWidth={2.5} />
             </span>
             <span className="text-xs font-semibold text-red-500">Từ chối</span>
           </button>
@@ -109,13 +107,9 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
           >
             <span className="w-12 h-12 rounded-full bg-[#22C55E] group-hover:bg-green-600 flex items-center justify-center transition-colors">
               {isVideo ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                  <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-                </svg>
+                <Video size={20} color="white" strokeWidth={2.5} />
               ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.41 2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+              <Phone size={20} color="white" strokeWidth={2.5} />
               )}
             </span>
             <span className="text-xs font-semibold text-green-600">Chấp nhận</span>

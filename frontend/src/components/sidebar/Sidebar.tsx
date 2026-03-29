@@ -7,6 +7,7 @@ import { FriendSearchPanel } from './FriendSearchPanel';
 import { ContactsPanel } from './ContactsPanel';
 import { CreateGroupModal } from './CreateGroupModal';
 import type { Conversation } from '../../types';
+import { Search, MessageSquare } from 'lucide-react';
 
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
@@ -57,9 +58,7 @@ export function Sidebar() {
               {/* Search */}
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
+                  <Search size={18} />
                 </div>
                 <input
                   type="text"
@@ -90,9 +89,7 @@ export function Sidebar() {
               {filtered.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-40 gap-3 px-4">
                   <div className="w-12 h-12 rounded-xl bg-[#0068FF]/10 flex items-center justify-center">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
+                    <MessageSquare size={22} color="#0068FF" strokeWidth={2} />
                   </div>
                   <p className="text-sm text-slate-400 text-center">
                     {sidebarTab === 'unread' ? 'Không có tin nhắn chưa đọc' : 'Chưa có cuộc trò chuyện nào'}
