@@ -5,6 +5,7 @@ import { useUIStore } from '../../stores/uiStore';
 import { conversationService } from '../../services/conversationService';
 import { friendService } from '../../services/friendService';
 import { QRCodeSVG } from 'qrcode.react';
+import { toast } from 'sonner';
 import type { Conversation, User } from '../../types';
 import {
   ChevronDown, X, Users, Search, Link, UserPlus,
@@ -131,7 +132,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
 
   return (
     <>
-      <aside className="w-[300px] flex-shrink-0 bg-white border-l border-gray-100 flex flex-col h-full overflow-y-auto custom-scrollbar">
+      <aside className="w-full md:w-[300px] flex-shrink-0 bg-white border-l border-gray-100 flex flex-col h-full overflow-y-auto custom-scrollbar">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h3 className="text-sm font-semibold text-gray-700">
@@ -289,7 +290,6 @@ export function RightPanel({ conversation }: RightPanelProps) {
                   {isAdmin && p._id !== user?._id && conversation.adminId?._id !== p._id && (
                     <button
                       onClick={async () => {
-                        if (!window.confirm(`Kick ${p.displayName} khỏi nhóm?`)) return;
                         setKickingId(p._id);
                         try {
                           await conversationService.removeMember(conversation._id, p._id);
@@ -298,7 +298,8 @@ export function RightPanel({ conversation }: RightPanelProps) {
                               c._id === conversation._id ? { ...c, participants: c.participants.filter((m) => m._id !== p._id) } : c
                             ),
                           }));
-                        } catch { /* silent */ } finally { setKickingId(null); }
+                          toast.success(`Đã xóa ${p.displayName} khỏi nhóm`);
+                        } catch (e: any) { toast.error(e?.response?.data?.message || 'Xóa thành viên thất bại'); } finally { setKickingId(null); }
                       }}
                       disabled={kickingId === p._id}
                       title={`Kick ${p.displayName}`}
@@ -398,11 +399,20 @@ export function RightPanel({ conversation }: RightPanelProps) {
         <div className="px-4 py-4 border-t border-gray-100 mt-auto space-y-2">
           {isAdmin && (
             <button
-              onClick={async () => {
-                if (!window.confirm('Bạn có chắc muốn GIẢI TÁN nhóm này? Toàn bộ tin nhắn sẽ bị xóa vĩnh viễn.')) return;
-                try {
-                  await conversationService.dissolveGroup(conversation._id);
-                } catch (e: any) { alert(e?.response?.data?.message || 'Giải tán thất bại'); }
+              onClick={() => {
+                toast('Bạn có chắc muốn giải tán nhóm?', {
+                  description: 'Toàn bộ tin nhắn sẽ bị xóa vĩnh viễn.',
+                  action: {
+                    label: 'Giải tán',
+                    onClick: async () => {
+                      try {
+                        await conversationService.dissolveGroup(conversation._id);
+                        toast.success('Đã giải tán nhóm');
+                      } catch (e: any) { toast.error(e?.response?.data?.message || 'Giải tán thất bại'); }
+                    },
+                  },
+                  cancel: { label: 'Hủy', onClick: () => {} },
+                });
               }}
               className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm font-semibold"
             >
@@ -411,18 +421,26 @@ export function RightPanel({ conversation }: RightPanelProps) {
             </button>
           )}
           <button
-            onClick={async () => {
+            onClick={() => {
               const label = conversation.type === 'group' ? 'rời nhóm' : 'xóa cuộc trò chuyện này';
-              if (!window.confirm(`Bạn có chắc muốn ${label}?`)) return;
-              try {
-                if (conversation.type === 'private') await conversationService.hideConversation(conversation._id);
-                else await conversationService.leaveConversation(conversation._id);
-                useChatStore.setState((state) => ({
-                  conversations: state.conversations.filter((c) => c._id !== conversation._id),
-                  activeConversationId: state.activeConversationId === conversation._id ? null : state.activeConversationId,
-                }));
-                setRightPanelOpen(false);
-              } catch (e: any) { alert(e?.response?.data?.message || 'Thao tác thất bại'); }
+              toast(`Bạn có chắc muốn ${label}?`, {
+                action: {
+                  label: 'Xác nhận',
+                  onClick: async () => {
+                    try {
+                      if (conversation.type === 'private') await conversationService.hideConversation(conversation._id);
+                      else await conversationService.leaveConversation(conversation._id);
+                      useChatStore.setState((state) => ({
+                        conversations: state.conversations.filter((c) => c._id !== conversation._id),
+                        activeConversationId: state.activeConversationId === conversation._id ? null : state.activeConversationId,
+                      }));
+                      setRightPanelOpen(false);
+                      toast.success('Thao tác thành công');
+                    } catch (e: any) { toast.error(e?.response?.data?.message || 'Thao tác thất bại'); }
+                  },
+                },
+                cancel: { label: 'Hủy', onClick: () => {} },
+              });
             }}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors text-sm font-medium"
           >
@@ -481,8 +499,9 @@ function AddMemberModal({ conversationId, existingIds, onClose }: { conversation
       existingSet.add(memberId);
       await fetchConversations();
       setFriends((prev) => prev.filter((f) => f._id !== memberId));
+      toast.success('Đã thêm thành viên');
     } catch (e: any) {
-      alert(e?.response?.data?.message || 'Thêm thất bại');
+      toast.error(e?.response?.data?.message || 'Thêm thất bại');
     } finally { setAdding(null); }
   };
 

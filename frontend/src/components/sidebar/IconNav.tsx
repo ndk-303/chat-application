@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useChatStore } from '../../stores/chatStore';
+import { useIsMobile } from '../../hooks/use-mobile';
 import { MessageSquare, UserPlus, Users, Settings, LogOut } from 'lucide-react';
 
 interface NavButtonProps {
@@ -28,10 +29,31 @@ function NavButton({ title, active, onClick, children, badge }: NavButtonProps) 
           {badge > 99 ? '99+' : badge}
         </span>
       )}
-      {/* Tooltip */}
-      <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
+      {/* Tooltip (desktop only) */}
+      <span className="hidden md:block absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
         {title}
       </span>
+    </button>
+  );
+}
+
+/* Mobile-specific compact nav button */
+function MobileNavButton({ title, active, onClick, children, badge }: NavButtonProps) {
+  return (
+    <button
+      title={title}
+      onClick={onClick}
+      className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active
+        ? 'bg-[#0068FF] text-white shadow-md'
+        : 'text-gray-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10'
+        }`}
+    >
+      {children}
+      {badge != null && badge > 0 && (
+        <span className="absolute -right-0.5 -top-0.5 min-w-[15px] h-[15px] bg-[#FF3B30] rounded-full flex items-center justify-center text-white text-[8px] font-bold px-0.5 pointer-events-none">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </button>
   );
 }
@@ -40,6 +62,7 @@ export function IconNav() {
   const logout = useAuthStore((s) => s.logout);
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { sidebarView, setSidebarView, setCreateGroupModalOpen, setProfileModalOpen } = useUIStore();
   const conversations = useChatStore((s) => s.conversations);
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0);
@@ -49,6 +72,46 @@ export function IconNav() {
     navigate('/login');
   };
 
+  // Mobile: horizontal compact bar
+  if (isMobile) {
+    return (
+      <div className="flex items-center gap-1 flex-1">
+        {/* Avatar */}
+        <button
+          onClick={() => setProfileModalOpen(true)}
+          className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#0068FF]/30 shrink-0"
+        >
+          {user?.avatar ? (
+            <img src={user.avatar} alt={user.displayName} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-[#0068FF]/15 flex items-center justify-center text-[#0068FF] text-sm font-bold">
+              {(user?.displayName?.[0] ?? '?').toUpperCase()}
+            </div>
+          )}
+        </button>
+
+        <h1 className="text-base font-bold text-gray-800 ml-1 mr-auto">Kapta</h1>
+
+        <MobileNavButton title="Tin nhắn" active={sidebarView === 'messages'} onClick={() => setSidebarView('messages')} badge={totalUnread}>
+          <MessageSquare size={18} fill={sidebarView === 'messages' ? 'currentColor' : 'none'} />
+        </MobileNavButton>
+        <MobileNavButton title="Bạn bè" active={sidebarView === 'friends'} onClick={() => setSidebarView('friends')}>
+          <UserPlus size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Danh bạ" active={sidebarView === 'contacts'} onClick={() => setSidebarView('contacts')}>
+          <Users size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Tạo nhóm" onClick={() => setCreateGroupModalOpen(true)}>
+          <Users size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Đăng xuất" onClick={handleLogout}>
+          <LogOut size={18} />
+        </MobileNavButton>
+      </div>
+    );
+  }
+
+  // Desktop: vertical sidebar (original)
   return (
     <aside className="w-[68px] bg-[#0068FF] flex flex-col items-center py-4 justify-between shrink-0">
       {/* Top: Logo + Nav */}
