@@ -1,6 +1,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { getSocket } from '../lib/socket';
 import { useCallStore } from '../stores/callStore';
+import { toast } from 'sonner';
 import api from '../lib/axios';
 
 /** Fetches ICE server config from backend (includes TURN credentials if configured). */
@@ -140,7 +141,7 @@ export function useWebRTC(): UseWebRTCReturn {
     } catch (err: any) {
       cleanup();
       useCallStore.getState().reset();
-      alert(err?.message || 'Không thể khởi tạo cuộc gọi.');
+      toast.error(err?.message || 'Không thể khởi tạo cuộc gọi.');
     }
   }, [getUserMedia, createPeerConnection, cleanup]);
 
@@ -164,7 +165,7 @@ export function useWebRTC(): UseWebRTCReturn {
       getSocket()?.emit('call:reject', { targetUserId: callerId });
       cleanup();
       useCallStore.getState().reset();
-      alert(err?.message || 'Không thể kết nối cuộc gọi.');
+      toast.error(err?.message || 'Không thể kết nối cuộc gọi.');
     }
   }, [getUserMedia, createPeerConnection, cleanup]);
 
