@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { Conversation, Message, MessageReaction } from '../types';
 import { conversationService } from '@/services/conversationService';
-import { messageService } from '@/services/mesageService'; 
+import { messageService } from '@/services/messageService';
 import { useAuthStore } from './authStore';
 
 interface ChatState {

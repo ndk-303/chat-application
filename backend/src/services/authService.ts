@@ -138,6 +138,10 @@ export const refreshToken = async(token: string) => {
         role: payload.role,
     });
 
+    // Rotate refresh token: lưu token mới vào DB, invalidate token cũ
+    checked.refreshTokens = newRefreshToken;
+    await checked.save();
+
     return {
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,

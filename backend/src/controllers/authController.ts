@@ -21,7 +21,7 @@ export const login = async (req: Request, res: Response) => {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
@@ -40,7 +40,7 @@ export const register = async (req: Request, res: Response) => {
         const { email, password, displayName } = req.body as RegisterDto;
 
         if (!email || !password || !displayName) {
-            res.status(400).json({ message: 'Vui lòng nhập email, mật khẩu và tên hiển thị' });
+            return res.status(400).json({ message: 'Vui lòng nhập email, mật khẩu và tên hiển thị' });
         }
         const result = await authService.register(displayName, email, password);
 
@@ -97,7 +97,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         const tokens = await authService.refreshToken(refreshToken);
         res.cookie("refreshToken", tokens.refreshToken, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
@@ -122,9 +122,9 @@ export const requestPasswordReset = async (req: Request, res: Response) => {
 
         const result = await authService.requestPasswordReset(email);
 
+        // SECURITY: resetToken KHÔNG được trả về client - chỉ gửi qua email
         res.status(200).json({
             message: result.message,
-            resetToken: result.resetToken,
             expiresIn: result.expiresIn
         });
     } catch (error: any) {
