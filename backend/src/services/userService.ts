@@ -1,11 +1,12 @@
-import UserModel, { User } from "../models/User"
+﻿import UserModel, { User } from "../models/User"
 import { getCache, setCache, delCache } from '../utils/cacheUtils';
+import { errorUtil } from '../utils/errorUtils';
 
 export const createUser = async (data: User): Promise<Object> => {
     const checked = await UserModel.findOne({ email: data.email })
 
     if (checked) {
-        throw new Error('Email đã được sử dụng');
+        throw new errorUtil('Email đã được sử dụng', 400);
     }
 
     const user = await UserModel.create(data);
@@ -25,7 +26,7 @@ export const getUsers = async (page?: string, limit?: string, sortBy?: string): 
     const users = await UserModel.find().select('-password -updatedAt -deletedAt').skip(skip).limit(limitation).sort(sort);
 
     if (users.length === 0) {
-        throw new Error('Không tìm thấy người dùng nào')
+        throw new errorUtil('Không tìm thấy người dùng nào', 400)
     }
 
     return users;
@@ -42,7 +43,7 @@ export const getUserById = async (id: string): Promise<User> => {
     const user = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
 
     if (!user) {
-        throw new Error('Không tìm thấy người dùng');
+        throw new errorUtil('Không tìm thấy người dùng', 400);
     }
 
     // 3. Populate cache (5 phút)
@@ -56,7 +57,7 @@ export const updateUser = async (id: string, data: User) => {
     const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
 
     if (!user) {
-        throw new Error('Không thể cập nhật người dùng');
+        throw new errorUtil('Không thể cập nhật người dùng', 400);
     }
 
     return user;
@@ -66,7 +67,7 @@ export const deleteUser = async (id: string) => {
     const user = await UserModel.findByIdAndDelete(id);
 
     if (!user) {
-        throw new Error('Không thể xóa người dùng');
+        throw new errorUtil('Không thể xóa người dùng', 400);
     }
 
     return { message: 'Xóa người dùng thành công' };
@@ -85,7 +86,7 @@ export const updateCurrentUserProfile = async (userId: string, updates: Partial<
     const user = await UserModel.findByIdAndUpdate(userId, filteredUpdates, { new: true }).select('-password');
 
     if (!user) {
-        throw new Error('Không thể cập nhật hồ sơ');
+        throw new errorUtil('Không thể cập nhật hồ sơ', 400);
     }
 
     // Xóa cache để lần đọc tiếp theo lấy dữ liệu mới
@@ -102,7 +103,7 @@ export const updateUserStatus = async (userId: string, status: 'online' | 'offli
     ).select('-password');
 
     if (!user) {
-        throw new Error('Không thể cập nhật trạng thái');
+        throw new errorUtil('Không thể cập nhật trạng thái', 400);
     }
 
     return user;
@@ -110,7 +111,7 @@ export const updateUserStatus = async (userId: string, status: 'online' | 'offli
 
 export const searchUsers = async (query: string, userId: string, limit: number = 20): Promise<User[]> => {
     if (!query || query.trim().length === 0) {
-        throw new Error('Vui lòng nhập từ khóa tìm kiếm');
+        throw new errorUtil('Vui lòng nhập từ khóa tìm kiếm', 400);
     }
 
     const users = await UserModel.find({

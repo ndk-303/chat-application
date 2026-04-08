@@ -1,7 +1,8 @@
-import UserModel from "../models/User";
+﻿import UserModel from "../models/User";
 import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/emailUtils";
+import { errorUtil } from "../utils/errorUtils";
 
 function generateOTP(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -13,19 +14,19 @@ function getOTPExpiry(): Date {
     return d;
 }
 
-export const login = async(email: string, password: string) => {
+export const login = async (email: string, password: string) => {
     const user = await UserModel.findOne({ email: email }).select('+password');
     if (!user) {
-        throw new Error('Đăng nhập thất bại, không tìm thấy người dùng');
+        throw new errorUtil('Đăng nhập thất bại, không tìm thấy người dùng', 400);
     }
 
     const compare = await comparePassword(password, user.password);
     if (!compare) {
-        throw new Error('Đăng nhập thất bại, mật khẩu không đúng');
+        throw new errorUtil('Đăng nhập thất bại, mật khẩu không đúng', 400);
     }
 
     if (!user.isVerified) {
-        throw new Error('Email chưa được xác thực. Vui lòng kiểm tra hộp thư để lấy mã xác thực.');
+        throw new errorUtil('Email chưa được xác thực. Vui lòng kiểm tra hộp thư để lấy mã xác thực.', 400);
     }
 
     const payload = { userId: user._id };
@@ -36,13 +37,13 @@ export const login = async(email: string, password: string) => {
     user.refreshTokens = refreshToken;
     await user.save();
 
-    return {accessToken, refreshToken};
+    return { accessToken, refreshToken };
 };
 
 export const register = async (displayName: string, email: string, password: string) => {
     const checked = await UserModel.findOne({ email: email });
     if (checked) {
-        throw new Error('Email đã được sử dụng');
+        throw new errorUtil('Email đã được sử dụng', 400);
     }
 
     const hashedPassword = await hashPassword(password);
@@ -75,16 +76,16 @@ export const verifyEmail = async (email: string, code: string) => {
         .select('+emailVerificationCode +emailVerificationExpires');
 
     if (!user) {
-        throw new Error('Không tìm thấy người dùng');
+        throw new errorUtil('Không tìm thấy người dùng', 400);
     }
     if (user.isVerified) {
         return { message: 'Email đã được xác thực trước đó' };
     }
     if (!user.emailVerificationCode || user.emailVerificationCode !== code) {
-        throw new Error('Mã xác thực không hợp lệ');
+        throw new errorUtil('Mã xác thực không hợp lệ', 400);
     }
     if (user.emailVerificationExpires && user.emailVerificationExpires < new Date()) {
-        throw new Error('Mã xác thực đã hết hạn. Vui lòng yêu cầu mã mới.');
+        throw new errorUtil('Mã xác thực đã hết hạn. Vui lòng yêu cầu mã mới.', 400);
     }
 
     user.isVerified = true;
@@ -102,7 +103,7 @@ export const resendVerificationCode = async (email: string) => {
         return { message: 'Nếu email tồn tại, mã mới đã được gửi.' };
     }
     if (user.isVerified) {
-        throw new Error('Email đã được xác thực');
+        throw new errorUtil('Email đã được xác thực', 400);
     }
 
     const code = generateOTP();
@@ -117,17 +118,17 @@ export const resendVerificationCode = async (email: string) => {
     return { message: 'Đã gửi lại mã xác thực thành công' };
 };
 
-export const refreshToken = async(token: string) => {
+export const refreshToken = async (token: string) => {
     const payload = verifyRefreshToken(token);
     const checked = await UserModel.findOne({ refreshTokens: token });
 
     if (!payload) {
-        throw new Error('Refresh token đã hết hạn');
+        throw new errorUtil('Refresh token đã hết hạn', 400);
     }
     if (!checked) {
-        throw new Error('Refresh token không hợp lệ');
+        throw new errorUtil('Refresh token không hợp lệ', 400);
     }
-    
+
     const newAccessToken = generateAccessToken({
         userId: payload.userId,
         role: payload.role ?? 'USER',
@@ -152,7 +153,7 @@ export const requestPasswordReset = async (email: string) => {
     const user = await UserModel.findOne({ email: email });
 
     if (!user) {
-        throw new Error('Không tìm thấy người dùng');
+        throw new errorUtil('Không tìm thấy người dùng', 400);
     }
 
     const resetToken = generateResetPwdToken();
@@ -164,7 +165,7 @@ export const requestPasswordReset = async (email: string) => {
 
     return {
         message: 'Đã gửi mã đặt lại mật khẩu thành công',
-        resetToken: resetToken, 
+        resetToken: resetToken,
         expiresIn: '1 giờ'
     };
 };
@@ -180,27 +181,27 @@ export const resetPassword = async (
     if (userId) {
         user = await UserModel.findById(userId).select('+password');
         if (!user) {
-            throw new Error('Không tìm thấy người dùng');
+            throw new errorUtil('Không tìm thấy người dùng', 400);
         }
     } else if (email && resetToken) {
         user = await UserModel.findOne({ email: email }).select('+passwordResetToken +passwordResetExpires +password');
 
         if (!user) {
-            throw new Error('Không tìm thấy người dùng');
+            throw new errorUtil('Không tìm thấy người dùng', 400);
         }
 
         if (user.passwordResetToken !== resetToken) {
-            throw new Error('Mã đặt lại mật khẩu không hợp lệ');
+            throw new errorUtil('Mã đặt lại mật khẩu không hợp lệ', 400);
         }
 
         if (user.passwordResetExpires && user.passwordResetExpires < new Date()) {
-            throw new Error('Mã đặt lại mật khẩu đã hết hạn');
+            throw new errorUtil('Mã đặt lại mật khẩu đã hết hạn', 400);
         }
 
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
     } else {
-        throw new Error('Tham số không hợp lệ để đặt lại mật khẩu');
+        throw new errorUtil('Tham số không hợp lệ để đặt lại mật khẩu', 400);
     }
 
     const hashedPassword = await hashPassword(newPassword);
@@ -216,7 +217,7 @@ export const logout = async (userId: string) => {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-        throw new Error('Không tìm thấy người dùng');
+        throw new errorUtil('Không tìm thấy người dùng', 400);
     }
 
     user.refreshTokens = undefined;

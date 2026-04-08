@@ -1,7 +1,8 @@
-import MessageModel from '../models/Message';
+﻿import MessageModel from '../models/Message';
 import ConversationModel from '../models/Conversation';
 import mongoose from 'mongoose';
 import { getIO, emitToUser } from '../socket/socketManager';
+import { errorUtil } from '../utils/errorUtils';
 
 export const getConversationMessages = async (
     conversationId: string,
@@ -12,7 +13,7 @@ export const getConversationMessages = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Không tìm thấy cuộc trò chuyện');
+        throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
     }
 
     const isParticipant = conversation.participants.some(
@@ -20,7 +21,7 @@ export const getConversationMessages = async (
     );
 
     if (!isParticipant) {
-        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
+        throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 400);
     }
 
     const query: any = { conversationId };
@@ -57,7 +58,7 @@ export const createMessage = async (
     const conversation = await ConversationModel.findById(conversationId);
 
     if (!conversation) {
-        throw new Error('Không tìm thấy cuộc trò chuyện');
+        throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
     }
 
     const isParticipant = conversation.participants.some(
@@ -65,11 +66,11 @@ export const createMessage = async (
     );
 
     if (!isParticipant) {
-        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
+        throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 400);
     }
 
     if ((!content || content.trim().length === 0) && (!files || files.length === 0)) {
-        throw new Error('Nội dung tin nhắn không được để trống');
+        throw new errorUtil('Nội dung tin nhắn không được để trống', 400);
     }
 
     const message = await MessageModel.create({
@@ -129,13 +130,13 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     const message = await MessageModel.findById(messageId);
 
     if (!message) {
-        throw new Error('Không tìm thấy tin nhắn');
+        throw new errorUtil('Không tìm thấy tin nhắn', 400);
     }
 
     const conversation = await ConversationModel.findById(message.conversationId);
 
     if (!conversation) {
-        throw new Error('Không tìm thấy cuộc trò chuyện');
+        throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
     }
 
     const isParticipant = conversation.participants.some(
@@ -143,7 +144,7 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     );
 
     if (!isParticipant) {
-        throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
+        throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 400);
     }
 
     if (message.senderId.toString() === userId) {
@@ -217,11 +218,11 @@ export const deleteUserMessage = async (messageId: string, userId: string) => {
     const message = await MessageModel.findById(messageId);
 
     if (!message) {
-        throw new Error('Không tìm thấy tin nhắn');
+        throw new errorUtil('Không tìm thấy tin nhắn', 400);
     }
 
     if (message.senderId.toString() !== userId) {
-        throw new Error('Bạn chỉ có thể xóa tin nhắn của chính mình');
+        throw new errorUtil('Bạn chỉ có thể xóa tin nhắn của chính mình', 400);
     }
 
     await MessageModel.deleteOne({ _id: messageId });
@@ -254,15 +255,15 @@ export const deleteUserMessage = async (messageId: string, userId: string) => {
 
 export const toggleReaction = async (messageId: string, userId: string, emoji: string) => {
     const message = await MessageModel.findById(messageId);
-    if (!message) throw new Error('Không tìm thấy tin nhắn');
+    if (!message) throw new errorUtil('Không tìm thấy tin nhắn', 400);
 
     const conversation = await ConversationModel.findById(message.conversationId);
-    if (!conversation) throw new Error('Không tìm thấy cuộc trò chuyện');
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
 
     const isParticipant = conversation.participants.some(
         (p: any) => p.toString() === userId
     );
-    if (!isParticipant) throw new Error('Bạn không phải thành viên của cuộc trò chuyện này');
+    if (!isParticipant) throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 400);
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
