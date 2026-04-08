@@ -1,8 +1,14 @@
 import rateLimit from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
+import { Request } from 'express';
 
 import { redisClient } from '../config/redis';
 
+/**
+ * Trả về real client IP sau khi Nginx set X-Forwarded-For.
+ * Hoạt động chính xác nhờ app.set('trust proxy', 1) trong app.ts.
+ */
+const clientIpKey = (req: Request): string => req.ip ?? 'unknown';
 const makeRedisStore = (prefix: string) =>
     new RedisStore({
         sendCommand: (...args: string[]) =>
@@ -15,6 +21,7 @@ export const loginLimiter = rateLimit({
     max: 10,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: clientIpKey,
     store: makeRedisStore('login'),
     handler: (_req, res) => {
         res.status(429).json({
@@ -28,6 +35,7 @@ export const registerLimiter = rateLimit({
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: clientIpKey,
     store: makeRedisStore('register'),
     handler: (_req, res) => {
         res.status(429).json({
@@ -41,6 +49,7 @@ export const passwordResetLimiter = rateLimit({
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: clientIpKey,
     store: makeRedisStore('pwd-reset'),
     handler: (_req, res) => {
         res.status(429).json({
@@ -54,6 +63,7 @@ export const verifyEmailLimiter = rateLimit({
     max: 10,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: clientIpKey,
     store: makeRedisStore('verify-email'),
     handler: (_req, res) => {
         res.status(429).json({
@@ -67,6 +77,7 @@ export const generalLimiter = rateLimit({
     max: 200,
     standardHeaders: true,
     legacyHeaders: false,
+    keyGenerator: clientIpKey,
     store: makeRedisStore('general'),
     handler: (_req, res) => {
         res.status(429).json({

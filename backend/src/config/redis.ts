@@ -26,9 +26,13 @@ subClient.on('connect', () => console.log('[Redis] Sub client connected'));
 subClient.on('error', (err) => console.error('[Redis] Sub error:', err.message));
 
 export const connectRedis = async (): Promise<void> => {
-    await Promise.all([
-        redisClient.connect(),
-        pubClient.connect(),
-        subClient.connect(),
-    ]);
+    const clients = [redisClient, pubClient, subClient];
+
+    await Promise.all(
+        clients.map(async (client) => {
+            if (client.status === 'wait') {
+                await client.connect();
+            }
+        })
+    );
 };

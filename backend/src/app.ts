@@ -6,9 +6,12 @@ import swaggerSpec from './config/swagger'
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { generalLimiter } from './middlewares/rateLimiter';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
+
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
     .split(',')
     .map(o => o.trim());
