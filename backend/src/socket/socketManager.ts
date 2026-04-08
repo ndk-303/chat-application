@@ -39,6 +39,8 @@ export const initSocket = (httpServer: HttpServer): Server => {
         },
         pingTimeout: 60000,
         pingInterval: 25000,
+        transports: ['websocket'],
+        allowEIO3: true,
     });
 
 

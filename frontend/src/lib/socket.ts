@@ -17,7 +17,7 @@ export const initSocket = (accessToken: string): Socket => {
   socket = io(SOCKET_URL, {
     auth: { token: accessToken },
     withCredentials: true,
-    transports: ['polling', 'websocket'],
+    transports: ['websocket'],   // Skip polling — prevents 400 errors when scaled (polling sid is backend-specific)
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
