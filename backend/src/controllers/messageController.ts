@@ -32,7 +32,7 @@ export const sendMessage = async (req: Request, res: Response) => {
         const attachs = req.files as Express.Multer.File[];
 
         if (!content && (!attachs || attachs.length === 0)) {
-            return res.status(400).json({ message: 'Message is required' });
+            return res.status(400).json({ message: 'Tin nhắn không được để trống' });
         }
         const files = [];
 
@@ -61,7 +61,7 @@ export const sendMessage = async (req: Request, res: Response) => {
         const message = await messageService.createMessage(conversationId as string, userId, content, files);
 
         res.status(201).json({
-            message: 'Message sent successfully',
+            message: 'Gửi tin nhắn thành công',
             data: message
         });
     } catch (error: any) {
@@ -77,7 +77,7 @@ export const markAsSeen = async (req: Request, res: Response) => {
         const message = await messageService.markMessageSeen(messageId as string, userId);
 
         res.status(200).json({
-            message: 'Message marked as seen',
+            message: 'Đã đánh dấu tin nhắn là đã đọc',
             data: message
         });
     } catch (error: any) {
@@ -105,7 +105,7 @@ export const reactToMessage = async (req: Request, res: Response) => {
         const { emoji } = req.body;
 
         if (!emoji || typeof emoji !== 'string') {
-            return res.status(400).json({ message: 'emoji is required' });
+            return res.status(400).json({ message: 'Vui lòng cung cấp emoji' });
         }
 
         const reactions = await messageService.toggleReaction(messageId as string, userId, emoji);

@@ -35,22 +35,22 @@ export const createConversation = async (req: Request, res: Response) => {
         const { type, targetUserId, name, participantIds, avatar } = req.body;
 
         if (!type || !['private', 'group'].includes(type)) {
-            return res.status(400).json({ message: 'Invalid conversation type' });
+            return res.status(400).json({ message: 'Loại cuộc trò chuyện không hợp lệ' });
         }
 
         let conversation;
 
         if (type === 'private') {
             if (!targetUserId) {
-                return res.status(400).json({ message: 'Target user ID is required for private conversation' });
+                return res.status(400).json({ message: 'Vui lòng cung cấp ID người dùng mục tiêu' });
             }
             conversation = await conversationService.createPrivateConversation(userId, targetUserId);
         } else {
             if (!name) {
-                return res.status(400).json({ message: 'Group name is required' });
+                return res.status(400).json({ message: 'Vui lòng nhập tên nhóm' });
             }
             if (!participantIds || !Array.isArray(participantIds)) {
-                return res.status(400).json({ message: 'Participant IDs are required for group' });
+                return res.status(400).json({ message: 'Vui lòng cung cấp danh sách thành viên' });
             }
             conversation = await conversationService.createGroupConversation(
                 userId,
@@ -61,7 +61,7 @@ export const createConversation = async (req: Request, res: Response) => {
         }
 
         res.status(201).json({
-            message: 'Conversation created successfully',
+            message: 'Tạo cuộc trò chuyện thành công',
             conversation
         });
     } catch (error: any) {
@@ -82,7 +82,7 @@ export const updateConversation = async (req: Request, res: Response) => {
         );
 
         res.status(200).json({
-            message: 'Group updated successfully',
+            message: 'Cập nhật thông tin nhóm thành công',
             conversation
         });
     } catch (error: any) {
@@ -110,7 +110,7 @@ export const addMember = async (req: Request, res: Response) => {
         const { memberId } = req.body;
 
         if (!memberId) {
-            return res.status(400).json({ message: 'Member ID is required' });
+            return res.status(400).json({ message: 'Vui lòng cung cấp ID thành viên' });
         }
 
         const conversation = await conversationService.addGroupMember(
@@ -120,7 +120,7 @@ export const addMember = async (req: Request, res: Response) => {
         );
 
         res.status(200).json({
-            message: 'Member added successfully',
+            message: 'Thêm thành viên thành công',
             conversation
         });
     } catch (error: any) {
@@ -140,7 +140,7 @@ export const removeMember = async (req: Request, res: Response) => {
         );
 
         res.status(200).json({
-            message: 'Member removed successfully',
+            message: 'Xóa thành viên thành công',
             conversation
         });
     } catch (error: any) {
@@ -174,4 +174,43 @@ export const hideConversation = async (req: Request, res: Response) => {
     }
 };
 
+export const generateInvite = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
 
+        const result = await conversationService.generateInviteToken(conversationId as string, userId);
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const getInviteInfo = async (req: Request, res: Response) => {
+    try {
+        const { token } = req.params;
+
+        const info = await conversationService.getInviteInfo(token as string);
+
+        res.status(200).json(info);
+    } catch (error: any) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
+export const joinByInvite = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { token } = req.params;
+
+        const conversation = await conversationService.joinByInvite(token as string, userId);
+
+        res.status(200).json({
+            message: 'Tham gia nhóm thành công',
+            conversation
+        });
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};

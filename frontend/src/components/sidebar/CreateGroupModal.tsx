@@ -5,6 +5,7 @@ import { friendService } from '../../services/friendService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
 import { Avatar, Spinner } from './SidebarShared';
+import { X, Search, Check, Loader2 } from 'lucide-react';
 
 const PAGE_SIZE = 15;
 
@@ -113,9 +114,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">Tạo Nhóm Chat</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <X size={18} />
           </button>
         </div>
 
@@ -140,9 +139,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                   <span key={u._id} className="flex items-center gap-1.5 px-2.5 py-1 bg-[#0068FF]/10 text-[#0068FF] rounded-full text-xs font-medium">
                     {u.displayName || u.email}
                     <button onClick={() => toggleUser(u)} className="hover:text-red-500 transition-colors">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
+                    <X size={10} strokeWidth={2.5} />
                     </button>
                   </span>
                 ))}
@@ -161,9 +158,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
               {/* Search */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
+                  <Search size={15} />
                 </div>
                 <input
                   type="text"
@@ -212,11 +207,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                           {/* Không hiển thị checkbox nếu đã có nhóm chung */}
                           {!inGroupFriendIds.has(u._id) && (
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? 'bg-[#0068FF] border-[#0068FF]' : 'border-slate-300'}`}>
-                              {isSelected && (
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                                  <polyline points="20 6 9 17 4 12" />
-                                </svg>
-                              )}
+                              {isSelected && <Check size={10} strokeWidth={3} color="white" />}
                             </div>
                           )}
                         </button>
@@ -248,10 +239,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
           >
             {creating ? (
               <>
-                <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3" />
-                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                </svg>
+                <Loader2 size={16} className="animate-spin" />
                 Đang tạo…
               </>
             ) : (

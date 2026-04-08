@@ -7,13 +7,13 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         const { receiverId } = req.body;
 
         if (!receiverId) {
-            return res.status(400).json({ message: 'Receiver ID is required' });
+            return res.status(400).json({ message: 'Vui lòng cung cấp ID người nhận' });
         }
 
         const friendRequest = await friendService.sendFriendRequest(senderId, receiverId);
 
         res.status(201).json({
-            message: 'Friend request sent successfully',
+            message: 'Gửi lời mời kết bạn thành công',
             friendRequest
         });
     } catch (error: any) {
@@ -29,7 +29,7 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
         const result = await friendService.acceptFriendRequest(requestId as string, userId);
 
         res.status(200).json({
-            message: 'Friend request accepted',
+            message: 'Chấp nhận lời mời kết bạn thành công',
             ...result
         });
     } catch (error: any) {
@@ -45,7 +45,7 @@ export const rejectFriendRequest = async (req: Request, res: Response) => {
         const friendRequest = await friendService.rejectFriendRequest(requestId as string, userId);
 
         res.status(200).json({
-            message: 'Friend request rejected',
+            message: 'Từ chối lời mời kết bạn thành công',
             friendRequest
         });
     } catch (error: any) {

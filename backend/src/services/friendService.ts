@@ -8,11 +8,11 @@ export const sendFriendRequest = async (senderId: string, receiverId: string) =>
     const receiver = await UserModel.findById(receiverId);
 
     if (!sender || !receiver) {
-        throw new Error('User not found');
+        throw new Error('Không tìm thấy người dùng');
     }
 
     if (senderId === receiverId) {
-        throw new Error('Cannot send friend request to yourself');
+        throw new Error('Không thể gửi lời mời kết bạn cho chính mình');
     }
 
     const existingFriendship = await FriendshipModel.findOne({
@@ -23,7 +23,7 @@ export const sendFriendRequest = async (senderId: string, receiverId: string) =>
     });
 
     if (existingFriendship) {
-        throw new Error('Already friends with this user');
+        throw new Error('Hai người đã là bạn bè');
     }
 
     const existingRequest = await FriendRequestModel.findOne({
@@ -33,7 +33,7 @@ export const sendFriendRequest = async (senderId: string, receiverId: string) =>
     });
 
     if (existingRequest) {
-        throw new Error('Friend request already sent');
+        throw new Error('Đã gửi lời mời kết bạn trước đó');
     }
 
     const reverseRequest = await FriendRequestModel.findOne({
@@ -43,7 +43,7 @@ export const sendFriendRequest = async (senderId: string, receiverId: string) =>
     });
 
     if (reverseRequest) {
-        throw new Error('This user has already sent you a friend request');
+        throw new Error('Người này đã gửi lời mời kết bạn cho bạn');
     }
 
     const friendRequest = await FriendRequestModel.create({
@@ -64,15 +64,15 @@ export const acceptFriendRequest = async (requestId: string, userId: string) => 
     const request = await FriendRequestModel.findById(requestId);
 
     if (!request) {
-        throw new Error('Friend request not found');
+        throw new Error('Không tìm thấy lời mời kết bạn');
     }
 
     if (request.receiverId.toString() !== userId) {
-        throw new Error('Unauthorized to accept this friend request');
+        throw new Error('Bạn không có quyền chấp nhận lời mời này');
     }
 
     if (request.status !== 'pending') {
-        throw new Error('Friend request is not pending');
+        throw new Error('Lời mời kết bạn không còn ở trạng thái chờ');
     }
 
     request.status = 'accepted';
@@ -104,15 +104,15 @@ export const rejectFriendRequest = async (requestId: string, userId: string) => 
     const request = await FriendRequestModel.findById(requestId);
 
     if (!request) {
-        throw new Error('Friend request not found');
+        throw new Error('Không tìm thấy lời mời kết bạn');
     }
 
     if (request.receiverId.toString() !== userId) {
-        throw new Error('Unauthorized to reject this friend request');
+        throw new Error('Bạn không có quyền từ chối lời mời này');
     }
 
     if (request.status !== 'pending') {
-        throw new Error('Friend request is not pending');
+        throw new Error('Lời mời kết bạn không còn ở trạng thái chờ');
     }
 
     request.status = 'rejected';
@@ -180,10 +180,10 @@ export const removeFriendship = async (userId: string, friendId: string) => {
     });
 
     if (!friendship) {
-        throw new Error('Friendship not found');
+        throw new Error('Không tìm thấy quan hệ bạn bè');
     }
 
     await FriendshipModel.deleteOne({ _id: friendship._id });
 
-    return { message: 'Friendship removed successfully' };
+    return { message: 'Đã xóa bạn bè thành công' };
 };

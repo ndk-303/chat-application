@@ -4,6 +4,7 @@ import { friendService } from '../../services/friendService';
 import { userService } from '../../services/userService';
 import type { User, FriendRequest } from '../../types';
 import { Avatar, Spinner } from './SidebarShared';
+import { UserCheck, Search } from 'lucide-react';
 
 // ─── Friend Requests Tab ──────────────────────────────────────────────────────
 
@@ -45,11 +46,7 @@ function FriendRequestsTab({ onCountChange }: { onCountChange: (n: number) => vo
   if (receivedRequests.length === 0) return (
     <div className="flex flex-col items-center justify-center py-12 gap-3 px-4 text-center">
       <div className="w-12 h-12 rounded-xl bg-[#0068FF]/10 flex items-center justify-center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <polyline points="16 11 18 13 22 9" />
-        </svg>
+        <UserCheck size={22} color="#0068FF" strokeWidth={2} />
       </div>
       <p className="text-sm text-slate-400">Không có lời mời kết bạn nào</p>
     </div>
@@ -128,9 +125,7 @@ function FriendSearchTab() {
       <div className="p-4">
         <div className="relative group">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search size={17} />
           </div>
           <input
             type="text"
@@ -147,9 +142,7 @@ function FriendSearchTab() {
       {!loading && !query.trim() && (
         <div className="flex flex-col items-center justify-center py-10 gap-2 px-4 text-center">
           <div className="w-12 h-12 rounded-xl bg-[#0068FF]/10 flex items-center justify-center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search size={22} color="#0068FF" strokeWidth={2} />
           </div>
           <p className="text-sm text-slate-400">Tìm kiếm mọi người để kết bạn</p>
         </div>

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router';
 import { AuthLayout } from '../../components/auth/AuthLayout';
 import { authService } from '../../services/authService';
+import { Mail, Info, Check, Loader2 } from 'lucide-react';
 
 export default function VerifyEmailPage() {
   const navigate = useNavigate();
@@ -71,9 +72,7 @@ export default function VerifyEmailPage() {
     <AuthLayout>
       <div className="mb-6 text-center">
         <div className="w-14 h-14 rounded-2xl bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-          </svg>
+          <Mail size={28} color="#0068FF" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>Xác thực email</h1>
         <p className="text-gray-500 text-sm">
@@ -83,13 +82,13 @@ export default function VerifyEmailPage() {
 
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <Info size={16} />
           {error}
         </div>
       )}
       {success && (
         <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm flex items-center gap-2">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <Check size={16} />
           {success}
         </div>
       )}
@@ -118,10 +117,7 @@ export default function VerifyEmailPage() {
       >
         {isLoading ? (
           <>
-            <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.3"/>
-              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-            </svg>
+            <Loader2 size={16} className="animate-spin" />
             Đang xác thực...
           </>
         ) : 'Xác thực Email'}

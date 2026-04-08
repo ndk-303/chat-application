@@ -22,4 +22,9 @@ router.delete('/:conversationId/dissolve', conversationController.dissolveGroup)
 
 router.post('/:conversationId/hide', conversationController.hideConversation);
 
+// Invite link
+router.post('/:conversationId/invite', conversationController.generateInvite);
+router.get('/invite/:token', conversationController.getInviteInfo);
+router.post('/invite/:token/join', conversationController.joinByInvite);
+
 export default router;

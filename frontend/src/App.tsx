@@ -1,13 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
+import { Toaster } from 'sonner';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 import ChatPage from './pages/app/ChatPage';
+import JoinGroupPage from './pages/app/JoinGroupPage';
 
 function App() {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-center"
+        richColors
+        toastOptions={{
+          style: { fontFamily: 'Inter, sans-serif' },
+          duration: 3000,
+        }}
+      />
       <Routes>
         {/* Auth routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -20,6 +30,16 @@ function App() {
           element={
             <ProtectedRoute>
               <ChatPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Join group via invite link */}
+        <Route
+          path="/join/:token"
+          element={
+            <ProtectedRoute>
+              <JoinGroupPage />
             </ProtectedRoute>
           }
         />

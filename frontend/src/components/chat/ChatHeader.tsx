@@ -1,7 +1,10 @@
 import { useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useCallStore } from '../../stores/callStore';
+import { useChatStore } from '../../stores/chatStore';
+import { useIsMobile } from '../../hooks/use-mobile';
 import type { Conversation } from '../../types';
+import { Users, Phone, Video, Menu, ArrowLeft } from 'lucide-react';
 
 interface ChatHeaderProps {
   conversation: Conversation;
@@ -15,6 +18,8 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
   const user = useAuthStore((s) => s.user);
   const { toggleRightPanel, isRightPanelOpen } = useUIStore();
   const { startOutgoingCall, startCallFn } = useCallStore();
+  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const isMobile = useIsMobile();
 
   const other = conversation.type === 'private'
     ? conversation.participants.find((p) => p._id !== user?._id)
@@ -45,22 +50,30 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
   };
 
   return (
-    <div className="h-16 bg-white border-b border-gray-100 flex items-center px-4 gap-3 flex-shrink-0">
+    <div className="h-14 md:h-16 bg-white border-b border-gray-100 flex items-center px-2 md:px-4 gap-2 md:gap-3 flex-shrink-0">
+      {/* Back button (mobile only) */}
+      {isMobile && (
+        <button
+          onClick={() => setActiveConversation(null)}
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors shrink-0"
+        >
+          <ArrowLeft size={20} />
+        </button>
+      )}
+
       {/* Avatar */}
       <div className="relative">
         {avatar ? (
-          <img src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
+          <img src={avatar} alt={name} className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover" />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center font-bold text-sm">
+          <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center font-bold text-sm">
             {conversation.type === 'group' ? (
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
+              <Users size={18} fill="currentColor" />
             ) : getInitials(name)}
           </div>
         )}
         {isOnline && (
-          <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#22C55E] border-2 border-white" />
+          <span className="absolute bottom-0 right-0 w-2.5 h-2.5 md:w-3 md:h-3 rounded-full bg-[#22C55E] border-2 border-white" />
         )}
       </div>
 
@@ -71,17 +84,15 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
       </div>
 
       {/* Action buttons */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 md:gap-1">
         {/* Voice call — only for private conversations */}
         {conversation.type === 'private' && (
           <button
             title="Voice call"
             onClick={() => handleCall('audio')}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
+            className="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
           >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.59 3.41 2 2 0 0 1 3.56 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.54a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
+            <Phone size={16} />
           </button>
         )}
         {/* Video call — only for private conversations */}
@@ -89,19 +100,17 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
           <button
             title="Video call"
             onClick={() => handleCall('video')}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
+            className="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
           >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-            </svg>
+            <Video size={16} />
           </button>
         )}
         <button
           title="Info"
           onClick={toggleRightPanel}
-          className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${isRightPanelOpen ? 'text-[#0068FF] bg-[#0068FF]/10' : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'}`}
+          className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition-all ${isRightPanelOpen ? 'text-[#0068FF] bg-[#0068FF]/10' : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'}`}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu-icon lucide-menu"><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" /></svg>
+          <Menu size={20} />
         </button>
       </div>
     </div>

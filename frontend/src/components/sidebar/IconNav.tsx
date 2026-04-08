@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router';
 import { useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useChatStore } from '../../stores/chatStore';
+import { useIsMobile } from '../../hooks/use-mobile';
+import { MessageSquare, UserPlus, Users, Settings, LogOut } from 'lucide-react';
 
 interface NavButtonProps {
   title: string;
@@ -27,10 +29,31 @@ function NavButton({ title, active, onClick, children, badge }: NavButtonProps) 
           {badge > 99 ? '99+' : badge}
         </span>
       )}
-      {/* Tooltip */}
-      <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
+      {/* Tooltip (desktop only) */}
+      <span className="hidden md:block absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
         {title}
       </span>
+    </button>
+  );
+}
+
+/* Mobile-specific compact nav button */
+function MobileNavButton({ title, active, onClick, children, badge }: NavButtonProps) {
+  return (
+    <button
+      title={title}
+      onClick={onClick}
+      className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all ${active
+        ? 'bg-[#0068FF] text-white shadow-md'
+        : 'text-gray-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10'
+        }`}
+    >
+      {children}
+      {badge != null && badge > 0 && (
+        <span className="absolute -right-0.5 -top-0.5 min-w-[15px] h-[15px] bg-[#FF3B30] rounded-full flex items-center justify-center text-white text-[8px] font-bold px-0.5 pointer-events-none">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </button>
   );
 }
@@ -39,6 +62,7 @@ export function IconNav() {
   const logout = useAuthStore((s) => s.logout);
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { sidebarView, setSidebarView, setCreateGroupModalOpen, setProfileModalOpen } = useUIStore();
   const conversations = useChatStore((s) => s.conversations);
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0);
@@ -48,6 +72,46 @@ export function IconNav() {
     navigate('/login');
   };
 
+  // Mobile: horizontal compact bar
+  if (isMobile) {
+    return (
+      <div className="flex items-center gap-1 flex-1">
+        {/* Avatar */}
+        <button
+          onClick={() => setProfileModalOpen(true)}
+          className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#0068FF]/30 shrink-0"
+        >
+          {user?.avatar ? (
+            <img src={user.avatar} alt={user.displayName} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-[#0068FF]/15 flex items-center justify-center text-[#0068FF] text-sm font-bold">
+              {(user?.displayName?.[0] ?? '?').toUpperCase()}
+            </div>
+          )}
+        </button>
+
+        <h1 className="text-base font-bold text-gray-800 ml-1 mr-auto">Kapta</h1>
+
+        <MobileNavButton title="Tin nhắn" active={sidebarView === 'messages'} onClick={() => setSidebarView('messages')} badge={totalUnread}>
+          <MessageSquare size={18} fill={sidebarView === 'messages' ? 'currentColor' : 'none'} />
+        </MobileNavButton>
+        <MobileNavButton title="Bạn bè" active={sidebarView === 'friends'} onClick={() => setSidebarView('friends')}>
+          <UserPlus size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Danh bạ" active={sidebarView === 'contacts'} onClick={() => setSidebarView('contacts')}>
+          <Users size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Tạo nhóm" onClick={() => setCreateGroupModalOpen(true)}>
+          <Users size={18} />
+        </MobileNavButton>
+        <MobileNavButton title="Đăng xuất" onClick={handleLogout}>
+          <LogOut size={18} />
+        </MobileNavButton>
+      </div>
+    );
+  }
+
+  // Desktop: vertical sidebar (original)
   return (
     <aside className="w-[68px] bg-[#0068FF] flex flex-col items-center py-4 justify-between shrink-0">
       {/* Top: Logo + Nav */}
@@ -79,9 +143,7 @@ export function IconNav() {
             onClick={() => setSidebarView('messages')}
             badge={totalUnread}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" />
-            </svg>
+            <MessageSquare size={22} fill="currentColor" />
           </NavButton>
 
           {/* Add Friend */}
@@ -90,12 +152,7 @@ export function IconNav() {
             active={sidebarView === 'friends'}
             onClick={() => setSidebarView('friends')}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <line x1="19" y1="8" x2="19" y2="14" />
-              <line x1="16" y1="11" x2="22" y2="11" />
-            </svg>
+            <UserPlus size={22} />
           </NavButton>
 
           {/* Contacts */}
@@ -104,12 +161,7 @@ export function IconNav() {
             active={sidebarView === 'contacts'}
             onClick={() => setSidebarView('contacts')}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <Users size={22} />
           </NavButton>
 
           {/* Create Group */}
@@ -117,14 +169,7 @@ export function IconNav() {
             title="Tạo nhóm"
             onClick={() => setCreateGroupModalOpen(true)}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              <line x1="20" y1="8" x2="20" y2="14" />
-              <line x1="17" y1="11" x2="23" y2="11" />
-            </svg>
+            <Users size={22} />
           </NavButton>
         </nav>
       </div>
@@ -133,19 +178,12 @@ export function IconNav() {
       <div className="flex flex-col gap-2 items-center">
         {/* Settings */}
         <NavButton title="Cài đặt" onClick={() => { }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
+          <Settings size={20} />
         </NavButton>
 
         {/* Sign out */}
         <NavButton title="Đăng xuất" onClick={handleLogout}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+          <LogOut size={20} />
         </NavButton>
       </div>
     </aside>
