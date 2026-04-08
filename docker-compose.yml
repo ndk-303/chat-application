@@ -1,11 +1,11 @@
 services:
   mongo:
     image: mongo:7
-    container_name: app_mongo
+    container_name: chat_mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: adminpassword
-      MONGO_INITDB_DATABASE: app_dev
+      MONGO_INITDB_DATABASE: chat_db
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -17,7 +17,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: app_redis
+    container_name: chat_redis
     command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
     ports:
       - "6379:6379"
@@ -50,14 +50,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: app_frontend
+    container_name: chat_frontend
     depends_on:
       - backend
     restart: unless-stopped
 
   nginx:
     image: nginx:alpine
-    container_name: app_nginx
+    container_name: chat_nginx
     ports:
       - "80:80"
     volumes:

@@ -6,7 +6,6 @@ export class errorUtil extends Error {
         super(message);
         this.statusCode = statusCode;
         this.isOperational = true;
-        // Giữ đúng stack trace trong V8
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, errorUtil);
         }
