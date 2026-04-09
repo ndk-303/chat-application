@@ -6,7 +6,7 @@ import { friendService } from '../../services/friendService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
 import { Avatar, Spinner } from './SidebarShared';
-import { Search, Users, Phone, Video } from 'lucide-react';
+import { Search, Users, Phone, Video, UserPlus } from 'lucide-react';
 
 // ─── Contacts Panel — sorted A-Z with letter dividers ─────────────────────────
 
@@ -16,7 +16,7 @@ export function ContactsPanel() {
   const [query, setQuery] = useState('');
   const [openingId, setOpeningId] = useState<string | null>(null);
 
-  const { setSidebarView } = useUIStore();
+  const { setSidebarView, setFriendSearchModalOpen } = useUIStore();
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const conversations = useChatStore((s) => s.conversations);
@@ -113,23 +113,27 @@ export function ContactsPanel() {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="p-4 space-y-3 border-b border-[#E5E7EB]">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">Danh bạ</h2>
-          {!loading && (
-            <span className="text-xs text-slate-400 font-medium">{friends.length} bạn bè</span>
-          )}
-        </div>
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
-            <Search size={17} />
+        <div className="flex items-center gap-2">
+          <div className="relative group flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
+              <Search size={17} />
+            </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Tìm kiếm danh bạ…"
+              className="block w-full pl-10 pr-3 py-2.5 bg-[#0068FF]/5 border-transparent focus:ring-1 focus:ring-[#0068FF] focus:bg-white rounded-lg text-sm transition-all outline-none placeholder:text-slate-400"
+            />
           </div>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Tìm kiếm danh bạ…"
-            className="block w-full pl-10 pr-3 py-2.5 bg-[#0068FF]/5 border-transparent focus:ring-1 focus:ring-[#0068FF] focus:bg-white rounded-lg text-sm transition-all outline-none placeholder:text-slate-400"
-          />
+          {/* Add Friend */}
+          <button
+            title="Thêm bạn bè"
+            onClick={() => setFriendSearchModalOpen(true)}
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
+          >
+            <UserPlus size={19} strokeWidth={2} />
+          </button>
         </div>
       </div>
 
@@ -143,7 +147,7 @@ export function ContactsPanel() {
               <Users size={22} color="#0068FF" strokeWidth={2} />
             </div>
             <p className="text-sm text-slate-400">Chưa có bạn bè</p>
-            <button onClick={() => setSidebarView('friends')} className="text-xs text-[#0068FF] font-medium hover:underline">
+            <button onClick={() => setFriendSearchModalOpen(true)} className="text-xs text-[#0068FF] font-medium hover:underline">
               Thêm ai đó
             </button>
           </div>
@@ -164,7 +168,6 @@ export function ContactsPanel() {
               const isOpening = openingId === friend._id;
               const isOnline = (friend as any).status === 'online';
               return (
-                /* Click on card → open chat */
                 <button
                   key={friend._id}
                   onClick={() => handleOpenChat(friend)}

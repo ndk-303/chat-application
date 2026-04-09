@@ -3,7 +3,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useChatStore } from '../../stores/chatStore';
 import { useIsMobile } from '../../hooks/use-mobile';
-import { MessageSquare, UserPlus, Users, Settings, LogOut } from 'lucide-react';
+import { MessageSquare, Users, Settings, LogOut } from 'lucide-react';
 
 interface NavButtonProps {
   title: string;
@@ -63,7 +63,7 @@ export function IconNav() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { sidebarView, setSidebarView, setCreateGroupModalOpen, setProfileModalOpen } = useUIStore();
+  const { sidebarView, setSidebarView, setProfileModalOpen } = useUIStore();
   const conversations = useChatStore((s) => s.conversations);
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unreadCount ?? 0), 0);
 
@@ -95,13 +95,7 @@ export function IconNav() {
         <MobileNavButton title="Tin nhắn" active={sidebarView === 'messages'} onClick={() => setSidebarView('messages')} badge={totalUnread}>
           <MessageSquare size={18} fill={sidebarView === 'messages' ? 'currentColor' : 'none'} />
         </MobileNavButton>
-        <MobileNavButton title="Bạn bè" active={sidebarView === 'friends'} onClick={() => setSidebarView('friends')}>
-          <UserPlus size={18} />
-        </MobileNavButton>
         <MobileNavButton title="Danh bạ" active={sidebarView === 'contacts'} onClick={() => setSidebarView('contacts')}>
-          <Users size={18} />
-        </MobileNavButton>
-        <MobileNavButton title="Tạo nhóm" onClick={() => setCreateGroupModalOpen(true)}>
           <Users size={18} />
         </MobileNavButton>
         <MobileNavButton title="Đăng xuất" onClick={handleLogout}>
@@ -111,7 +105,7 @@ export function IconNav() {
     );
   }
 
-  // Desktop: vertical sidebar (original)
+  // Desktop: vertical sidebar
   return (
     <aside className="w-[68px] bg-[#0068FF] flex flex-col items-center py-4 justify-between shrink-0">
       {/* Top: Logo + Nav */}
@@ -128,7 +122,6 @@ export function IconNav() {
               {(user?.displayName?.[0] ?? '?').toUpperCase()}
             </div>
           )}
-          {/* Tooltip */}
           <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
             Hồ sơ
           </span>
@@ -146,15 +139,6 @@ export function IconNav() {
             <MessageSquare size={22} fill="currentColor" />
           </NavButton>
 
-          {/* Add Friend */}
-          <NavButton
-            title="Thêm bạn bè"
-            active={sidebarView === 'friends'}
-            onClick={() => setSidebarView('friends')}
-          >
-            <UserPlus size={22} />
-          </NavButton>
-
           {/* Contacts */}
           <NavButton
             title="Danh bạ"
@@ -163,25 +147,14 @@ export function IconNav() {
           >
             <Users size={22} />
           </NavButton>
-
-          {/* Create Group */}
-          <NavButton
-            title="Tạo nhóm"
-            onClick={() => setCreateGroupModalOpen(true)}
-          >
-            <Users size={22} />
-          </NavButton>
         </nav>
       </div>
 
       {/* Bottom Buttons */}
       <div className="flex flex-col gap-2 items-center">
-        {/* Settings */}
         <NavButton title="Cài đặt" onClick={() => { }}>
           <Settings size={20} />
         </NavButton>
-
-        {/* Sign out */}
         <NavButton title="Đăng xuất" onClick={handleLogout}>
           <LogOut size={20} />
         </NavButton>

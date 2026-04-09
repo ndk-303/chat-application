@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useFriendStore } from '../../stores/friendStore';
+import { useUIStore } from '../../stores/uiStore';
 import { friendService } from '../../services/friendService';
 import { userService } from '../../services/userService';
 import type { User, FriendRequest } from '../../types';
-import { Avatar, Spinner } from './SidebarShared';
-import { UserCheck, Search } from 'lucide-react';
+import { Avatar, Spinner } from '../sidebar/SidebarShared';
+import { UserCheck, Search, X } from 'lucide-react';
 
 // ─── Friend Requests Tab ──────────────────────────────────────────────────────
 
@@ -129,6 +130,7 @@ function FriendSearchTab() {
           </div>
           <input
             type="text"
+            autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Tìm theo tên hoặc email…"
@@ -175,11 +177,14 @@ function FriendSearchTab() {
   );
 }
 
-// ─── Friend Search Panel (tabbed: Lời mời + Tìm kiếm) ────────────────────────
+// ─── Friend Search Modal ──────────────────────────────────────────────────────
 
-export function FriendSearchPanel() {
+export function FriendSearchModal() {
+  const { isFriendSearchModalOpen, setFriendSearchModalOpen } = useUIStore();
   const [activeTab, setActiveTab] = useState<'requests' | 'search'>('requests');
   const [requestCount, setRequestCount] = useState(0);
+
+  if (!isFriendSearchModalOpen) return null;
 
   const tabs = [
     { key: 'requests' as const, label: 'Lời mời', badge: requestCount },
@@ -187,35 +192,56 @@ export function FriendSearchPanel() {
   ];
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-4 pt-4 pb-0 border-b border-[#E5E7EB]">
-        <h2 className="text-lg font-bold text-slate-900 mb-3">Bạn bè</h2>
-        <div className="flex gap-4">
-          {tabs.map(({ key, label, badge }) => (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+      onClick={() => setFriendSearchModalOpen(false)}
+    >
+      <div
+        className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="px-5 pt-5 pb-0 border-b border-[#E5E7EB]">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-slate-900">Bạn bè</h2>
             <button
-              key={key}
-              onClick={() => setActiveTab(key)}
-              className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${activeTab === key
-                ? 'border-[#0068FF] text-[#0068FF] font-semibold'
-                : 'border-transparent text-slate-500 hover:text-[#0068FF]'
-                }`}
+              onClick={() => setFriendSearchModalOpen(false)}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
             >
-              {label}
-              {badge != null && badge > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold">
-                  {badge}
-                </span>
-              )}
+              <X size={16} strokeWidth={2.5} />
             </button>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar">
-        {activeTab === 'requests'
-          ? <FriendRequestsTab onCountChange={setRequestCount} />
-          : <FriendSearchTab />
-        }
+          {/* Tabs */}
+          <div className="flex gap-5">
+            {tabs.map(({ key, label, badge }) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${
+                  activeTab === key
+                    ? 'border-[#0068FF] text-[#0068FF] font-semibold'
+                    : 'border-transparent text-slate-500 hover:text-[#0068FF]'
+                }`}
+              >
+                {label}
+                {badge != null && badge > 0 && (
+                  <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                    {badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {activeTab === 'requests'
+            ? <FriendRequestsTab onCountChange={setRequestCount} />
+            : <FriendSearchTab />
+          }
+        </div>
       </div>
     </div>
   );

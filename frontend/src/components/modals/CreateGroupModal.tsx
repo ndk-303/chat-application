@@ -4,7 +4,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { friendService } from '../../services/friendService';
 import { conversationService } from '../../services/conversationService';
 import type { User } from '../../types';
-import { Avatar, Spinner } from './SidebarShared';
+import { Avatar, Spinner } from '../sidebar/SidebarShared';
 import { X, Search, Check, Loader2 } from 'lucide-react';
 
 const PAGE_SIZE = 15;

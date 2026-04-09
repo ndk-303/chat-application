@@ -3,11 +3,11 @@ import { useChatStore } from '../../stores/chatStore';
 import { useAuthStore } from '../../stores/authStore';
 import { useUIStore } from '../../stores/uiStore';
 import { ConversationItem } from './ConversationItem';
-import { FriendSearchPanel } from './FriendSearchPanel';
 import { ContactsPanel } from './ContactsPanel';
-import { CreateGroupModal } from './CreateGroupModal';
+import { CreateGroupModal } from '../modals/CreateGroupModal';
+import { FriendSearchModal } from '../modals/FriendSearchModal';
 import type { Conversation } from '../../types';
-import { Search, MessageSquare } from 'lucide-react';
+import { Search, MessageSquare, UserPlus, Users } from 'lucide-react';
 
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
@@ -15,7 +15,12 @@ export function Sidebar() {
   const fetchConversations = useChatStore((s) => s.fetchConversations);
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const activeId = useChatStore((s) => s.activeConversationId);
-  const { sidebarTab, setSidebarTab, sidebarView, isCreateGroupModalOpen, setCreateGroupModalOpen } = useUIStore();
+  const {
+    sidebarTab, setSidebarTab,
+    sidebarView,
+    isCreateGroupModalOpen, setCreateGroupModalOpen,
+    isFriendSearchModalOpen, setFriendSearchModalOpen,
+  } = useUIStore();
 
   useEffect(() => { fetchConversations(); }, [fetchConversations]);
 
@@ -45,26 +50,42 @@ export function Sidebar() {
   return (
     <>
       <aside className="w-full md:w-[380px] lg:w-[420px] bg-white border-r border-[#E5E7EB] flex flex-col flex-shrink-0">
-        {sidebarView === 'friends' ? (
-          <FriendSearchPanel />
-        ) : sidebarView === 'contacts' ? (
+        {sidebarView === 'contacts' ? (
           <ContactsPanel />
         ) : (
           <>
             {/* Header */}
             <div className="p-4 space-y-4">
-              <h1 className="text-xl font-bold text-slate-900">Tin nhắn</h1>
-
-              {/* Search */}
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
-                  <Search size={18} />
+              {/* Search + Action Icons */}
+              <div className="flex items-center gap-2">
+                <div className="relative group flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0068FF] transition-colors">
+                    <Search size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm cuộc trò chuyện"
+                    className="block w-full pl-10 pr-3 py-2.5 bg-[#0068FF]/5 border-transparent focus:ring-1 focus:ring-[#0068FF] focus:bg-white rounded-lg text-sm transition-all outline-none placeholder:text-slate-400"
+                  />
                 </div>
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm cuộc trò chuyện"
-                  className="block w-full pl-10 pr-3 py-2.5 bg-[#0068FF]/5 border-transparent focus:ring-1 focus:ring-[#0068FF] focus:bg-white rounded-lg text-sm transition-all outline-none placeholder:text-slate-400"
-                />
+
+                {/* Add Friend */}
+                <button
+                  title="Thêm bạn bè"
+                  onClick={() => setFriendSearchModalOpen(true)}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
+                >
+                  <UserPlus size={19} strokeWidth={2} />
+                </button>
+
+                {/* Create Group */}
+                <button
+                  title="Tạo nhóm"
+                  onClick={() => setCreateGroupModalOpen(true)}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
+                >
+                  <Users size={19} strokeWidth={2} />
+                </button>
               </div>
 
               {/* Tabs */}
@@ -115,10 +136,11 @@ export function Sidebar() {
         )}
       </aside>
 
-      {/* Create Group Modal */}
+      {/* Modals */}
       {isCreateGroupModalOpen && (
         <CreateGroupModal onClose={() => setCreateGroupModalOpen(false)} />
       )}
+      {isFriendSearchModalOpen && <FriendSearchModal />}
     </>
   );
 }
