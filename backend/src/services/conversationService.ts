@@ -50,12 +50,22 @@ export const getUserConversations = async (userId: string) => {
         unreadMap[row._id.toString()] = row.count;
     }
 
-    // Attach unreadCount to each conversation (as a plain object)
-    return visible.map((conv) => {
+    // Attach unreadCount + isMuted + isPinned
+    const now = new Date();
+    const result = visible.map((conv) => {
         const obj = conv.toObject() as any;
         obj.unreadCount = unreadMap[conv._id.toString()] ?? 0;
+        const muteEntry = conv.mutedFor?.find((m: any) => m.userId.toString() === userId);
+        obj.isMuted = !!(muteEntry && (!muteEntry.mutedUntil || muteEntry.mutedUntil > now));
+        obj.isPinned = !!(conv.pinnedFor?.some((p: any) => p.userId.toString() === userId));
         return obj;
     });
+    result.sort((a: any, b: any) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        return new Date(b.lastMessageAt ?? 0).getTime() - new Date(a.lastMessageAt ?? 0).getTime();
+    });
+    return result;
 };
 
 
@@ -524,4 +534,48 @@ export const joinByInvite = async (token: string, userId: string) => {
     emitToUser(userId, 'added_to_group', conversation);
 
     return conversation;
+};
+
+// ─── Mute Conversation ────────────────────────────────────────────────────────
+
+export const muteConversation = async (conversationId: string, userId: string, mutedUntil?: Date) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 404);
+    const isParticipant = conversation.participants.some((p: any) => p.toString() === userId);
+    if (!isParticipant) throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 403);
+    conversation.mutedFor = (conversation.mutedFor || []).filter((m: any) => m.userId.toString() !== userId) as any;
+    (conversation.mutedFor as any[]).push({ userId, mutedUntil: mutedUntil ?? null });
+    await conversation.save();
+    return { message: 'Đã tắt thông báo', isMuted: true };
+};
+
+export const unmuteConversation = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 404);
+    conversation.mutedFor = (conversation.mutedFor || []).filter((m: any) => m.userId.toString() !== userId) as any;
+    await conversation.save();
+    return { message: 'Đã bật thông báo', isMuted: false };
+};
+
+// ─── Pin Conversation ─────────────────────────────────────────────────────────
+
+export const pinConversation = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 404);
+    const isParticipant = conversation.participants.some((p: any) => p.toString() === userId);
+    if (!isParticipant) throw new errorUtil('Bạn không phải thành viên của cuộc trò chuyện này', 403);
+    const alreadyPinned = (conversation.pinnedFor || []).some((p: any) => p.userId.toString() === userId);
+    if (!alreadyPinned) {
+        (conversation.pinnedFor as any[]).push({ userId, pinnedAt: new Date() });
+        await conversation.save();
+    }
+    return { message: 'Đã ghim hội thoại', isPinned: true };
+};
+
+export const unpinConversation = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 404);
+    conversation.pinnedFor = (conversation.pinnedFor || []).filter((p: any) => p.userId.toString() !== userId) as any;
+    await conversation.save();
+    return { message: 'Đã bỏ ghim hội thoại', isPinned: false };
 };

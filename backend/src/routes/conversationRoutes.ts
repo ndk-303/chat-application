@@ -22,6 +22,14 @@ router.delete('/:conversationId/dissolve', conversationController.dissolveGroup)
 
 router.post('/:conversationId/hide', conversationController.hideConversation);
 
+// Mute / Unmute
+router.put('/:conversationId/mute', conversationController.muteConversation);
+router.delete('/:conversationId/mute', conversationController.unmuteConversation);
+
+// Pin / Unpin
+router.put('/:conversationId/pin', conversationController.pinConversation);
+router.delete('/:conversationId/pin', conversationController.unpinConversation);
+
 // Invite link
 router.post('/:conversationId/invite', conversationController.generateInvite);
 router.get('/invite/:token', conversationController.getInviteInfo);

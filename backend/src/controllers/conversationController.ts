@@ -214,3 +214,50 @@ export const joinByInvite = async (req: Request, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const muteConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+        const { mutedUntil } = req.body;
+        const result = await conversationService.muteConversation(
+            conversationId as string, userId, mutedUntil ? new Date(mutedUntil) : undefined
+        );
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(error.statusCode ?? 400).json({ message: error.message });
+    }
+};
+
+export const unmuteConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+        const result = await conversationService.unmuteConversation(conversationId as string, userId);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(error.statusCode ?? 400).json({ message: error.message });
+    }
+};
+
+export const pinConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+        const result = await conversationService.pinConversation(conversationId as string, userId);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(error.statusCode ?? 400).json({ message: error.message });
+    }
+};
+
+export const unpinConversation = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+        const result = await conversationService.unpinConversation(conversationId as string, userId);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(error.statusCode ?? 400).json({ message: error.message });
+    }
+};

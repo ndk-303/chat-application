@@ -5,6 +5,16 @@ export interface HiddenForEntry {
     hiddenAt: Date;
 }
 
+export interface MutedForEntry {
+    userId: mongoose.Types.ObjectId;
+    mutedUntil?: Date; // undefined = vĩnh viễn
+}
+
+export interface PinnedForEntry {
+    userId: mongoose.Types.ObjectId;
+    pinnedAt: Date;
+}
+
 export interface Conversation extends Document {
     type: 'private' | 'group';
     participants: mongoose.Types.ObjectId[];
@@ -14,6 +24,8 @@ export interface Conversation extends Document {
     lastMessageId?: mongoose.Types.ObjectId;
     lastMessageAt?: Date;
     hiddenFor: HiddenForEntry[];
+    mutedFor: MutedForEntry[];
+    pinnedFor: PinnedForEntry[];
     inviteToken?: string;
     createdAt: Date;
     updatedAt: Date;
@@ -56,6 +68,14 @@ const conversationSchema = new Schema<Conversation>(
         hiddenFor: [{
             userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
             hiddenAt: { type: Date, required: true }
+        }],
+        mutedFor: [{
+            userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+            mutedUntil: { type: Date, default: null }
+        }],
+        pinnedFor: [{
+            userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+            pinnedAt: { type: Date, required: true }
         }],
         inviteToken: {
             type: String,
