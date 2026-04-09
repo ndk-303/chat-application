@@ -115,7 +115,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 export const requestPasswordReset = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
-
+        console.log('req reset', email);
         if (!email) {
             return res.status(400).json({ message: 'Vui lòng nhập email' });
         }

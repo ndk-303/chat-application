@@ -1,7 +1,7 @@
-﻿import UserModel from "../models/User";
+import UserModel from "../models/User";
 import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
-import { sendVerificationEmail } from "../utils/emailUtils";
+import { sendVerificationEmail, sendPasswordResetEmail } from "../utils/emailUtils";
 import { errorUtil } from "../utils/errorUtils";
 
 function generateOTP(): string {
@@ -61,8 +61,9 @@ export const register = async (displayName: string, email: string, password: str
 
     try {
         await sendVerificationEmail(email, code, displayName);
+        console.log('[Register] Verification email sent to:', email);
     } catch (emailErr) {
-        console.error('[Register] Không thể gửi email xác thực:', emailErr);
+        console.error('[Register] ❌ Failed to send verification email:', emailErr);
     }
 
     return {
@@ -162,6 +163,15 @@ export const requestPasswordReset = async (email: string) => {
     user.passwordResetToken = resetToken;
     user.passwordResetExpires = resetExpiration;
     await user.save();
+
+    // Send reset code via email
+    try {
+        const userForEmail = await UserModel.findOne({ email });
+        await sendPasswordResetEmail(email, resetToken, userForEmail?.displayName);
+        console.log('[PasswordReset] Reset email sent to:', email);
+    } catch (emailErr) {
+        console.error('[PasswordReset] ❌ Failed to send reset email:', emailErr);
+    }
 
     return {
         message: 'Đã gửi mã đặt lại mật khẩu thành công',
