@@ -1,4 +1,4 @@
-﻿import MessageModel from '../models/Message';
+import MessageModel from '../models/Message';
 import ConversationModel from '../models/Conversation';
 import mongoose from 'mongoose';
 import { getIO, emitToUser } from '../socket/socketManager';
@@ -267,34 +267,42 @@ export const toggleReaction = async (messageId: string, userId: string, emoji: s
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // Find existing reaction group for this emoji
-    const existingGroup = message.reactions.find((r: any) => r.emoji === emoji);
+    // ── Step 1: Remove user from any OTHER emoji group (one reaction per user) ──
+    // Rebuild as plain objects to avoid Mongoose subdocument mutation tracking issues
+    const cleanedReactions: { emoji: string; userIds: mongoose.Types.ObjectId[] }[] = message.reactions
+        .map((r: any) => ({
+            emoji: r.emoji,
+            userIds: r.emoji !== emoji
+                ? r.userIds.filter((uid: any) => uid.toString() !== userId)
+                : [...r.userIds],
+        }))
+        .filter((r) => r.userIds.length > 0);
+
+    // ── Step 2: Toggle the selected emoji ────────────────────────────────────────
+    const existingGroup = cleanedReactions.find((r) => r.emoji === emoji);
 
     if (existingGroup) {
         const alreadyReacted = existingGroup.userIds.some(
             (uid: any) => uid.toString() === userId
         );
         if (alreadyReacted) {
-            // Toggle OFF — remove userId from this emoji's group
+            // Toggle OFF — remove userId
             existingGroup.userIds = existingGroup.userIds.filter(
                 (uid: any) => uid.toString() !== userId
             );
-            // Remove group if no users left
-            if (existingGroup.userIds.length === 0) {
-                message.reactions = message.reactions.filter(
-                    (r: any) => r.emoji !== emoji
-                );
-            }
-        } else {
-            // Toggle ON — add userId to existing emoji group
-            existingGroup.userIds.push(userObjectId);
         }
+        // else: already added in step 1 cleanup, do nothing (already in group)
     } else {
-        // New emoji reaction
-        message.reactions.push({ emoji, userIds: [userObjectId] } as any);
+        // Add new emoji group
+        cleanedReactions.push({ emoji, userIds: [userObjectId] });
     }
 
+    // Remove groups with 0 users after toggle-off
+    message.reactions = cleanedReactions.filter((r) => r.userIds.length > 0) as any;
+    message.markModified('reactions');
+
     await message.save();
+
 
     // Serialize reactions for frontend: [{ emoji, userIds: string[] }]
     const serializedReactions = message.reactions.map((r: any) => ({

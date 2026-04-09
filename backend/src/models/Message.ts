@@ -19,15 +19,22 @@ export interface MessageFile {
     type: 'image' | 'video' | 'raw';
 }
 
+export interface CallMeta {
+    callType: 'audio' | 'video';
+    callDuration: number;
+    callStatus: 'ended' | 'missed' | 'rejected';
+}
+
 export interface Message extends Document {
     conversationId: mongoose.Types.ObjectId;
     senderId: mongoose.Types.ObjectId;
     content: string;
-    type: 'text' | 'system';
+    type: 'text' | 'system' | 'call';
     files?: MessageFile[];
     status: 'sent' | 'delivered' | 'seen';
     seenBy: Seen[];
     reactions: MessageReaction[];
+    callMeta?: CallMeta;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -54,7 +61,7 @@ const messageSchema = new Schema<Message>(
         },
         type: {
             type: String,
-            enum: ['text', 'system'],
+            enum: ['text', 'system', 'call'],
             default: 'text',
             index: true
         },
@@ -85,7 +92,12 @@ const messageSchema = new Schema<Message>(
         reactions: [{
             emoji: { type: String, required: true },
             userIds: [{ type: Schema.Types.ObjectId, ref: 'User' }]
-        }]
+        }],
+        callMeta: {
+            callType: { type: String, enum: ['audio', 'video'] },
+            callDuration: { type: Number, default: 0 }, // seconds
+            callStatus: { type: String, enum: ['ended', 'missed', 'rejected'], default: 'ended' },
+        },
     },
     {
         timestamps: true
