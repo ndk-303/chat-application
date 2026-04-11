@@ -11,14 +11,15 @@ const PAGE_SIZE = 15;
 
 interface CreateGroupModalProps {
   onClose: () => void;
+  initialSelected?: User[];
 }
 
-export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
+export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupModalProps) {
   const [name, setName] = useState('');
   const [query, setQuery] = useState('');
   const [allFriends, setAllFriends] = useState<User[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [selected, setSelected] = useState<User[]>([]);
+  const [selected, setSelected] = useState<User[]>(initialSelected);
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +110,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-md shadow-2xl w-full max-w-md flex flex-col max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">Tạo Nhóm Chat</h2>
@@ -127,7 +128,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="VD: Nhóm duyệt phim, Team Alpha…"
+                placeholder="VD: Nhóm lớp,…"
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] rounded-xl text-sm outline-none transition-all placeholder:text-slate-400"
               />
             </div>
@@ -139,7 +140,7 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                   <span key={u._id} className="flex items-center gap-1.5 px-2.5 py-1 bg-[#0068FF]/10 text-[#0068FF] rounded-full text-xs font-medium">
                     {u.displayName || u.email}
                     <button onClick={() => toggleUser(u)} className="hover:text-red-500 transition-colors">
-                    <X size={10} strokeWidth={2.5} />
+                      <X size={10} strokeWidth={2.5} />
                     </button>
                   </span>
                 ))}
@@ -150,9 +151,6 @@ export function CreateGroupModal({ onClose }: CreateGroupModalProps) {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Thành viên</label>
-                <span className={`text-xs font-semibold ${selected.length >= 2 ? 'text-green-600' : 'text-slate-400'}`}>
-                  {selected.length}/2 tối thiểu
-                </span>
               </div>
 
               {/* Search */}

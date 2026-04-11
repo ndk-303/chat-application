@@ -94,20 +94,32 @@ function FriendSearchTab() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
+  const [sendingIds, setSendingIds] = useState<Set<string>>(new Set());
+
+  // Use store data to know who is already a friend or already has a pending request
+  const friends = useFriendStore((s) => s.friends);
+  const sentRequests = useFriendStore((s) => s.sentRequests);
+  const fetchSentRequests = useFriendStore((s) => s.fetchSentRequests);
+
+  useEffect(() => { fetchSentRequests(); }, [fetchSentRequests]);
+
+  const friendIds = new Set(friends.map((f) => f._id));
+  const sentIds = new Set(sentRequests.map((r) => (r.receiverId as any)?._id ?? r.receiverId));
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setResults([]); return; }
     setLoading(true);
     try {
       const data = await userService.searchUsers(q);
-      setResults(data.users ?? data);
+      // Filter out users that are already friends
+      const users: User[] = data.users ?? data;
+      setResults(users.filter((u) => !friendIds.has(u._id)));
     } catch {
       setResults([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [friendIds]);
 
   useEffect(() => {
     const t = setTimeout(() => search(query), 350);
@@ -115,10 +127,14 @@ function FriendSearchTab() {
   }, [query, search]);
 
   const handleAdd = async (userId: string) => {
+    setSendingIds((prev) => new Set(prev).add(userId));
     try {
       await friendService.sendFriendRequest(userId);
-      setSentIds((prev) => new Set(prev).add(userId));
-    } catch { /* ignore */ }
+      // Refresh sent requests so the badge persists
+      fetchSentRequests();
+    } catch { /* ignore */ } finally {
+      setSendingIds((prev) => { const n = new Set(prev); n.delete(userId); return n; });
+    }
   };
 
   return (
@@ -154,25 +170,31 @@ function FriendSearchTab() {
         <p className="text-center text-sm text-slate-400 py-8">Không tìm thấy người dùng</p>
       )}
 
-      {results.map((u) => (
-        <div key={u._id} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
-          <Avatar src={u.avatar} name={u.displayName || u.email} />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-800 truncate">{u.displayName || 'Không rõ'}</p>
-            <p className="text-xs text-slate-400 truncate">{u.email}</p>
+      {results.map((u) => {
+        const already = friendIds.has(u._id);
+        const pending = sentIds.has(u._id) || sendingIds.has(u._id);
+        return (
+          <div key={u._id} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors">
+            <Avatar src={u.avatar} name={u.displayName || u.email} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-800 truncate">{u.displayName || 'Không rõ'}</p>
+              <p className="text-xs text-slate-400 truncate">{u.email}</p>
+            </div>
+            {already ? (
+              <span className="text-xs text-slate-400 font-medium shrink-0">Bạn bè</span>
+            ) : pending ? (
+              <span className="text-xs text-green-600 font-medium shrink-0">Đã gửi ✓</span>
+            ) : (
+              <button
+                onClick={() => handleAdd(u._id)}
+                className="shrink-0 px-3 py-1.5 rounded-lg bg-[#0068FF] text-white text-xs font-semibold hover:bg-[#0052CC] transition-colors"
+              >
+                Thêm bạn
+              </button>
+            )}
           </div>
-          {sentIds.has(u._id) ? (
-            <span className="text-xs text-green-600 font-medium shrink-0">Đã gửi ✓</span>
-          ) : (
-            <button
-              onClick={() => handleAdd(u._id)}
-              className="shrink-0 px-3 py-1.5 rounded-lg bg-[#0068FF] text-white text-xs font-semibold hover:bg-[#0052CC] transition-colors"
-            >
-              Thêm bạn
-            </button>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

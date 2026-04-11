@@ -41,7 +41,7 @@ export function ConversationItem({ conversation, name, avatar, isOnline, isActiv
   return (
     <button
       onClick={onClick}
-      className={`relative w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-150 border-l-[3px] ${isActive
+      className={`relative w-full flex items-center gap-2.5 px-3 py-2 text-left transition-all duration-150 border-l-[3px] ${isActive
         ? 'bg-[#E6F0FF] border-l-[#0068FF]'
         : 'border-l-transparent hover:bg-[#F5F7FA]'
         }`}
@@ -52,17 +52,17 @@ export function ConversationItem({ conversation, name, avatar, isOnline, isActiv
           <img
             src={avatar}
             alt={name}
-            className="size-12 rounded-full object-cover"
+            className="size-10 rounded-full object-cover"
           />
         ) : (
-          <div className={`size-12 rounded-full flex items-center justify-center text-sm font-bold ${isActive ? 'bg-[#0068FF] text-white' : 'bg-[#E6F0FF] text-[#0068FF]'
+          <div className={`size-10 rounded-full flex items-center justify-center text-xs font-bold ${isActive ? 'bg-[#0068FF] text-white' : 'bg-[#E6F0FF] text-[#0068FF]'
             }`}>
             {conversation.type === 'group' ? (
-              <Users size={18} fill="currentColor" />
+              <Users size={14} fill="currentColor" />
             ) : getInitials(name)}
           </div>
         )}
-        <span className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-white ${isOnline ? 'bg-[#22C55E]' : 'bg-slate-300'
+        <span className={`absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-white ${isOnline ? 'bg-[#22C55E]' : 'bg-slate-300'
           }`} />
       </div>
 
