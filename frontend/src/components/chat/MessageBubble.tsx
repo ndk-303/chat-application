@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react';
 import type { Message } from '../../types';
 import { useUIStore } from '../../stores/uiStore';
-import { ImageIcon, Video, File, Info } from 'lucide-react';
+import { useCallStore } from '../../stores/callStore';
+import { useChatStore } from '../../stores/chatStore';
+import { useAuthStore } from '../../stores/authStore';
+import { ImageIcon, Video, File, Info, Phone, PhoneOff, PhoneMissed } from 'lucide-react';
 
 import api from '../../lib/axios';
 
@@ -88,8 +91,29 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
   const [isHovered, setIsHovered] = useState(false);
   const [showQuickReact, setShowQuickReact] = useState(false);
 
-
   const { openLightbox } = useUIStore();
+  const { startOutgoingCall, startCallFn } = useCallStore();
+  const currentUser = useAuthStore((s) => s.user);
+  const conversations = useChatStore((s) => s.conversations);
+  const activeConversationId = useChatStore((s) => s.activeConversationId);
+
+  const handleCallBack = useCallback(async (callType: 'audio' | 'video') => {
+    if (!startCallFn) return;
+
+    // Find the other participant from the active conversation
+    const conv = conversations.find((c) => c._id === activeConversationId);
+    if (!conv) return;
+
+    const other = conv.participants.find((p) => p._id !== currentUser?._id);
+    if (!other) return;
+
+    startOutgoingCall(callType, {
+      _id: other._id,
+      displayName: other.displayName,
+      avatar: other.avatar,
+    });
+    await startCallFn(other._id, callType);
+  }, [startCallFn, startOutgoingCall, conversations, activeConversationId, currentUser]);
 
   const handleReact = useCallback(async (emoji: string) => {
     setShowQuickReact(false);
@@ -113,6 +137,114 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
     );
   }
 
+  // ── Call message ─────────────────────────────────────────────────────────────
+  if (message.type === 'call') {
+    const meta = message.callMeta;
+    const isVideo = meta?.callType === 'video';
+    const status = meta?.callStatus ?? 'ended';
+    const duration = meta?.callDuration ?? 0;
+
+    const formatDuration = (s: number) => {
+      if (s < 60) return `${s} giây`;
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return sec > 0 ? `${m} phút ${sec} giây` : `${m} phút`;
+    };
+
+    // Header: trạng thái cuộc gọi
+    const headerLabel =
+      status === 'missed'
+        ? 'Bạn bị nhỡ'
+        : status === 'rejected'
+          ? 'Cuộc gọi bị từ chối'
+          : isSent
+            ? (isVideo ? 'Cuộc gọi video đi' : 'Cuộc gọi thoại đi')
+            : (isVideo ? 'Cuộc gọi video đến' : 'Cuộc gọi thoại đến');
+
+
+    // Icon row label
+    const iconRowLabel = isVideo ? 'Cuộc gọi video' : 'Cuộc gọi thoại';
+
+    // Sub-text under icon row
+    const subText =
+      status === 'ended' && duration > 0
+        ? formatDuration(duration)
+        : status === 'missed'
+          ? 'Cuộc gọi thoại'
+          : 'Cuộc gọi thoại';
+
+    // Phone icon with directional arrow — SVG inline to match Zalo style
+    const isMissedOrRejected = status === 'missed' || status === 'rejected';
+
+    return (
+      <div className={`flex items-end gap-2 mb-1.5 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Avatar */}
+        {!isSent && (
+          <div className="flex-shrink-0 mb-1">
+            {showAvatar ? (
+              message.senderId.avatar ? (
+                <img src={message.senderId.avatar} alt={message.senderId.displayName} className="w-8 h-8 rounded-full object-cover" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center text-xs font-bold">
+                  {getInitials(message.senderId.displayName)}
+                </div>
+              )
+            ) : (
+              <div className="w-8" />
+            )}
+          </div>
+        )}
+
+        <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
+          {/* Card bubble */}
+          <div className="bg-white border border-gray-200 rounded-[0.3rem] shadow-sm overflow-hidden">
+
+            {/* Header */}
+            <div className="px-4 py-2">
+              <p className={`text-sm font-semibold text-gray-700`}>{headerLabel}</p>
+            </div>
+
+            {/* Icon row */}
+            <div className="px-4 pb-2 flex items-center gap-2.5">
+              {/* Phone icon with arrow */}
+              <div className="relative flex-shrink-0">
+                {isVideo ? (
+                  <Video size={20} color={isMissedOrRejected ? '#EF4444' : '#1bb152ff'} strokeWidth={2} />
+                ) : (
+                  <Phone size={20} color={isMissedOrRejected ? '#EF4444' : '#1bb152ff'} strokeWidth={2} />
+                )}
+              </div>
+
+              <div className="flex flex-col min-w-0">
+                <span className="text-[13px] font-medium text-gray-700 truncate">{iconRowLabel}</span>
+                {status === 'ended' && duration > 0 && (
+                  <span className="text-[11px] text-gray-400">{formatDuration(duration)}</span>
+                )}
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="h-px bg-gray-100 mx-0" />
+
+            {/* Gọi lại button */}
+            <button
+              className="w-full py-2.5 text-[13px] font-semibold text-[#0068FF] hover:bg-blue-50 transition-colors"
+              onClick={() => handleCallBack(meta?.callType ?? 'audio')}
+            >
+              Gọi lại
+            </button>
+          </div>
+
+          {/* Timestamp & seen */}
+          <div className={`flex items-center gap-1 mt-1 px-1 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
+            <span className="text-[10px] text-gray-400">{formatTime(message.createdAt)}</span>
+            {isSent && <SeenIcon status={message.status} />}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const imageFiles = (message.files ?? []).filter(
     (f) => f.type === 'image' || f.mimeType?.startsWith('image/')
   );
@@ -122,7 +254,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
   return (
     <div
-      className={`flex items-end gap-2 mb-1.5 group ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
+      className={`flex items-start gap-2 mb-1.5 group ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => { setIsHovered(false); setShowQuickReact(false); }}
     >
@@ -145,109 +277,115 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
       {/* Bubble + reactions */}
       <div className={`relative max-w-[60%] flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
-        {/* Sender name (group only) */}
-        {isGroup && !isSent && showAvatar && (
-          <span className="text-xs font-semibold text-[#0068FF] mb-1 px-1">
-            {message.senderId.displayName}
-          </span>
-        )}
 
-        {/* Images */}
-        {imageFiles.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-1 max-w-full">
-            {imageFiles.map((file, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => openLightbox(imageFiles.map((f) => ({ url: f.url, name: f.originalName ?? 'image' })), i)}
-                className="rounded-xl overflow-hidden border border-black/5 hover:scale-[1.02] transition-transform focus:outline-none focus:ring-2 focus:ring-[#0068FF]"
-              >
-                <img
-                  src={file.url}
-                  alt={file.originalName ?? 'image'}
-                  className="block max-w-[240px] max-h-[200px] object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        )}
 
-        {/* Non-image files */}
-        {otherFiles.map((file, i) => (
-          <a
-            key={i}
-            href={file.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center gap-3 p-3 rounded-xl mb-1 no-underline transition-opacity hover:opacity-80 ${isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
-              }`}
-          >
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
+        {/* Content wrapper — relative anchor for the reaction badge */}
+        <div className="relative block max-w-full min-w-0">
+
+          {/* Images */}
+          {imageFiles.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-1 max-w-full">
+              {imageFiles.map((file, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => openLightbox(imageFiles.map((f) => ({ url: f.url, name: f.originalName ?? 'image' })), i)}
+                  className="rounded-md overflow-hidden border border-black/5 hover:scale-[1.02] transition-transform focus:outline-none focus:ring-2 focus:ring-[#0068FF]"
+                >
+                  <img
+                    src={file.url}
+                    alt={file.originalName ?? 'image'}
+                    className="block max-w-[240px] max-h-[200px] object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Non-image files */}
+          {otherFiles.map((file, i) => (
+            <a
+              key={i}
+              href={file.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-3 p-3 rounded-md mb-1 no-underline transition-opacity hover:opacity-80 ${isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
+                }`}
+            >
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
+                }`}>
+                <FileIcon file={file} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate max-w-[160px]">{file.originalName ?? 'file'}</p>
+                <p className={`text-xs ${isSent ? 'text-white/70' : 'text-gray-400'}`}>{file.size ? formatFileSize(file.size) : ''}</p>
+              </div>
+            </a>
+          ))}
+
+          {/* Text content (with embedded sender name for group messages) */}
+          {(hasContent || (isGroup && !isSent && showAvatar)) && (
+            <div className={`px-4 py-2.5 rounded-[0.25rem] text-sm leading-relaxed break-words overflow-hidden ${isSent
+              ? 'bg-[#E5F1FE]/70 text-black shadow-sm'
+              : 'bg-white text-[#1F2937] shadow-sm'
               }`}>
-              <FileIcon file={file} />
+              {isGroup && !isSent && showAvatar && (
+                <p className="text-xs font-semibold text-gray-400 mb-1 leading-none">
+                  {message.senderId.displayName}
+                </p>
+              )}
+              {hasContent && <span>{message.content}</span>}
             </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium truncate max-w-[160px]">{file.originalName ?? 'file'}</p>
-              <p className={`text-xs ${isSent ? 'text-white/70' : 'text-gray-400'}`}>{file.size ? formatFileSize(file.size) : ''}</p>
-            </div>
-          </a>
-        ))}
+          )}
 
-        {/* Text content */}
-        {hasContent && (
-          <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${isSent
-            ? 'bg-[#0068FF] text-white rounded-br-sm shadow-sm shadow-[#0068FF]/20'
-            : 'bg-white text-[#1F2937] border border-[#E5E7EB] rounded-bl-sm shadow-sm'
-            }`}>
-            {message.content}
-          </div>
-        )}
+          {/* Reaction badge — always anchored to bottom corner of this content wrapper */}
+          {(() => {
+            const nonEmpty = (message.reactions ?? []).filter((r) => r.userIds.length > 0);
+            const totalCount = nonEmpty.reduce((s, r) => s + r.userIds.length, 0);
+            const topEmoji = nonEmpty[0]?.emoji ?? null;
+            const hasReaction = nonEmpty.length > 0;
+
+            return (
+              <div
+                className={`absolute -bottom-3 ${isSent ? '-left-2' : '-right-2'} transition-opacity duration-150 z-10 ${hasReaction || isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+              >
+                <button
+                  onClick={() => setShowQuickReact((v) => !v)}
+                  title="React"
+                  className={`flex items-center gap-1 px-1.5 h-5 rounded-full border shadow-sm transition-all hover:scale-110 active:scale-90 ${hasReaction
+                    ? 'bg-white border-gray-200 text-gray-700'
+                    : 'bg-white border-gray-200'
+                    }`}
+                >
+                  {hasReaction ? (
+                    <>
+                      <span className="text-xs leading-none">{topEmoji}</span>
+                      {totalCount > 1 && (
+                        <span className="text-[11px] font-semibold text-gray-500 leading-none">{totalCount}</span>
+                      )}
+                    </>
+                  ) : (
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M7 10v12" />
+                      <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                    </svg>
+                  )}
+                </button>
+                {showQuickReact && (
+                  <div className={`absolute bottom-full mb-1 ${isSent ? 'right-62' : 'right-0'}`}>
+                    <QuickReactBar onReact={handleReact} />
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
 
         {/* Timestamp & seen */}
-        <div className={`flex items-center gap-1 mt-1 px-1 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
+        <div className={`flex items-center gap-1 mt-4 px-1 ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
           <span className="text-[10px] text-gray-400">{formatTime(message.createdAt)}</span>
           {isSent && <SeenIcon status={message.status} />}
         </div>
-
-        {/* Reaction / Like button — shown on hover OR when reactions exist */}
-        {(() => {
-          const nonEmpty = (message.reactions ?? []).filter((r) => r.userIds.length > 0);
-          const totalCount = nonEmpty.reduce((s, r) => s + r.userIds.length, 0);
-          const topEmoji = nonEmpty[0]?.emoji ?? null;
-          const hasReaction = nonEmpty.length > 0;
-
-          return (
-            <div className={`absolute -bottom-1 ${isSent ? 'left-2' : 'right-2'} transition-opacity duration-150 ${hasReaction || isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-              <button
-                onClick={() => setShowQuickReact((v) => !v)}
-                title="React"
-                className={`flex items-center gap-1 px-1.5 h-6 rounded-full border shadow-sm transition-all hover:scale-110 active:scale-90 ${hasReaction
-                    ? 'bg-white border-gray-200 text-gray-700'
-                    : 'bg-white border-gray-200'
-                  }`}
-              >
-                {hasReaction ? (
-                  <>
-                    <span className="text-sm leading-none">{topEmoji}</span>
-                    {totalCount > 1 && (
-                      <span className="text-[11px] font-semibold text-gray-500 leading-none">{totalCount}</span>
-                    )}
-                  </>
-                ) : (
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M7 10v12" />
-                    <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
-                  </svg>
-                )}
-              </button>
-              {showQuickReact && (
-                <div className="absolute bottom-full mb-1 right-0">
-                  <QuickReactBar onReact={handleReact} />
-                </div>
-              )}
-            </div>
-          );
-        })()}
       </div>
 
 

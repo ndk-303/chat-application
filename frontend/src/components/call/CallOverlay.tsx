@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useCallStore } from '../../stores/callStore';
-import { VideoOff, MicOff, Mic, PhoneMissed, Video } from 'lucide-react';
+import { VideoOff, MicOff, Mic, Phone, Video } from 'lucide-react';
 
 interface Props {
   remoteUserId: string;
@@ -48,7 +48,7 @@ export function CallOverlay({
     if (remoteVideoRef.current && remoteStreamRef.current) {
       remoteVideoRef.current.srcObject = remoteStreamRef.current;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally only on mount
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export function CallOverlay({
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white gap-4">
           {remoteUser.avatar ? (
             <img src={remoteUser.avatar} alt={remoteUser.displayName}
-              className="w-28 h-28 rounded-full object-cover border-4 border-white/40 shadow-2xl"/>
+              className="w-28 h-28 rounded-full object-cover border-4 border-white/40 shadow-2xl" />
           ) : (
             <div className="w-28 h-28 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center text-5xl font-bold">
               {initials}
@@ -146,9 +146,8 @@ export function CallOverlay({
         <button
           onClick={handleToggleMic}
           title={micEnabled ? 'Tắt micro' : 'Bật micro'}
-          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
-            micEnabled ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white text-[#0068FF]'
-          }`}
+          className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${micEnabled ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white text-[#0068FF]'
+            }`}
         >
           {micEnabled ? (
             <Mic size={22} />
@@ -163,7 +162,7 @@ export function CallOverlay({
           title="Kết thúc cuộc gọi"
           className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white shadow-xl transition-all active:scale-95"
         >
-          <PhoneMissed size={26} color="white" strokeWidth={2.5} />
+          <Phone size={26} color="white" strokeWidth={2.5} />
         </button>
 
         {/* Camera (video calls only) */}
@@ -171,9 +170,8 @@ export function CallOverlay({
           <button
             onClick={handleToggleCamera}
             title={cameraEnabled ? 'Tắt camera' : 'Bật camera'}
-            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${
-              cameraEnabled ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white text-[#0068FF]'
-            }`}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-all shadow-lg ${cameraEnabled ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white text-[#0068FF]'
+              }`}
           >
             {cameraEnabled ? (
               <Video size={22} />

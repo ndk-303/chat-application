@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCallStore } from '../../stores/callStore';
 import { getSocket } from '../../lib/socket';
-import { PhoneMissed, Phone, Video } from 'lucide-react';
+import { Phone, Video } from 'lucide-react';
 
 interface Props {
   onAccept: () => void;
@@ -25,7 +25,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
     // Auto-dismiss after 30 s
     timerRef.current = setTimeout(() => {
       if (pendingCallerId) {
-        getSocket()?.emit('call:reject', { targetUserId: pendingCallerId });
+        getSocket()?.emit('call:reject', { targetUserId: pendingCallerId, callType });
       }
       onDecline();
     }, RING_TIMEOUT_MS);
@@ -73,7 +73,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
           </div>
 
           <h2 className="text-xl font-bold">{remoteUser.displayName}</h2>
-          <p className="text-sm opacity-70 mt-1">Đang đổ chuông... ({remaining}s)</p>
+          <p className="text-sm opacity-70 mt-1">Đang đổ chuông...</p>
         </div>
 
         {/* Buttons */}
@@ -84,14 +84,14 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
               if (timerRef.current) clearTimeout(timerRef.current);
               if (tickRef.current) clearInterval(tickRef.current);
               if (pendingCallerId) {
-                getSocket()?.emit('call:reject', { targetUserId: pendingCallerId });
+                getSocket()?.emit('call:reject', { targetUserId: pendingCallerId, callType });
               }
               onDecline();
             }}
             className="flex-1 py-5 flex flex-col items-center gap-1.5 hover:bg-red-50 transition-colors group"
           >
             <span className="w-12 h-12 rounded-full bg-red-500 group-hover:bg-red-600 flex items-center justify-center transition-colors">
-              <PhoneMissed size={20} color="white" strokeWidth={2.5} />
+              <Phone size={20} color="white" strokeWidth={2.5} />
             </span>
             <span className="text-xs font-semibold text-red-500">Từ chối</span>
           </button>
@@ -109,7 +109,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
               {isVideo ? (
                 <Video size={20} color="white" strokeWidth={2.5} />
               ) : (
-              <Phone size={20} color="white" strokeWidth={2.5} />
+                <Phone size={20} color="white" strokeWidth={2.5} />
               )}
             </span>
             <span className="text-xs font-semibold text-green-600">Chấp nhận</span>

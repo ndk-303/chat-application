@@ -4,7 +4,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { MessageBubble } from './MessageBubble';
 import type { Message } from '../../types';
 import { emitMarkSeen } from '../../lib/socket';
-import { Loader2, MessageSquare } from 'lucide-react';
+import { Loader2, MessageCircleMore } from 'lucide-react';
 
 interface MessageListProps {
   conversationId: string;
@@ -18,9 +18,9 @@ function DateDivider({ dateStr }: { dateStr: string }) {
   const days = Math.floor(diff / 86400000);
 
   let label: string;
-  if (days === 0) label = 'Today';
-  else if (days === 1) label = 'Yesterday';
-  else label = date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+  if (days === 0) label = 'Hôm nay';
+  else if (days === 1) label = 'Hôm qua';
+  else label = date.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
 
   return (
     <div className="flex items-center gap-3 my-4">
@@ -77,10 +77,10 @@ export function MessageList({ conversationId, isGroup }: MessageListProps) {
       <div className="flex-1 flex items-center justify-center bg-[#E9EBEE]">
         <div className="text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-3">
-            <MessageSquare size={28} color="#0068FF" strokeWidth={2} />
+            <MessageCircleMore size={28} color="#0068FF" strokeWidth={2} />
           </div>
-          <p className="text-sm font-medium text-[#1F2937]">No messages yet</p>
-          <p className="text-xs text-[#9CA3AF] mt-1">Say hello! 👋</p>
+          <p className="text-sm font-medium text-[#1F2937]">Chưa có tin nhắn</p>
+          <p className="text-xs text-[#9CA3AF] mt-1">Hãy gửi lời chào!</p>
         </div>
       </div>
     );
