@@ -22,24 +22,21 @@ export default function ChatPage() {
   const conversations = useChatStore((s) => s.conversations);
   const activeConversation = conversations.find((c) => c._id === activeId);
 
-  // Mobile layout: show sidebar OR chat, not both
+  // Mobile layout: vertical nav always on left, sidebar OR chat on right
   if (isMobile) {
     return (
-      <div className="h-screen flex flex-col overflow-hidden relative" style={{ fontFamily: 'Inter, sans-serif' }}>
-        {!activeId ? (
-          /* Show sidebar on mobile when no conversation selected */
-          <>
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white shrink-0">
-              <IconNav />
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <Sidebar />
-            </div>
-          </>
-        ) : (
-          /* Show chat on mobile when conversation selected — back button is in ChatHeader */
-          <ChatWindow />
-        )}
+      <div className="h-screen flex overflow-hidden relative" style={{ fontFamily: 'Inter, sans-serif' }}>
+        {/* Vertical icon nav — always visible on mobile too */}
+        <IconNav />
+
+        {/* Main content: sidebar list or chat */}
+        <div className="flex-1 overflow-hidden flex flex-col min-w-0">
+          {!activeId ? (
+            <Sidebar />
+          ) : (
+            <ChatWindow />
+          )}
+        </div>
 
         {/* Right panel as full-screen overlay on mobile */}
         {isRightPanelOpen && activeConversation && (
