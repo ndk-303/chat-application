@@ -9,6 +9,7 @@ interface UIState {
   isRightPanelOpen: boolean;
   isNewChatModalOpen: boolean;
   isCreateGroupModalOpen: boolean;
+  isFriendSearchModalOpen: boolean;
   isProfileModalOpen: boolean;
   isMobileSidebarOpen: boolean;
   lightboxOpen: boolean;
@@ -21,6 +22,7 @@ interface UIState {
   setRightPanelOpen: (open: boolean) => void;
   setNewChatModalOpen: (open: boolean) => void;
   setCreateGroupModalOpen: (open: boolean) => void;
+  setFriendSearchModalOpen: (open: boolean) => void;
   setProfileModalOpen: (open: boolean) => void;
   setMobileSidebarOpen: (open: boolean) => void;
   openLightbox: (images: { url: string; name: string }[], index?: number) => void;
@@ -33,6 +35,7 @@ export const useUIStore = create<UIState>((set) => ({
   isRightPanelOpen: false,
   isNewChatModalOpen: false,
   isCreateGroupModalOpen: false,
+  isFriendSearchModalOpen: false,
   isProfileModalOpen: false,
   isMobileSidebarOpen: false,
   lightboxOpen: false,
@@ -45,6 +48,7 @@ export const useUIStore = create<UIState>((set) => ({
   setRightPanelOpen: (open) => set({ isRightPanelOpen: open }),
   setNewChatModalOpen: (open) => set({ isNewChatModalOpen: open }),
   setCreateGroupModalOpen: (open) => set({ isCreateGroupModalOpen: open }),
+  setFriendSearchModalOpen: (open) => set({ isFriendSearchModalOpen: open }),
   setProfileModalOpen: (open) => set({ isProfileModalOpen: open }),
   setMobileSidebarOpen: (open) => set({ isMobileSidebarOpen: open }),
   openLightbox: (images, index = 0) => set({ lightboxOpen: true, lightboxImages: images, lightboxIndex: index }),

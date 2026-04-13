@@ -2,20 +2,37 @@ import { useState, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router';
 import { AuthLayout } from '../../components/auth/AuthLayout';
 import { authService } from '../../services/authService';
-import { Mail, Info, Check, Loader2 } from 'lucide-react';
+import { Mail, KeyRound, Info, Check, Loader2 } from 'lucide-react';
+
+interface LocationState {
+  email?: string;
+  mode?: 'reset';        // 'reset' = forgot-password flow
+  resetToken?: string;   // token từ API requestPasswordReset (tự điền OTP)
+}
 
 export default function VerifyEmailPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = (location.state as { email?: string })?.email || '';
+  const state = (location.state ?? {}) as LocationState;
 
-  const [code, setCode] = useState(['', '', '', '', '', '']);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const email      = state.email      ?? '';
+  const mode       = state.mode;                       // 'reset' | undefined
+  const initToken  = state.resetToken ?? '';            // pre-fill OTP nếu có
+
+  // Pre-fill OTP boxes from initToken nếu mode=reset
+  const [code, setCode] = useState<string[]>(() => {
+    if (mode === 'reset' && initToken.length === 6) {
+      return initToken.split('');
+    }
+    return ['', '', '', '', '', ''];
+  });
+  const [isLoading, setIsLoading]       = useState(false);
+  const [error, setError]               = useState('');
+  const [success, setSuccess]           = useState('');
   const [resendLoading, setResendLoading] = useState(false);
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
+  /* ── OTP input handlers ─────────────────────────────────────── */
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
     const newCode = [...code];
@@ -37,14 +54,24 @@ export default function VerifyEmailPage() {
     inputsRef.current[Math.min(pasted.length, 5)]?.focus();
   };
 
+  /* ── Submit ─────────────────────────────────────────────────── */
   const handleSubmit = async () => {
-    const verificationCode = code.join('');
-    if (verificationCode.length < 6) return setError('Vui lòng nhập đủ 6 chữ số');
+    const enteredCode = code.join('');
+    if (enteredCode.length < 6) return setError('Vui lòng nhập đủ 6 chữ số');
     setIsLoading(true);
     setError('');
+
     try {
-      await authService.verifyEmail(email, verificationCode);
-      navigate('/login', { state: { verified: true } });
+      if (mode === 'reset') {
+        // Không gọi verifyEmail; chuyển sang trang đổi mật khẩu
+        navigate('/reset-password', {
+          state: { email, resetToken: enteredCode },
+        });
+      } else {
+        // Registration email verification
+        await authService.verifyEmail(email, enteredCode);
+        navigate('/login', { state: { verified: true } });
+      }
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
       setError(e.response?.data?.message || 'Mã xác thực không hợp lệ');
@@ -53,12 +80,20 @@ export default function VerifyEmailPage() {
     }
   };
 
+  /* ── Resend ─────────────────────────────────────────────────── */
   const handleResend = async () => {
     setResendLoading(true);
     setError('');
     try {
-      await authService.resendVerificationCode(email);
-      setSuccess('Đã gửi lại mã! Kiểm tra hộp thư của bạn.');
+      if (mode === 'reset') {
+        const res = await authService.requestPasswordReset(email);
+        // Refill OTP with new token
+        if (res.resetToken?.length === 6) setCode(res.resetToken.split(''));
+        setSuccess('Đã gửi mã mới. Vui lòng kiểm tra lại.');
+      } else {
+        await authService.resendVerificationCode(email);
+        setSuccess('Đã gửi lại mã! Kiểm tra hộp thư của bạn.');
+      }
       setTimeout(() => setSuccess(''), 4000);
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
@@ -68,15 +103,35 @@ export default function VerifyEmailPage() {
     }
   };
 
+  /* ── UI text by mode ────────────────────────────────────────── */
+  const isReset = mode === 'reset';
+  const title   = isReset ? 'Nhập mã đặt lại' : 'Xác thực email';
+  const desc    = isReset
+    ? `Mã 6 chữ số đã được tạo cho tài khoản`
+    : 'Chúng tôi đã gửi mã 6 chữ số đến';
+  const btnText  = isReset ? 'Xác nhận' : 'Xác thực Email';
+  const backLink = isReset
+    ? '/forgot-password'
+    : '/login';
+  const backText = isReset
+    ? '← Quay lại quên mật khẩu'
+    : '← Quay lại đăng nhập';
+
   return (
     <AuthLayout>
       <div className="mb-6 text-center">
         <div className="w-14 h-14 rounded-2xl bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-4">
-          <Mail size={28} color="#0068FF" />
+          {isReset
+            ? <KeyRound size={26} color="#0068FF" strokeWidth={1.8} />
+            : <Mail size={28} color="#0068FF" />
+          }
         </div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>Xác thực email</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>
+          {title}
+        </h1>
         <p className="text-gray-500 text-sm">
-          Chúng tôi đã gửi mã 6 chữ số đến <span className="font-medium text-gray-700">{email || 'email của bạn'}</span>
+          {desc}{' '}
+          <span className="font-medium text-gray-700">{email || 'email của bạn'}</span>
         </p>
       </div>
 
@@ -93,7 +148,7 @@ export default function VerifyEmailPage() {
         </div>
       )}
 
-      {/* Ô nhập OTP */}
+      {/* OTP boxes */}
       <div className="flex gap-3 justify-center mb-6" onPaste={handlePaste}>
         {code.map((digit, i) => (
           <input
@@ -116,11 +171,8 @@ export default function VerifyEmailPage() {
         className="w-full py-2.5 rounded-lg bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/30 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {isLoading ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            Đang xác thực...
-          </>
-        ) : 'Xác thực Email'}
+          <><Loader2 size={16} className="animate-spin" />Đang xử lý...</>
+        ) : btnText}
       </button>
 
       <div className="mt-4 text-center">
@@ -135,8 +187,8 @@ export default function VerifyEmailPage() {
       </div>
 
       <div className="mt-4 text-center">
-        <Link to="/login" className="text-sm text-gray-400 hover:text-gray-600 transition-colors no-underline">
-          ← Quay lại đăng nhập
+        <Link to={backLink} className="text-sm text-gray-400 hover:text-gray-600 transition-colors no-underline">
+          {backText}
         </Link>
       </div>
     </AuthLayout>

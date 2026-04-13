@@ -25,6 +25,8 @@ interface ChatState {
   incrementConversationUnread: (conversationId: string) => void;
   clearConversationUnread: (conversationId: string) => void;
   updateMessageReactions: (conversationId: string, messageId: string, reactions: MessageReaction[]) => void;
+  toggleMute: (conversationId: string) => Promise<void>;
+  togglePin: (conversationId: string) => Promise<void>;
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -85,12 +87,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     });
     get().updateConversationLastMessage(conversationId, message);
 
-    // Increment unread if the message is from someone else
-    // and the conversation is not currently active
+    // Increment unread nếu message từ người khác, conversation active, và KHÔNG bị mute
     const currentUserId = useAuthStore.getState().user?._id;
     const isActive = get().activeConversationId === conversationId;
     const isFromMe = currentUserId && message.senderId._id === currentUserId;
-    if (!isActive && !isFromMe) {
+    const isMuted = get().conversations.find(c => c._id === conversationId)?.isMuted ?? false;
+    if (!isActive && !isFromMe && !isMuted) {
       get().incrementConversationUnread(conversationId);
     }
   },
@@ -181,5 +183,55 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ),
       },
     }));
+  },
+
+  toggleMute: async (conversationId) => {
+    const conv = get().conversations.find((c) => c._id === conversationId);
+    if (!conv) return;
+    const nowMuted = !conv.isMuted;
+    try {
+      if (nowMuted) {
+        await conversationService.muteConversation(conversationId);
+      } else {
+        await conversationService.unmuteConversation(conversationId);
+      }
+      set((state) => ({
+        conversations: state.conversations.map((c) =>
+          c._id === conversationId
+            ? { ...c, isMuted: nowMuted, ...(nowMuted ? { unreadCount: 0 } : {}) }
+            : c
+        ),
+      }));
+    } catch (err) {
+      console.error('[chatStore] toggleMute failed', err);
+      throw err;
+    }
+  },
+
+  togglePin: async (conversationId) => {
+    const conv = get().conversations.find((c) => c._id === conversationId);
+    if (!conv) return;
+    const nowPinned = !conv.isPinned;
+    try {
+      if (nowPinned) {
+        await conversationService.pinConversation(conversationId);
+      } else {
+        await conversationService.unpinConversation(conversationId);
+      }
+      set((state) => {
+        const updated = state.conversations.map((c) =>
+          c._id === conversationId ? { ...c, isPinned: nowPinned } : c
+        );
+        updated.sort((a, b) => {
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+          return new Date(b.lastMessageAt ?? 0).getTime() - new Date(a.lastMessageAt ?? 0).getTime();
+        });
+        return { conversations: updated };
+      });
+    } catch (err) {
+      console.error('[chatStore] togglePin failed', err);
+      throw err;
+    }
   },
 }));

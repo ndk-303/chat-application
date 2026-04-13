@@ -71,4 +71,24 @@ export const conversationService = {
     const res = await api.post(`/conversations/invite/${token}/join`);
     return res.data;
   },
+
+  async muteConversation(id: string, mutedUntil?: Date) {
+    const res = await api.put(`/conversations/${id}/mute`, mutedUntil ? { mutedUntil } : {});
+    return res.data;
+  },
+
+  async unmuteConversation(id: string) {
+    const res = await api.delete(`/conversations/${id}/mute`);
+    return res.data;
+  },
+
+  async pinConversation(id: string) {
+    const res = await api.put(`/conversations/${id}/pin`);
+    return res.data;
+  },
+
+  async unpinConversation(id: string) {
+    const res = await api.delete(`/conversations/${id}/pin`);
+    return res.data;
+  },
 };

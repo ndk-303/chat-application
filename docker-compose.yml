@@ -55,6 +55,7 @@ services:
       - backend
     restart: unless-stopped
 
+
   nginx:
     image: nginx:alpine
     container_name: chat_nginx
