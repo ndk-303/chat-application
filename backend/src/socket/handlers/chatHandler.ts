@@ -1,6 +1,6 @@
 import { Server, Socket } from 'socket.io';
 import ConversationModel from '../../models/Conversation';
-import { markConversationDelivered, markMessageSeen } from '../../services/messageService';
+import { markConversationDelivered, markConversationSeen, markMessageSeen } from '../../services/messageService';
 
 const registerChatHandlers = (io: Server, socket: Socket): void => {
     const userId = socket.data.userId as string;
@@ -23,6 +23,9 @@ const registerChatHandlers = (io: Server, socket: Socket): void => {
 
             socket.join(conversationId);
             console.log(`[Socket] User ${userId} joined conversation ${conversationId}`);
+
+            // Mark all unread messages as seen (fixes unread badge persisting after reload)
+            await markConversationSeen(conversationId, userId);
 
             // Mark all 'sent' messages from others as 'delivered'
             const deliveredIds = await markConversationDelivered(conversationId, userId);

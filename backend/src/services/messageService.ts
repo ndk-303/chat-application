@@ -108,13 +108,9 @@ export const createMessage = async (
         }
 
         // Emit conversation_updated cho participants không ở trong socket room
-        // (người chưa mở conversation — sidebar cần cập nhật last message)
-        const room = io.sockets.adapter.rooms.get(conversationId);
-        const socketsInRoom = room ? Array.from(room) : [];
-
         for (const participantId of conversation.participants) {
             const pId = participantId.toString();
-            if (pId === senderId) continue; // người gửi tự xử lý
+            if (pId === senderId) continue;
             await emitToUser(pId, 'conversation_updated', {
                 conversationId,
                 lastMessage: message,
@@ -150,6 +146,7 @@ export const markMessageSeen = async (messageId: string, userId: string) => {
     if (message.senderId.toString() === userId) {
         return message;
     }
+
     const alreadySeen = message.seenBy.some(
         (user: any) => user.userId.toString() === userId
     );
@@ -201,7 +198,6 @@ export const markConversationDelivered = async (
 
     if (result.modifiedCount === 0) return [];
 
-    // Return the IDs of messages that were just updated
     const updated = await MessageModel.find(
         {
             conversationId,
@@ -212,6 +208,30 @@ export const markConversationDelivered = async (
     ).lean();
 
     return updated.map((m: any) => m._id.toString());
+};
+
+/**
+ * Mark ALL unread messages in a conversation as seen by userId.
+ * Called when user opens/joins a conversation so unreadCount resets after reload.
+ */
+export const markConversationSeen = async (
+    conversationId: string,
+    userId: string
+): Promise<void> => {
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const seenAt = new Date();
+
+    await MessageModel.updateMany(
+        {
+            conversationId,
+            senderId: { $ne: userObjectId },
+            'seenBy.userId': { $ne: userObjectId },
+        },
+        {
+            $push: { seenBy: { userId: userObjectId, seenAt } },
+            $set: { status: 'seen' },
+        }
+    );
 };
 
 export const deleteUserMessage = async (messageId: string, userId: string) => {
@@ -267,8 +287,6 @@ export const toggleReaction = async (messageId: string, userId: string, emoji: s
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    // ── Step 1: Remove user from any OTHER emoji group (one reaction per user) ──
-    // Rebuild as plain objects to avoid Mongoose subdocument mutation tracking issues
     const cleanedReactions: { emoji: string; userIds: mongoose.Types.ObjectId[] }[] = message.reactions
         .map((r: any) => ({
             emoji: r.emoji,
@@ -278,7 +296,6 @@ export const toggleReaction = async (messageId: string, userId: string, emoji: s
         }))
         .filter((r) => r.userIds.length > 0);
 
-    // ── Step 2: Toggle the selected emoji ────────────────────────────────────────
     const existingGroup = cleanedReactions.find((r) => r.emoji === emoji);
 
     if (existingGroup) {
@@ -286,25 +303,19 @@ export const toggleReaction = async (messageId: string, userId: string, emoji: s
             (uid: any) => uid.toString() === userId
         );
         if (alreadyReacted) {
-            // Toggle OFF — remove userId
             existingGroup.userIds = existingGroup.userIds.filter(
                 (uid: any) => uid.toString() !== userId
             );
         }
-        // else: already added in step 1 cleanup, do nothing (already in group)
     } else {
-        // Add new emoji group
         cleanedReactions.push({ emoji, userIds: [userObjectId] });
     }
 
-    // Remove groups with 0 users after toggle-off
     message.reactions = cleanedReactions.filter((r) => r.userIds.length > 0) as any;
     message.markModified('reactions');
 
     await message.save();
 
-
-    // Serialize reactions for frontend: [{ emoji, userIds: string[] }]
     const serializedReactions = message.reactions.map((r: any) => ({
         emoji: r.emoji,
         userIds: r.userIds.map((uid: any) => uid.toString()),

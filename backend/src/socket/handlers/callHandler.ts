@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 import ConversationModel from '../../models/Conversation';
 import MessageModel from '../../models/Message';
 import mongoose from 'mongoose';
+import { redisClient } from '../../config/redis';
 
 type GetUserSocketsFn = (userId: string) => Promise<string[]>;
 
@@ -71,8 +72,8 @@ const registerCallHandlers = (
         return message;
     };
 
-    // ── Track call start times (keyed by callerId-targetUserId) ────────────────
-    const callStartTimes = new Map<string, number>();
+    // ── Track call state in Redis for multi-node support ───────────────────
+    const getCallKey = (u1: string, u2: string) => `call_state:${[u1, u2].sort().join('_')}`;
 
     socket.on('call:offer', async (data: {
         targetUserId: string;
@@ -82,7 +83,16 @@ const registerCallHandlers = (
     }) => {
         const { targetUserId, offer, callType, callerInfo } = data;
         console.log(`[Call] ${callerId} → offer to ${targetUserId} (${callType})`);
-        callStartTimes.set(`${callerId}-${targetUserId}`, Date.now());
+        
+        const key = getCallKey(callerId, targetUserId);
+        await redisClient.hset(key, {
+            status: 'calling',
+            offerTime: Date.now(),
+            callerId: callerId,
+            callType: callType
+        });
+        await redisClient.expire(key, 3600); // Tự dọn dẹp sau 1h tránh rác
+
         await emitToUser(targetUserId, 'call:incoming', { callerId, callerInfo, offer, callType });
     });
 
@@ -92,8 +102,13 @@ const registerCallHandlers = (
     }) => {
         const { targetUserId, answer } = data;
         console.log(`[Call] ${callerId} → answer to ${targetUserId}`);
-        // Reset timer from when offer was sent to when answered (connected)
-        callStartTimes.set(`${targetUserId}-${callerId}`, Date.now());
+        
+        const key = getCallKey(callerId, targetUserId);
+        await redisClient.hset(key, {
+            status: 'connected',
+            answerTime: Date.now()
+        });
+
         await emitToUser(targetUserId, 'call:answered', { answererId: callerId, answer });
     });
 
@@ -106,9 +121,16 @@ const registerCallHandlers = (
     });
 
     socket.on('call:reject', async (data: { targetUserId: string; callType?: 'audio' | 'video' }) => {
-        const { targetUserId, callType = 'audio' } = data;
+        const { targetUserId } = data;
         console.log(`[Call] ${callerId} rejected call from ${targetUserId}`);
-        callStartTimes.delete(`${targetUserId}-${callerId}`);
+        
+        const key = getCallKey(callerId, targetUserId);
+        const callData = await redisClient.hgetall(key);
+        await redisClient.del(key);
+        
+        const cType = (callData?.callType as 'audio' | 'video') || data.callType || 'audio';
+        const originalCallerId = callData?.callerId || targetUserId;
+
         await emitToUser(targetUserId, 'call:rejected', { rejectedBy: callerId });
 
         try {
@@ -116,8 +138,8 @@ const registerCallHandlers = (
             if (conv) {
                 await createCallMessage(
                     conv._id as mongoose.Types.ObjectId,
-                    targetUserId, // caller is the sender of the call message
-                    callType,
+                    originalCallerId, // người khởi tạo cuộc gọi luôn là senderId
+                    cType,
                     'rejected',
                     0,
                 );
@@ -128,16 +150,31 @@ const registerCallHandlers = (
     });
 
     socket.on('call:end', async (data: { targetUserId: string; callType?: 'audio' | 'video' }) => {
-        const { targetUserId, callType = 'audio' } = data;
+        const { targetUserId } = data;
         console.log(`[Call] ${callerId} ended call with ${targetUserId}`);
 
-        // Calculate duration — try both key directions
-        const key1 = `${callerId}-${targetUserId}`;
-        const key2 = `${targetUserId}-${callerId}`;
-        const startTime = callStartTimes.get(key1) ?? callStartTimes.get(key2);
-        const durationSeconds = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
-        callStartTimes.delete(key1);
-        callStartTimes.delete(key2);
+        const key = getCallKey(callerId, targetUserId);
+        const callData = await redisClient.hgetall(key);
+        await redisClient.del(key);
+
+        let finalStatus: 'ended' | 'missed' = 'ended';
+        let durationSeconds = 0;
+        
+        // Use saved state or fallback arguments
+        const cType = (callData?.callType as 'audio' | 'video') || data.callType || 'audio';
+        const originalCallerId = callData?.callerId || callerId;
+
+        if (callData && Object.keys(callData).length > 0) {
+            if (callData.status === 'calling') {
+                finalStatus = 'missed';
+            } else if (callData.status === 'connected') {
+                const answerTime = Number(callData.answerTime);
+                durationSeconds = Math.floor((Date.now() - answerTime) / 1000);
+            }
+        } else {
+            // No state found (e.g., redis cleared or race condition), treat as ended with 0s
+            finalStatus = 'ended'; 
+        }
 
         await emitToUser(targetUserId, 'call:ended', { endedBy: callerId });
 
@@ -146,12 +183,13 @@ const registerCallHandlers = (
             if (conv) {
                 await createCallMessage(
                     conv._id as mongoose.Types.ObjectId,
-                    callerId,
-                    callType,
-                    'ended',
+                    originalCallerId,
+                    cType,
+                    finalStatus,
                     durationSeconds,
                 );
             }
+
         } catch (err) {
             console.error('[Call] Failed to create end message', err);
         }

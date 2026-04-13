@@ -31,11 +31,16 @@ export interface Message {
   conversationId: string;
   senderId: Pick<User, '_id' | 'displayName' | 'avatar' | 'email'>;
   content: string;
-  type?: 'text' | 'system';
+  type?: 'text' | 'system' | 'call';
   files?: MessageFile[];
   status: 'sent' | 'delivered' | 'seen';
   seenBy: Array<{ userId: string; seenAt: string }>;
   reactions?: MessageReaction[];
+  callMeta?: {
+    callType: 'audio' | 'video';
+    callDuration: number; // seconds
+    callStatus: 'ended' | 'missed' | 'rejected';
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -53,6 +58,8 @@ export interface Conversation {
   createdAt: string;
   updatedAt: string;
   unreadCount?: number;
+  isMuted?: boolean;
+  isPinned?: boolean;
 }
 
 // ─── Friend ───────────────────────────────────────────────────────────────────

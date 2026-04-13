@@ -162,7 +162,7 @@ export function useWebRTC(): UseWebRTCReturn {
 
       getSocket()?.emit('call:answer', { targetUserId: callerId, answer });
     } catch (err: any) {
-      getSocket()?.emit('call:reject', { targetUserId: callerId });
+      getSocket()?.emit('call:reject', { targetUserId: callerId, callType: type });
       cleanup();
       useCallStore.getState().reset();
       toast.error(err?.message || 'Không thể kết nối cuộc gọi.');
@@ -170,7 +170,8 @@ export function useWebRTC(): UseWebRTCReturn {
   }, [getUserMedia, createPeerConnection, cleanup]);
 
   const endCall = useCallback((targetUserId: string) => {
-    getSocket()?.emit('call:end', { targetUserId });
+    const { callType } = useCallStore.getState();
+    getSocket()?.emit('call:end', { targetUserId, callType: callType ?? 'audio' });
     cleanup();
     useCallStore.getState().endCall();
     setTimeout(() => useCallStore.getState().reset(), 2000);
