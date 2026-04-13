@@ -64,15 +64,9 @@ export default function JoinGroupPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        fontFamily: 'Inter, sans-serif',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      }}
+      className="min-h-screen flex items-center justify-center p-4  bg-[#F5F7FA]"
     >
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
-        {/* Header decoration */}
-        <div className="h-2 bg-gradient-to-r from-[#0068FF] to-[#6C5CE7]" />
 
         <div className="p-8">
           {loading ? (
