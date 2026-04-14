@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/auth/AuthLayout';
@@ -15,6 +15,13 @@ export default function LoginPage() {
   const { login, isLoading, error, clearError } = useAuthStore();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
   const [showPassword, setShowPassword] = useState(false);
+
+  // Tự động ẩn thông báo lỗi sau 4 giây
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => clearError(), 4000);
+    return () => clearTimeout(timer);
+  }, [error, clearError]);
 
   const onSubmit = async (data: LoginForm) => {
     clearError();

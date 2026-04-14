@@ -24,7 +24,12 @@ export const uploadCloundinary = (
         }, UPLOAD_TIMEOUT_MS);
 
         const uploadStream = cloudinary.uploader.upload_stream(
-            { folder, resource_type: type },
+            {
+                folder,
+                resource_type: type,
+                // For raw files, force browser to download instead of opening in a new tab
+                ...(type === 'raw' ? { flags: 'attachment' } : {}),
+            },
             (error, result) => {
                 clearTimeout(timer);
                 if (error) return reject(error);

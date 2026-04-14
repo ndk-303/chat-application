@@ -89,6 +89,7 @@ function QuickReactBar({ onReact }: { onReact: (emoji: string) => void }) {
 export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageBubbleProps) {
   const hasContent = message.content?.trim().length > 0;
   const [isHovered, setIsHovered] = useState(false);
+  const [downloadingFile, setDownloadingFile] = useState<number | null>(null);
   const [showQuickReact, setShowQuickReact] = useState(false);
 
   const { openLightbox } = useUIStore();
@@ -124,6 +125,26 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
       console.error('[Reaction] Failed to react', err);
     }
   }, [message._id]);
+
+  const handleFileDownload = useCallback(async (url: string, name: string, idx: number) => {
+    setDownloadingFile(idx);
+    try {
+      const res = await fetch(url, { mode: 'cors' });
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name || 'file';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    } catch {
+      // Fallback — mở tab mới nếu CORS chặn
+      window.open(url, '_blank', 'noopener');
+    } finally {
+      setDownloadingFile(null);
+    }
+  }, []);
 
   // ── System message ───────────────────────────────────────────────────────────
   if (message.type === 'system') {
@@ -296,23 +317,39 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
           {/* Non-image files */}
           {otherFiles.map((file, i) => (
-            <a
+            <button
               key={i}
-              href={file.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center gap-3 p-3 rounded-md mb-1 no-underline transition-opacity hover:opacity-80 ${isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
-                }`}
+              type="button"
+              onClick={() => handleFileDownload(file.url, file.originalName ?? 'file', i)}
+              disabled={downloadingFile === i}
+              className={`flex items-center gap-3 p-3 rounded-md mb-1 w-full text-left transition-opacity hover:opacity-80 disabled:opacity-60 ${
+                isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
+              }`}
             >
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
-                }`}>
-                <FileIcon file={file} />
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
+              }`}>
+                {downloadingFile === i ? (
+                  <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                  </svg>
+                ) : (
+                  <FileIcon file={file} />
+                )}
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate max-w-[160px]">{file.originalName ?? 'file'}</p>
-                <p className={`text-xs ${isSent ? 'text-white/70' : 'text-gray-400'}`}>{file.size ? formatFileSize(file.size) : ''}</p>
+                <p className={`text-xs ${isSent ? 'text-white/70' : 'text-gray-400'}`}>
+                  {downloadingFile === i ? 'Đang tải...' : (file.size ? formatFileSize(file.size) : '')}
+                </p>
               </div>
-            </a>
+              {/* Download icon */}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`flex-shrink-0 ${isSent ? 'text-white/70' : 'text-gray-400'}`}>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+            </button>
           ))}
 
           {/* Text content (with embedded sender name for group messages) */}
