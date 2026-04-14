@@ -5,9 +5,15 @@ import { Request } from 'express';
 import { redisClient } from '../config/redis';
 
 const clientIpKey = (req: Request): string => {
-  const ip = req.ip ?? 'unknown';
-  return ip.split('%')[0];
+  const forwarded = req.headers['x-forwarded-for'];
+  const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0] : req.ip) ?? 'unknown';
+  // Normalize IPv6 loopback và strip scope
+  return ip.replace(/^::ffff:/, '').split('%')[0].trim();
 };
+
+// Tắt cảnh báo IPv6 (chúng ta đã xử lý thủ công)
+const validate = { xForwardedForHeader: false, ip: false } as any;
+
 const makeRedisStore = (prefix: string) =>
     new RedisStore({
         sendCommand: (...args: string[]) =>
@@ -20,6 +26,7 @@ export const loginLimiter = rateLimit({
     max: 50,
     standardHeaders: true,
     legacyHeaders: false,
+    validate,
     keyGenerator: clientIpKey,
     store: makeRedisStore('login'),
     handler: (_req, res) => {
@@ -34,6 +41,7 @@ export const registerLimiter = rateLimit({
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    validate,
     keyGenerator: clientIpKey,
     store: makeRedisStore('register'),
     handler: (_req, res) => {
@@ -48,6 +56,7 @@ export const passwordResetLimiter = rateLimit({
     max: 5,
     standardHeaders: true,
     legacyHeaders: false,
+    validate,
     keyGenerator: clientIpKey,
     store: makeRedisStore('pwd-reset'),
     handler: (_req, res) => {
@@ -62,6 +71,7 @@ export const verifyEmailLimiter = rateLimit({
     max: 10,
     standardHeaders: true,
     legacyHeaders: false,
+    validate,
     keyGenerator: clientIpKey,
     store: makeRedisStore('verify-email'),
     handler: (_req, res) => {
@@ -76,6 +86,7 @@ export const generalLimiter = rateLimit({
     max: 1000,
     standardHeaders: true,
     legacyHeaders: false,
+    validate,
     keyGenerator: clientIpKey,
     store: makeRedisStore('general'),
     handler: (_req, res) => {
@@ -83,4 +94,4 @@ export const generalLimiter = rateLimit({
             message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau.',
         });
     },
-});
+});

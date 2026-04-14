@@ -26,6 +26,7 @@ export const useFriendStore = create<FriendState>((set, get) => ({
   isLoadingRequests: false,
 
   fetchFriends: async () => {
+    if (get().isLoadingFriends) return; // guard: tránh gọi song song
     set({ isLoadingFriends: true });
     try {
       const data = await friendService.getFriends();
@@ -38,6 +39,7 @@ export const useFriendStore = create<FriendState>((set, get) => ({
   },
 
   fetchReceivedRequests: async () => {
+    if (get().isLoadingRequests) return; // guard: tránh gọi song song
     set({ isLoadingRequests: true });
     try {
       const data = await friendService.getReceivedRequests();
@@ -50,6 +52,7 @@ export const useFriendStore = create<FriendState>((set, get) => ({
   },
 
   fetchSentRequests: async () => {
+    if (get().isLoadingRequests) return; // guard: tránh gọi song song
     set({ isLoadingRequests: true });
     try {
       const data = await friendService.getSentRequests();

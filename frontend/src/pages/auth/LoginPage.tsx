@@ -28,8 +28,13 @@ export default function LoginPage() {
     try {
       await login(data.email, data.password);
       navigate('/');
-    } catch {
-      // lỗi được lưu trong store
+    } catch (err: unknown) {
+      // Tài khoản chưa xác thực → redirect sang trang verify email
+      const e = err as { unverified?: boolean; email?: string };
+      if (e?.unverified) {
+        navigate('/verify-email', { state: { email: e.email } });
+      }
+      // Các lỗi khác đã được xử lý bởi authStore (set error)
     }
   };
 
@@ -39,7 +44,6 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-[#1F2937] mb-1">
           Chào mừng trở lại
         </h1>
-        <p className="text-[#6B7280] text-sm">Đăng nhập vào tài khoản Vibe của bạn</p>
       </div>
 
       {error && (

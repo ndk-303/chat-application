@@ -187,6 +187,24 @@
     --sidebar-ring: 214 100% 50%;
   }
 
+  * {
+    cursor: default;
+  }
+
+  a,
+  button,
+  [role="button"],
+  label[for],
+  select {
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text;
+  }
+
   body {
     @apply text-slate-800 dark:text-slate-200;
   }

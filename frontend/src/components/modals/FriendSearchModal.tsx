@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useFriendStore } from '../../stores/friendStore';
 import { useUIStore } from '../../stores/uiStore';
 import { friendService } from '../../services/friendService';
@@ -7,15 +7,17 @@ import type { User, FriendRequest } from '../../types';
 import { Avatar, Spinner } from '../sidebar/SidebarShared';
 import { UserCheck, Search, X } from 'lucide-react';
 
-// ─── Friend Requests Tab ──────────────────────────────────────────────────────
-
 function FriendRequestsTab({ onCountChange }: { onCountChange: (n: number) => void }) {
   const receivedRequests = useFriendStore((s) => s.receivedRequests);
   const fetchReceivedRequests = useFriendStore((s) => s.fetchReceivedRequests);
   const isLoading = useFriendStore((s) => s.isLoadingRequests);
   const [busyIds, setBusyIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => { fetchReceivedRequests(); }, [fetchReceivedRequests]);
+  // Dùng ref để ổn định function reference, tránh useEffect loop
+  const fetchRef = useRef(fetchReceivedRequests);
+  fetchRef.current = fetchReceivedRequests;
+
+  useEffect(() => { fetchRef.current(); }, []); // fetch once on mount
   useEffect(() => { onCountChange(receivedRequests.length); }, [receivedRequests.length, onCountChange]);
 
   const setBusy = (id: string, busy: boolean) =>
@@ -101,10 +103,20 @@ function FriendSearchTab() {
   const sentRequests = useFriendStore((s) => s.sentRequests);
   const fetchSentRequests = useFriendStore((s) => s.fetchSentRequests);
 
-  useEffect(() => { fetchSentRequests(); }, [fetchSentRequests]);
+  // Dùng ref để ổn định function reference, tránh useEffect loop
+  const fetchSentRef = useRef(fetchSentRequests);
+  fetchSentRef.current = fetchSentRequests;
 
-  const friendIds = new Set(friends.map((f) => f._id));
-  const sentIds = new Set(sentRequests.map((r) => (r.receiverId as any)?._id ?? r.receiverId));
+  useEffect(() => { fetchSentRef.current(); }, []); // fetch once on mount
+
+  const friendIds = useMemo(
+    () => new Set(friends.map((f) => f._id)),
+    [friends]
+  );
+  const sentIds = useMemo(
+    () => new Set(sentRequests.map((r) => (r.receiverId as any)?._id ?? r.receiverId)),
+    [sentRequests]
+  );
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setResults([]); return; }
@@ -240,11 +252,10 @@ export function FriendSearchModal() {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${
-                  activeTab === key
+                className={`pb-3 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 ${activeTab === key
                     ? 'border-[#0068FF] text-[#0068FF] font-semibold'
                     : 'border-transparent text-slate-500 hover:text-[#0068FF]'
-                }`}
+                  }`}
               >
                 {label}
                 {badge != null && badge > 0 && (

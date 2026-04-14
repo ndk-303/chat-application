@@ -41,9 +41,6 @@ export default function ForgotPasswordPage() {
     <AuthLayout>
       <div className="mb-6 text-center">
         <h1 className="text-2xl font-bold text-[#1F2937] mb-1">Quên mật khẩu?</h1>
-        <p className="text-[#6B7280] text-sm">
-          Nhập email tài khoản để nhận mã đặt lại mật khẩu
-        </p>
       </div>
 
       {apiError && (

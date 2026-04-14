@@ -45,7 +45,6 @@ export default function RegisterPage() {
         <h1 className="text-2xl font-bold text-[#1F2937] mb-1">
           Tạo tài khoản
         </h1>
-        <p className="text-[#6B7280] text-sm">Tham gia Vibe và bắt đầu kết nối</p>
       </div>
 
       {error && (

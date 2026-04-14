@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 
 interface ProtectedRouteProps {
@@ -11,11 +11,15 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const initAuth = useAuthStore((s) => s.initAuth);
 
+  // Dùng ref để tránh useEffect loop do Zustand tạo function reference mới
+  const initRef = useRef(initAuth);
+  initRef.current = initAuth;
+
   useEffect(() => {
     if (!isInitialized) {
-      initAuth();
+      initRef.current();
     }
-  }, [isInitialized, initAuth]);
+  }, [isInitialized]); // chỉ phụ thuộc isInitialized, không phụ thuộc initAuth
 
   if (!isInitialized) {
     return (

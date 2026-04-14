@@ -1,4 +1,4 @@
-﻿import ConversationModel from '../models/Conversation';
+import ConversationModel from '../models/Conversation';
 import MessageModel from '../models/Message';
 import FriendshipModel from '../models/Friendship';
 import UserModel from '../models/User';
@@ -95,12 +95,19 @@ export const createPrivateConversation = async (userId: string, targetUserId: st
         throw new errorUtil('Không thể tạo cuộc trò chuyện với chính mình', 400);
     }
 
+    const userObjId = new mongoose.Types.ObjectId(userId);
+    const targetObjId = new mongoose.Types.ObjectId(targetUserId);
+
+    console.log('[createPrivateConversation] userId:', userId, 'targetUserId:', targetUserId);
+
     const friendship = await FriendshipModel.findOne({
         $or: [
-            { user1Id: userId, user2Id: targetUserId },
-            { user1Id: targetUserId, user2Id: userId }
+            { user1Id: userObjId, user2Id: targetObjId },
+            { user1Id: targetObjId, user2Id: userObjId }
         ]
     });
+
+    console.log('[createPrivateConversation] friendship found:', friendship ? friendship._id : null);
 
     if (!friendship) {
         throw new errorUtil('Chỉ có thể tạo cuộc trò chuyện với bạn bè', 400);
@@ -108,10 +115,11 @@ export const createPrivateConversation = async (userId: string, targetUserId: st
 
     const existingConversation = await ConversationModel.findOne({
         type: 'private',
-        participants: { $all: [userId, targetUserId], $size: 2 }
+        participants: { $all: [userObjId, targetObjId], $size: 2 }
     });
 
     if (existingConversation) {
+        await existingConversation.populate('participants', 'displayName email avatar status lastSeen');
         return existingConversation;
     }
 

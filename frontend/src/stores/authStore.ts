@@ -48,10 +48,23 @@ export const useAuthStore = create<AuthState>()(
           // Connect socket after successful login
           useSocketStore.getState().connect(res.accessToken);
         } catch (err: unknown) {
-          const error = err as { response?: { data?: { message?: string } } };
+          const error = err as { response?: { status?: number; data?: { message?: string; unverified?: boolean; email?: string } } };
+
+          // Tài khoản chưa xác thực → gửi lại mã và throw để LoginPage redirect
+          if (error.response?.status === 403 && error.response?.data?.unverified) {
+            set({ isLoading: false, error: null });
+            const unverifiedEmail = error.response.data.email ?? email;
+            try {
+              await authService.resendVerificationCode(unverifiedEmail);
+            } catch {
+              // Bỏ qua lỗi resend — vẫn redirect
+            }
+            throw { unverified: true, email: unverifiedEmail };
+          }
+
           set({
             isLoading: false,
-            error: error.response?.data?.message || 'Login failed',
+            error: error.response?.data?.message || 'Đăng nhập thất bại',
           });
           throw err;
         }

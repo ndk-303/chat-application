@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useChatStore } from '../../stores/chatStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useCallStore } from '../../stores/callStore';
@@ -20,7 +20,6 @@ export function ContactsPanel() {
   const { setSidebarView, setFriendSearchModalOpen, setCreateGroupModalOpen } = useUIStore();
   const setActiveConversation = useChatStore((s) => s.setActiveConversation);
   const fetchConversations = useChatStore((s) => s.fetchConversations);
-  const conversations = useChatStore((s) => s.conversations);
   const addConversation = useChatStore((s) => s.addConversation);
   const { startOutgoingCall, startCallFn } = useCallStore();
 
@@ -28,28 +27,47 @@ export function ContactsPanel() {
     fetchFriends();
   }, []); // Empty dependency array - fetch once on mount
 
+  const isOpeningRef = useRef(false);
+
   /** Open the private conversation with this friend (create if not exists) */
   const handleOpenChat = async (friend: User) => {
-    const existing = conversations.find(
-      (c) => c.type === 'private' && c.participants.some((p) => p._id === friend._id)
-    );
-    if (existing) {
-      setActiveConversation(existing._id);
-      setSidebarView('messages');
-      return;
-    }
+    // Guard: ngăn gọi concurrent (double-click, re-render triggers)
+    if (isOpeningRef.current || openingId === friend._id) return;
+    isOpeningRef.current = true;
     setOpeningId(friend._id);
+
     try {
+      // 1. Kiểm tra conversation đã tồn tại trong store chưa
+      const existing = useChatStore.getState().conversations.find(
+        (c) => c.type === 'private' && c.participants.some((p) => p._id === friend._id)
+      );
+      if (existing) {
+        setActiveConversation(existing._id);
+        setSidebarView('messages');
+        return;
+      }
+
+      // 2. Tạo conversation mới
       const resp = await conversationService.createPrivateConversation(friend._id);
       const conversation = resp.conversation ?? resp;
       const id = conversation?._id;
+
       if (id) {
-        addConversation(conversation);
+        // Thêm vào store ngay lập tức để ChatWindow có thể render
+        const alreadyInStore = useChatStore.getState().conversations.some((c) => c._id === id);
+        if (!alreadyInStore) {
+          addConversation(conversation);
+        }
         setActiveConversation(id);
         setSidebarView('messages');
-        fetchConversations();
+        return;
       }
     } catch {
+      // Nếu lỗi, fetch lại danh sách để tìm conversation có thể đã được tạo
+    }
+
+    // 3. Fallback: fetch conversations và tìm lại
+    try {
       await fetchConversations();
       const found = useChatStore.getState().conversations.find(
         (c) => c.type === 'private' && c.participants.some((p) => p._id === friend._id)
@@ -58,9 +76,14 @@ export function ContactsPanel() {
         setActiveConversation(found._id);
         setSidebarView('messages');
       }
+    } catch {
+      // ignore
     } finally {
       setOpeningId(null);
+      isOpeningRef.current = false;
     }
+    setOpeningId(null);
+    isOpeningRef.current = false;
   };
 
   /** Initiate audio or video call */
