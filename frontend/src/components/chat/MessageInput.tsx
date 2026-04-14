@@ -4,7 +4,7 @@ import { emitTypingStart, emitTypingStop } from '../../lib/socket';
 import { EmojiPicker } from './EmojiPicker';
 import {
   File, X, Paperclip, Smile, Loader2, SendHorizonal,
-  Image, Pencil, AtSign, MoreHorizontal, SmilePlus, BookUser, LayoutTemplate,
+  Image
 } from 'lucide-react';
 
 interface MessageInputProps {

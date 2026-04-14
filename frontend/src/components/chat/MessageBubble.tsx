@@ -4,7 +4,7 @@ import { useUIStore } from '../../stores/uiStore';
 import { useCallStore } from '../../stores/callStore';
 import { useChatStore } from '../../stores/chatStore';
 import { useAuthStore } from '../../stores/authStore';
-import { ImageIcon, Video, File, Info, Phone, PhoneOff, PhoneMissed } from 'lucide-react';
+import { ImageIcon, Video, File, Info, Phone } from 'lucide-react';
 
 import api from '../../lib/axios';
 
@@ -164,14 +164,6 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
     // Icon row label
     const iconRowLabel = isVideo ? 'Cuộc gọi video' : 'Cuộc gọi thoại';
-
-    // Sub-text under icon row
-    const subText =
-      status === 'ended' && duration > 0
-        ? formatDuration(duration)
-        : status === 'missed'
-          ? 'Cuộc gọi thoại'
-          : 'Cuộc gọi thoại';
 
     // Phone icon with directional arrow — SVG inline to match Zalo style
     const isMissedOrRejected = status === 'missed' || status === 'rejected';

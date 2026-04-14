@@ -4,7 +4,7 @@ import { useChatStore } from '../../stores/chatStore';
 import { useUIStore } from '../../stores/uiStore';
 import { conversationService } from '../../services/conversationService';
 import { toast } from 'sonner';
-import type { Conversation } from '../../types';
+import type { Conversation,User } from '../../types';
 import { AddMemberModal } from '../modals/AddMemberModal';
 import { CreateGroupModal } from '../modals/CreateGroupModal';
 import { InviteLinkModal } from '../modals/InviteLinkModal';
@@ -596,7 +596,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
       )}
       {showCreateGroup && other && (
         <CreateGroupModal
-          initialSelected={[other]}
+          initialSelected={[other as User]}
           onClose={() => setShowCreateGroup(false)}
         />
       )}

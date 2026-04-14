@@ -25,7 +25,9 @@ export function Sidebar() {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => { fetchConversations(); }, [fetchConversations]);
+  useEffect(() => { 
+    fetchConversations(); 
+  }, []); // Empty dependency array - fetch once on mount
 
   const filtered: Conversation[] = (() => {
     const q = searchQuery.trim().toLowerCase();

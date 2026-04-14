@@ -67,9 +67,7 @@ export function ChatWindow() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center bg-[#E9EBEE] p-8 text-center">
         <div className="max-w-md">
-          <div className="size-20 bg-[#0068FF]/10 rounded-full flex items-center justify-center text-[#0068FF] mx-auto mb-6">
-
-          </div>
+            <img src="/logo.svg" alt="Kapta" className="w-full h-full" />
           <h2 className="text-2xl font-bold text-[#1F2937] mb-2">Chào mừng đến với Kapta</h2>
           <p className="text-[#6B7280]">
             Chọn cuộc trò chuyện để bắt đầu..

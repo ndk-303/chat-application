@@ -14,7 +14,7 @@
   <!-- Background rounded rect -->
   <rect x="20" y="20" width="335" height="335" rx="70" ry="70" fill="url(#bg-grad)" />
   <!-- Logo icon (white) -->
-  <g clip-path="url(#0ebf1e1b56)">
+  <g transform="translate(-8,20)" clip-path="url(#0ebf1e1b56)">
     <g clip-path="url(#c4699c050a)">
       <path fill="#ffffff" d="M 91.027344 79.671875 L 91.027344 253.542969 L 298.777344 253.542969 L 298.777344 79.671875 Z M 91.027344 79.671875 " fill-opacity="1" fill-rule="nonzero" />
     </g>

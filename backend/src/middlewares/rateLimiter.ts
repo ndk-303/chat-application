@@ -4,11 +4,10 @@ import { Request } from 'express';
 
 import { redisClient } from '../config/redis';
 
-/**
- * Trả về real client IP sau khi Nginx set X-Forwarded-For.
- * Hoạt động chính xác nhờ app.set('trust proxy', 1) trong app.ts.
- */
-const clientIpKey = (req: Request): string => req.ip ?? 'unknown';
+const clientIpKey = (req: Request): string => {
+  const ip = req.ip ?? 'unknown';
+  return ip.split('%')[0];
+};
 const makeRedisStore = (prefix: string) =>
     new RedisStore({
         sendCommand: (...args: string[]) =>
@@ -18,7 +17,7 @@ const makeRedisStore = (prefix: string) =>
 
 export const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 10,
+    max: 50,
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: clientIpKey,
@@ -74,7 +73,7 @@ export const verifyEmailLimiter = rateLimit({
 
 export const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 200,
+    max: 1000,
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: clientIpKey,

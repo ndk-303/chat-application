@@ -26,7 +26,7 @@ export function ContactsPanel() {
 
   useEffect(() => {
     fetchFriends();
-  }, [fetchFriends]);
+  }, []); // Empty dependency array - fetch once on mount
 
   /** Open the private conversation with this friend (create if not exists) */
   const handleOpenChat = async (friend: User) => {

@@ -12,7 +12,7 @@ const RING_TIMEOUT_MS = 30_000;
 
 export function IncomingCallModal({ onAccept, onDecline }: Props) {
   const { status, callType, remoteUser, pendingCallerId } = useCallStore();
-  const [remaining, setRemaining] = useState(30);
+  const [, setRemaining] = useState(30);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
