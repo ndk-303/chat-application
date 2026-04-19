@@ -1,90 +1,102 @@
 import { Server, Socket } from 'socket.io';
 import UserModel from '../../models/User';
 import FriendshipModel from '../../models/Friendship';
-import { emitToUser } from '../socketManager';
+import { emitToUser, getUserSockets } from '../socketManager';
 
 type GetUserSocketsFn = (userId: string) => Promise<string[]>;
 
 const registerPresenceHandlers = (
     io: Server,
     socket: Socket,
-    getUserSockets: GetUserSocketsFn
+    _getUserSockets: GetUserSocketsFn
 ): void => {
     const userId = socket.data.userId as string;
 
+    // ── Connect ──────────────────────────────────────────────────────────────
     const handleConnect = async () => {
         try {
-            // Read the user's current status BEFORE overriding it.
-            // If they manually set "offline" (ẩn trạng thái) we must respect that
-            // and NOT broadcast them as online to friends.
-            const user = await UserModel.findById(userId).select('status').lean();
-            const isHiding = user?.status === 'offline';
+            const user = await UserModel.findById(userId).select('statusPreference').lean();
+            const isHiding = user?.statusPreference === 'hidden';
 
             if (!isHiding) {
-                // Normal connect: mark online and notify friends
+                // User wants to be visible — mark online and notify friends
                 await UserModel.findByIdAndUpdate(userId, {
                     status: 'online',
                     lastSeen: new Date(),
                 });
-
                 const friendIds = await getFriendIds(userId);
                 for (const friendId of friendIds) {
                     await emitToUser(friendId, 'user_online', { userId });
                 }
             }
-            // If hiding: do nothing — friends continue to see them as offline
+            // If hiding: keep status='offline', friends see no change
         } catch (err) {
             console.error('[Presence] Error on connect:', err);
         }
     };
 
+    // ── Disconnect ───────────────────────────────────────────────────────────
     socket.on('disconnect', async () => {
-        // Short delay: wait for Redis socket cleanup to propagate
+        // Short delay: let Redis propagate socket removal
         setTimeout(async () => {
             try {
                 const remainingSockets = await getUserSockets(userId);
-                if (remainingSockets.length === 0) {
-                    // Only update lastSeen; preserve manual 'offline' status
-                    const user = await UserModel.findById(userId).select('status').lean();
-                    const isHiding = user?.status === 'offline';
+                if (remainingSockets.length > 0) return; // other tabs still open
 
-                    const lastSeen = new Date();
-                    await UserModel.findByIdAndUpdate(userId, { lastSeen });
+                const lastSeen = new Date();
+                const user = await UserModel.findById(userId).select('statusPreference').lean();
+                const isHiding = user?.statusPreference === 'hidden';
 
-                    if (!isHiding) {
-                        // Was genuinely online — mark offline and notify friends
-                        await UserModel.findByIdAndUpdate(userId, { status: 'offline' });
-                        const friendIds = await getFriendIds(userId);
-                        for (const friendId of friendIds) {
-                            await emitToUser(friendId, 'user_offline', { userId, lastSeen });
-                        }
+                await UserModel.findByIdAndUpdate(userId, { lastSeen, status: 'offline' });
+
+                if (!isHiding) {
+                    // Was genuinely online — notify friends they're now offline
+                    const friendIds = await getFriendIds(userId);
+                    for (const friendId of friendIds) {
+                        await emitToUser(friendId, 'user_offline', { userId, lastSeen });
                     }
-                    // If already hiding: friends see no change — still "offline"
                 }
+                // If hiding: friends already saw them as offline — no further action needed
             } catch (err) {
                 console.error('[Presence] Error on disconnect:', err);
             }
         }, 1000);
     });
 
-    // Allow 'offline' so the frontend can set "ẩn trạng thái"
-    socket.on('set_status', async (data: { status: 'online' | 'offline' }) => {
-        const { status } = data;
-        if (!['online', 'offline'].includes(status)) return;
+    // ── set_status (user preference) ─────────────────────────────────────────
+    // Frontend emits 'online' or 'hidden'
+    socket.on('set_status', async (data: { status: 'online' | 'hidden' }) => {
+        const { status: preference } = data;
+        if (!['online', 'hidden'].includes(preference)) return;
 
         try {
-            await UserModel.findByIdAndUpdate(userId, { status, lastSeen: new Date() });
-
             const friendIds = await getFriendIds(userId);
-            if (status === 'online') {
-                for (const friendId of friendIds) {
-                    await emitToUser(friendId, 'user_online', { userId });
-                }
-            } else {
-                // status === 'offline' — tell friends user is now invisible
+
+            if (preference === 'hidden') {
+                // User wants to hide — save preference, mark offline, tell friends
+                await UserModel.findByIdAndUpdate(userId, {
+                    statusPreference: 'hidden',
+                    status: 'offline',
+                    lastSeen: new Date(),
+                });
                 const lastSeen = new Date();
                 for (const friendId of friendIds) {
                     await emitToUser(friendId, 'user_offline', { userId, lastSeen });
+                }
+            } else {
+                // User wants to be visible — save preference
+                await UserModel.findByIdAndUpdate(userId, { statusPreference: 'online' });
+
+                // Only mark online if they actually have an active socket connection
+                const activeSockets = await getUserSockets(userId);
+                if (activeSockets.length > 0) {
+                    await UserModel.findByIdAndUpdate(userId, {
+                        status: 'online',
+                        lastSeen: new Date(),
+                    });
+                    for (const friendId of friendIds) {
+                        await emitToUser(friendId, 'user_online', { userId });
+                    }
                 }
             }
         } catch (err) {

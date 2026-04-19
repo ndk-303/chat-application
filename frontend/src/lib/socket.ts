@@ -66,6 +66,6 @@ export const emitMarkSeen = (conversationId: string, messageId: string): void =>
   socket?.emit('mark_seen', { conversationId, messageId });
 };
 
-export const emitSetStatus = (status: 'online' | 'offline'): void => {
+export const emitSetStatus = (status: 'online' | 'hidden'): void => {
   socket?.emit('set_status', { status });
 };

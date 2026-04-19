@@ -6,7 +6,7 @@ import { Camera, AlertCircle, Check, Loader2, Pencil, ChevronDown } from 'lucide
 
 const STATUS_OPTIONS = [
   { value: 'online', label: 'Trực tuyến', color: '#22C55E' },
-  { value: 'offline', label: 'Ẩn trạng thái', color: '#9CA3AF' },
+  { value: 'hidden', label: 'Ẩn trạng thái', color: '#9CA3AF' },
 ] as const;
 
 interface Props {
@@ -20,8 +20,8 @@ export function ProfileModal({ isOpen, onClose }: Props) {
 
   const [displayName, setDisplayName] = useState(user?.displayName ?? '');
   const [bio, setBio] = useState(user?.bio ?? '');
-  const [status, setStatus] = useState<'online' | 'offline'>(
-    user?.status === 'offline' ? 'offline' : 'online'
+  const [statusPref, setStatusPref] = useState<'online' | 'hidden'>(
+    user?.statusPreference === 'hidden' ? 'hidden' : 'online'
   );
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -69,13 +69,13 @@ export function ProfileModal({ isOpen, onClose }: Props) {
         ...(newAvatarUrl ? { avatar: newAvatarUrl } : {}),
       });
 
-      // Update status via socket (backend presenceHandler handles DB + broadcast to friends)
-      if (status !== user?.status) {
-        emitSetStatus(status);
+      // Update status preference via socket if changed
+      if (statusPref !== (user?.statusPreference ?? 'online')) {
+        emitSetStatus(statusPref);
       }
 
-      // Update local store
-      setUser({ ...user!, ...updated.user ?? updated, status, ...(newAvatarUrl ? { avatar: newAvatarUrl } : {}) });
+      // Update local store — keep status from server, persist preference locally
+      setUser({ ...user!, ...updated.user ?? updated, statusPreference: statusPref, ...(newAvatarUrl ? { avatar: newAvatarUrl } : {}) });
       setSuccess('Cập nhật hồ sơ thành công!');
       setAvatarFile(null);
       setAvatarPreview(null);
@@ -85,13 +85,13 @@ export function ProfileModal({ isOpen, onClose }: Props) {
     } finally {
       setIsSaving(false);
     }
-  }, [displayName, bio, status, avatarFile, user, setUser]);
+  }, [displayName, bio, statusPref, avatarFile, user, setUser]);
 
   if (!isOpen) return null;
 
   const currentAvatar = avatarPreview ?? user?.avatar;
   const initials = (user?.displayName?.[0] ?? '?').toUpperCase();
-  const currentStatus = STATUS_OPTIONS.find((s) => s.value === status);
+  const currentStatus = STATUS_OPTIONS.find((s) => s.value === statusPref);
 
   return (
     <div
@@ -187,7 +187,7 @@ export function ProfileModal({ isOpen, onClose }: Props) {
               <p className="text-xs text-[#9CA3AF] truncate">{user?.email}</p>
               {/* Status compact pill */}
               <button
-                onClick={() => setStatus(status === 'online' ? 'offline' : 'online')}
+                onClick={() => setStatusPref(statusPref === 'online' ? 'hidden' : 'online')}
                 className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#E5E7EB] hover:bg-[#F5F7FA] hover:border-[#0068FF]/40 transition-all w-fit mt-0.5"
               >
                 <span

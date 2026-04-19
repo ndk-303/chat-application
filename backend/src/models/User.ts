@@ -7,6 +7,7 @@ export interface User extends Document {
     avatar?: string;
     bio?: string;
     status?: 'online' | 'offline' | 'away' | 'busy';
+    statusPreference?: 'online' | 'hidden';
     lastSeen?: Date;
     passwordResetToken?: string;
     passwordResetExpires?: Date;
@@ -53,7 +54,12 @@ const userSchema = new Schema<User>(
         status: {
             type: String,
             enum: ['online', 'offline', 'away', 'busy'],
-            default: 'online'
+            default: 'offline',
+        },
+        statusPreference: {
+            type: String,
+            enum: ['online', 'hidden'],
+            default: 'online',
         },
         lastSeen: {
             type: Date,

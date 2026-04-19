@@ -6,6 +6,7 @@ export interface User {
   avatar?: string | null;
   bio?: string;
   status: 'online' | 'offline' | 'away' | 'busy';
+  statusPreference?: 'online' | 'hidden';
   lastSeen?: string;
   isEmailVerified: boolean;
   isActive: boolean;

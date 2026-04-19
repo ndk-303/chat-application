@@ -92,7 +92,8 @@ async function seed() {
       avatar: userData.avatar,
       isVerified: userData.isVerified,
       isActive: userData.isActive,
-      status: 'online',
+      status: 'offline',          // chưa login lần nào → phải hiển thị offline
+      statusPreference: 'online', // preference mặc định là muốn hiển thị khi online
     });
     createdUsers.push(user);
     log(`Created user: ${userData.displayName} (${userData.email})`);
