@@ -53,7 +53,7 @@ const userSchema = new Schema<User>(
         status: {
             type: String,
             enum: ['online', 'offline', 'away', 'busy'],
-            default: 'offline'
+            default: 'online'
         },
         lastSeen: {
             type: Date,

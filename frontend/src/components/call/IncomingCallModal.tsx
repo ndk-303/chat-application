@@ -49,7 +49,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
       style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)' }}
     >
       <div
-        className="bg-white rounded-3xl shadow-2xl w-80 overflow-hidden text-center"
+        className="bg-white rounded-[0.25rem] shadow-2xl w-80 overflow-hidden text-center"
         style={{ animation: 'callSlideIn 0.3s cubic-bezier(.34,1.48,.64,1)' }}
       >
         {/* Top area */}

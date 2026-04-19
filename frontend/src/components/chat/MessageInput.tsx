@@ -29,7 +29,7 @@ function ToolbarBtn({
     <button
       title={title}
       onClick={onClick}
-      className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors shrink-0
+      className={`w-8 h-8 flex items-center justify-center rounded-[0.25rem] transition-colors shrink-0
         ${active
           ? 'text-[#0068FF] bg-[#0068FF]/10'
           : 'text-gray-500 hover:text-[#0068FF] hover:bg-gray-100'}`}
@@ -140,10 +140,10 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
                   <img
                     src={fp.preview}
                     alt={fp.file.name}
-                    className="w-14 h-14 rounded-lg object-cover border border-gray-200"
+                    className="w-14 h-14 rounded-[0.25rem] object-cover border border-gray-200"
                   />
                 ) : (
-                  <div className="w-16 h-12 rounded-lg bg-gray-100 border border-gray-200 flex flex-col items-center justify-center px-2">
+                  <div className="w-16 h-12 rounded-[0.25rem] bg-gray-100 border border-gray-200 flex flex-col items-center justify-center px-2">
                     <File size={15} color="#0068FF" />
                     <span className="text-[9px] text-gray-500 truncate w-full text-center mt-0.5">
                       {fp.file.name.slice(0, 8)}…
@@ -210,7 +210,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
               ref={emojiButtonRef}
               title="Emoji"
               onClick={() => setShowEmojiPicker((v) => !v)}
-              className={`w-8 h-8 flex items-center justify-center rounded-lg transition-colors
+              className={`w-8 h-8 flex items-center justify-center rounded-[0.25rem] transition-colors
                 ${showEmojiPicker ? 'text-[#0068FF] bg-[#0068FF]/10' : 'text-gray-400 hover:text-[#0068FF] hover:bg-gray-100'}`}
             >
               <Smile size={18} />
@@ -230,7 +230,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
               onClick={() => handleSend()}
               disabled={isSending}
               title="Gửi"
-              className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center bg-[#0068FF] text-white hover:bg-[#0052CC] active:scale-90 transition-all shadow-sm shadow-[#0068FF]/30"
+              className="flex-shrink-0 w-8 h-8 rounded-[0.25rem] flex items-center justify-center bg-[#0068FF] text-white hover:bg-[#0052CC] active:scale-90 transition-all shadow-sm shadow-[#0068FF]/30"
             >
               {isSending
                 ? <Loader2 size={15} className="animate-spin" />
@@ -240,7 +240,7 @@ export const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(
             <button
               onClick={() => handleSend('👍')}
               title="Gửi 👍"
-              className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-[#F5A623] hover:bg-amber-50 hover:scale-110 active:scale-90 transition-all text-lg leading-none"
+              className="flex-shrink-0 w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-[#F5A623] hover:bg-amber-50 hover:scale-110 active:scale-90 transition-all text-lg leading-none"
             >
               👍
             </button>

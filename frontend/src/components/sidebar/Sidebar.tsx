@@ -80,14 +80,14 @@ export function Sidebar() {
                   <button
                     title="Thêm bạn bè"
                     onClick={() => setFriendSearchModalOpen(true)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
+                    className="w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
                   >
                     <UserPlus size={16} strokeWidth={2} />
                   </button>
                   <button
                     title="Tạo nhóm"
                     onClick={() => setCreateGroupModalOpen(true)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
+                    className="w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-slate-500 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all shrink-0"
                   >
                     <Users size={16} strokeWidth={2} />
                   </button>
@@ -115,7 +115,7 @@ export function Sidebar() {
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {filtered.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-40 gap-3 px-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#0068FF]/10 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-[0.25rem] bg-[#0068FF]/10 flex items-center justify-center">
                     <MessageCircleMore size={22} color="#0068FF" strokeWidth={2} />
                   </div>
                   <p className="text-sm text-slate-400 text-center">

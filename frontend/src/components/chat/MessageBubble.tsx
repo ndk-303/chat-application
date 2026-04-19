@@ -210,7 +210,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
 
         <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
           {/* Card bubble */}
-          <div className="bg-white border border-gray-200 rounded-[0.3rem] shadow-sm overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-[0.25rem] shadow-sm overflow-hidden">
 
             {/* Header */}
             <div className="px-4 py-2">
@@ -303,7 +303,7 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
                   key={i}
                   type="button"
                   onClick={() => openLightbox(imageFiles.map((f) => ({ url: f.url, name: f.originalName ?? 'image' })), i)}
-                  className="rounded-md overflow-hidden border border-black/5 hover:scale-[1.02] transition-transform focus:outline-none focus:ring-2 focus:ring-[#0068FF]"
+                  className="rounded-[0.25rem] overflow-hidden border border-black/5 hover:scale-[1.02] transition-transform focus:outline-none focus:ring-2 focus:ring-[#0068FF]"
                 >
                   <img
                     src={file.url}
@@ -322,11 +322,11 @@ export function MessageBubble({ message, isSent, showAvatar, isGroup }: MessageB
               type="button"
               onClick={() => handleFileDownload(file.url, file.originalName ?? 'file', i)}
               disabled={downloadingFile === i}
-              className={`flex items-center gap-3 p-3 rounded-md mb-1 w-full text-left transition-opacity hover:opacity-80 disabled:opacity-60 ${
+              className={`flex items-center gap-3 p-3 rounded-[0.25rem] mb-1 w-full text-left transition-opacity hover:opacity-80 disabled:opacity-60 ${
                 isSent ? 'bg-[#0068FF] text-white' : 'bg-gray-100 text-gray-700 border border-[#E5E7EB]'
               }`}
             >
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+              <div className={`w-9 h-9 rounded-[0.25rem] flex items-center justify-center flex-shrink-0 ${
                 isSent ? 'bg-white/20' : 'bg-[#0068FF]/10 text-[#0068FF]'
               }`}>
                 {downloadingFile === i ? (

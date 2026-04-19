@@ -1,9 +1,11 @@
 import http from 'http';
+import os from 'os';
 import app from './app';
 import { initSocket } from './socket/socketManager';
 import { connectRedis } from './config/redis';
 
 const port: number = Number(process.env.PORT) || 5051;
+export const CONTAINER_ID = os.hostname();
 
 async function bootstrap() {
   await connectRedis();
@@ -13,7 +15,8 @@ async function bootstrap() {
   initSocket(httpServer);
 
   httpServer.listen(port, () => {
-    console.log(`[Bootstrap] Server running on http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
+    console.log(`Container ID: ${CONTAINER_ID}`);
   });
 }
 

@@ -68,15 +68,15 @@ export function AddMemberModal({ conversationId, existingIds, onClose }: AddMemb
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm flex flex-col max-h-[70vh] overflow-hidden">
+      <div className="relative bg-white rounded-[0.25rem] shadow-2xl w-full max-w-sm flex flex-col max-h-[70vh] overflow-hidden">
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h2 className="text-base font-bold text-slate-900">Thêm Thành Viên</h2>
-          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100">
+          <button onClick={onClose} className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:bg-gray-100">
             <X size={14} strokeWidth={2.5} />
           </button>
         </div>
         <div className="px-5 pb-3">
-          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm bạn bè…" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:border-[#0068FF] placeholder:text-gray-400" />
+          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm bạn bè…" className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-[0.25rem] text-sm outline-none focus:border-[#0068FF] placeholder:text-gray-400" />
         </div>
         <div className="flex-1 overflow-y-auto px-2 pb-4">
           {loading ? (
@@ -85,7 +85,7 @@ export function AddMemberModal({ conversationId, existingIds, onClose }: AddMemb
             <p className="text-sm text-gray-400 text-center py-6">Không có bạn bè nào để thêm</p>
           ) : (
             filtered.map((u) => (
-              <div key={u._id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50">
+              <div key={u._id} className="flex items-center gap-3 px-3 py-2 rounded-[0.25rem] hover:bg-gray-50">
                 <PanelAvatar src={u.avatar} name={u.displayName || u.email} />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-800 truncate">{u.displayName || u.email}</p>
@@ -93,7 +93,7 @@ export function AddMemberModal({ conversationId, existingIds, onClose }: AddMemb
                 <button
                   onClick={() => handleAdd(u._id)}
                   disabled={adding === u._id}
-                  className="px-3 py-1 rounded-lg bg-[#0068FF] text-white text-xs font-medium hover:bg-[#0052CC] transition-colors disabled:opacity-50"
+                  className="px-3 py-1 rounded-[0.25rem] bg-[#0068FF] text-white text-xs font-medium hover:bg-[#0052CC] transition-colors disabled:opacity-50"
                 >
                   {adding === u._id ? '...' : 'Thêm'}
                 </button>

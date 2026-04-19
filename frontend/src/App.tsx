@@ -21,7 +21,7 @@ function App() {
         }}
       />
       <Routes>
-        {/* Auth routes */}
+        {/* Auth routes */} 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />

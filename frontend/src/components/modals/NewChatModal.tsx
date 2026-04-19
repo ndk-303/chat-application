@@ -90,23 +90,23 @@ export function NewChatModal() {
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleClose} />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col max-h-[80vh] overflow-hidden">
+      <div className="relative bg-white rounded-[0.25rem] shadow-2xl w-full max-w-md flex flex-col max-h-[80vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-800">Cuộc trò chuyện mới</h2>
-          <button onClick={handleClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
+          <button onClick={handleClose} className="w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all">
             <X size={16} strokeWidth={2.5} />
           </button>
         </div>
 
         {/* Tabs */}
         <div className="px-5 pt-4 pb-3">
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+          <div className="flex gap-1 bg-gray-100 rounded-[0.25rem] p-1">
             {(['direct', 'group'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => { setTab(t); setSelectedUsers([]); }}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-all capitalize ${
+                className={`flex-1 py-1.5 text-xs font-semibold rounded-[0.25rem] transition-all capitalize ${
                   tab === t ? 'bg-white text-[#0068FF] shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
@@ -124,7 +124,7 @@ export function NewChatModal() {
               placeholder="Tên nhóm..."
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-[0.25rem] border border-gray-200 bg-gray-50 outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all"
             />
           </div>
         )}
@@ -138,7 +138,7 @@ export function NewChatModal() {
               placeholder="Tìm kiếm mọi người..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-[0.25rem] border border-gray-200 bg-gray-50 outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all"
             />
           </div>
         </div>
@@ -171,7 +171,7 @@ export function NewChatModal() {
                 <button
                   key={u._id}
                   onClick={() => toggleUser(u)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[0.25rem] text-left transition-all ${
                     isSelected ? 'bg-[#0068FF]/10' : 'hover:bg-gray-50'
                   }`}
                 >
@@ -202,7 +202,7 @@ export function NewChatModal() {
           <button
             onClick={handleStart}
             disabled={selectedUsers.length === 0 || (tab === 'group' && !groupName.trim()) || isLoading}
-            className="w-full py-2.5 rounded-xl bg-[#0068FF] text-white font-semibold text-sm transition-all hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white font-semibold text-sm transition-all hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>

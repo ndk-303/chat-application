@@ -66,7 +66,7 @@ export default function JoinGroupPage() {
     <div
       className="min-h-screen flex items-center justify-center p-4  bg-[#F5F7FA]"
     >
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+      <div className="bg-white rounded-[0.25rem] shadow-2xl w-full max-w-md overflow-hidden">
 
         <div className="p-8">
           {loading ? (
@@ -83,7 +83,7 @@ export default function JoinGroupPage() {
               <p className="text-gray-500 text-sm text-center">{error}</p>
               <button
                 onClick={() => navigate('/')}
-                className="mt-2 px-6 py-2.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+                className="mt-2 px-6 py-2.5 bg-gray-100 text-gray-700 rounded-[0.25rem] text-sm font-medium hover:bg-gray-200 transition-colors"
               >
                 Về trang chủ
               </button>
@@ -158,14 +158,14 @@ export default function JoinGroupPage() {
               <div className="flex gap-3 w-full mt-2">
                 <button
                   onClick={() => navigate('/')}
-                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-[0.25rem] text-sm font-semibold hover:bg-gray-200 transition-colors"
                 >
                   Từ chối
                 </button>
                 <button
                   onClick={handleJoin}
                   disabled={joining}
-                  className="flex-1 px-4 py-3 bg-[#0068FF] text-white rounded-xl text-sm font-semibold hover:bg-[#0052CC] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-[#0068FF] text-white rounded-[0.25rem] text-sm font-semibold hover:bg-[#0052CC] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {joining ? (
                     <>

@@ -10,7 +10,7 @@ function generateOTP(): string {
 
 function getOTPExpiry(): Date {
     const d = new Date();
-    d.setMinutes(d.getMinutes() + 15); // 15 phút
+    d.setMinutes(d.getMinutes() + 5);
     return d;
 }
 

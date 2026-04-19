@@ -21,11 +21,11 @@ export const comparePassword = async (password: string, hashedPassword: string):
 };
 
 export const generateResetPwdToken = (): string => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 export const generateResetExpiration = (): Date => {
-    const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 1);
-    return expiration;
+  const expiration = new Date();
+  expiration.setMinutes(expiration.getMinutes() + 5);
+  return expiration;
 };

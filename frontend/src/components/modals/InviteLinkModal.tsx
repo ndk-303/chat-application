@@ -39,10 +39,10 @@ export function InviteLinkModal({ conversationId, groupName, onClose }: InviteLi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+      <div className="relative bg-white rounded-[0.25rem] shadow-2xl w-full max-w-sm p-6">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-bold text-slate-900">Mời vào nhóm</h2>
-          <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100">
+          <button onClick={onClose} className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:bg-gray-100">
             <X size={14} strokeWidth={2.5} />
           </button>
         </div>
@@ -55,7 +55,7 @@ export function InviteLinkModal({ conversationId, groupName, onClose }: InviteLi
 
             {/* QR Code */}
             <div className="flex justify-center mb-5">
-              <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+              <div className="p-4 bg-white rounded-[0.25rem] border border-gray-100 shadow-sm">
                 <QRCodeSVG value={inviteUrl} size={180} level="M" />
               </div>
             </div>
@@ -64,9 +64,9 @@ export function InviteLinkModal({ conversationId, groupName, onClose }: InviteLi
             <div className="flex items-center gap-2 mb-4">
               <input
                 readOnly value={inviteUrl}
-                className="flex-1 px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-xl outline-none text-gray-600 truncate"
+                className="flex-1 px-3 py-2 text-xs bg-gray-50 border border-gray-200 rounded-[0.25rem] outline-none text-gray-600 truncate"
               />
-              <button onClick={handleCopy} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${copied ? 'bg-green-500 text-white' : 'bg-[#0068FF] text-white hover:bg-[#0052CC]'}`}>
+              <button onClick={handleCopy} className={`px-4 py-2 rounded-[0.25rem] text-sm font-medium transition-colors ${copied ? 'bg-green-500 text-white' : 'bg-[#0068FF] text-white hover:bg-[#0052CC]'}`}>
                 {copied ? 'Đã copy!' : 'Copy'}
               </button>
             </div>

@@ -1,4 +1,5 @@
 import express from 'express';
+import os from 'os';
 import routes from './routes/index'
 import connectDB from './config/database'
 import dotenv from 'dotenv';
@@ -7,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { generalLimiter } from './middlewares/rateLimiter';
 dotenv.config();
 
+const CONTAINER_ID = os.hostname();
 const app = express();
 app.set('trust proxy', 1);
 
@@ -27,6 +29,14 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api', generalLimiter);
+
+// ─── Scale-demo middleware: log which container handles each request ──────────
+app.use('/api', (req, _res, next) => {
+    const ts = new Date().toISOString();
+    console.log(`Container=${CONTAINER_ID} | ${req.method} ${req.originalUrl} | ${ts}`);
+    next();
+});
+// ─────────────────────────────────────────────────────────────────────────────
 
 connectDB();
 

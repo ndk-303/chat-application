@@ -76,7 +76,7 @@ export function MessageList({ conversationId, isGroup }: MessageListProps) {
     return (
       <div className="flex-1 flex items-center justify-center bg-[#E9EBEE]">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-3">
+          <div className="w-16 h-16 rounded-[0.25rem] bg-[#0068FF]/10 flex items-center justify-center mx-auto mb-3">
             <MessageCircleMore size={28} color="#0068FF" strokeWidth={2} />
           </div>
           <p className="text-sm font-medium text-[#1F2937]">Chưa có tin nhắn</p>

@@ -64,10 +64,13 @@ export function useWebRTC(): UseWebRTCReturn {
     };
 
     pc.onconnectionstatechange = () => {
+      console.log('[WebRTC] connectionState:', pc.connectionState);
       if (pc.connectionState === 'connected') {
         useCallStore.getState().setConnected();
       }
-      if (['disconnected', 'failed', 'closed'].includes(pc.connectionState)) {
+      // NOTE: 'disconnected' is a transient state during ICE negotiation — do NOT cleanup here.
+      // Only cleanup on 'failed' (unrecoverable) or 'closed' (explicit close).
+      if (['failed', 'closed'].includes(pc.connectionState)) {
         cleanup();
         useCallStore.getState().reset();
       }

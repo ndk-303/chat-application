@@ -93,7 +93,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
           <button
             title="Zoom out"
             onClick={() => setScale((s) => Math.max(0.5, s - 0.25))}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all"
+            className="w-9 h-9 rounded-[0.25rem] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all"
           >
             <ZoomOut size={18} />
           </button>
@@ -102,7 +102,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
           <button
             title="Reset zoom"
             onClick={() => { setScale(1); setOffset({ x: 0, y: 0 }); }}
-            className="min-w-[44px] h-9 rounded-lg px-2 text-white/70 hover:text-white hover:bg-white/10 text-xs font-medium transition-all"
+            className="min-w-[44px] h-9 rounded-[0.25rem] px-2 text-white/70 hover:text-white hover:bg-white/10 text-xs font-medium transition-all"
           >
             {Math.round(scale * 100)}%
           </button>
@@ -111,7 +111,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
           <button
             title="Zoom in"
             onClick={() => setScale((s) => Math.min(5, s + 0.25))}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all"
+            className="w-9 h-9 rounded-[0.25rem] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all"
           >
             <ZoomIn size={18} />
           </button>
@@ -124,7 +124,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
             title="Download"
             onClick={handleDownload}
             disabled={downloading}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-50"
+            className="w-9 h-9 rounded-[0.25rem] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-50"
           >
             {downloading ? (
               <Loader2 size={18} className="animate-spin" />
@@ -137,7 +137,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
           <button
             title="Close (Esc)"
             onClick={onClose}
-            className="w-9 h-9 rounded-lg flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all ml-1"
+            className="w-9 h-9 rounded-[0.25rem] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-all ml-1"
           >
             <X size={20} strokeWidth={2.5} />
           </button>
@@ -197,7 +197,7 @@ export function ImageLightbox({ images, initialIndex = 0, onClose }: ImageLightb
             <button
               key={i}
               onClick={() => setIndex(i)}
-              className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
+              className={`w-14 h-14 rounded-[0.25rem] overflow-hidden shrink-0 border-2 transition-all ${
                 i === index ? 'border-[#0068FF]' : 'border-transparent opacity-50 hover:opacity-80'
               }`}
             >

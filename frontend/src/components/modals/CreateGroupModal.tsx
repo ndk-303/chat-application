@@ -110,11 +110,11 @@ export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupM
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-md shadow-2xl w-full max-w-md flex flex-col max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-[0.25rem] shadow-2xl w-full max-w-md flex flex-col max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">Tạo Nhóm Chat</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+          <button onClick={onClose} className="w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -129,7 +129,7 @@ export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupM
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="VD: Nhóm lớp,…"
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] rounded-xl text-sm outline-none transition-all placeholder:text-slate-400"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] rounded-[0.25rem] text-sm outline-none transition-all placeholder:text-slate-400"
               />
             </div>
 
@@ -163,12 +163,12 @@ export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupM
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Tìm bạn bè…"
-                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] rounded-xl text-sm outline-none transition-all placeholder:text-slate-400"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] rounded-[0.25rem] text-sm outline-none transition-all placeholder:text-slate-400"
                 />
               </div>
 
               {/* Friend list */}
-              <div className="rounded-xl border border-slate-100 overflow-hidden">
+              <div className="rounded-[0.25rem] border border-slate-100 overflow-hidden">
                 {loadingFriends ? (
                   <div className="py-6 flex justify-center"><Spinner /></div>
                 ) : filtered.length === 0 ? (
@@ -225,7 +225,7 @@ export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupM
         <div className="px-6 py-4 border-t border-slate-100 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors"
+            className="flex-1 py-2.5 rounded-[0.25rem] border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition-colors"
           >
             Hủy
           </button>
@@ -233,7 +233,7 @@ export function CreateGroupModal({ onClose, initialSelected = [] }: CreateGroupM
             onClick={handleCreate}
             disabled={!canCreate}
             title={selected.length < 2 ? 'Cần chọn ít nhất 2 thành viên' : ''}
-            className={`flex-1 py-2.5 rounded-xl text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${canCreate ? 'bg-[#0068FF] hover:bg-[#0052CC]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+            className={`flex-1 py-2.5 rounded-[0.25rem] text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 ${canCreate ? 'bg-[#0068FF] hover:bg-[#0052CC]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
           >
             {creating ? (
               <>

@@ -2,10 +2,10 @@ import { useState, useRef, useCallback } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { userService } from '../../services/userService';
 import { emitSetStatus } from '../../lib/socket';
-import { Camera, AlertCircle, Check, Loader2 } from 'lucide-react';
+import { Camera, AlertCircle, Check, Loader2, Pencil, ChevronDown } from 'lucide-react';
 
 const STATUS_OPTIONS = [
-  { value: 'online',  label: 'Trực tuyến',    color: '#22C55E' },
+  { value: 'online', label: 'Trực tuyến', color: '#22C55E' },
   { value: 'offline', label: 'Ẩn trạng thái', color: '#9CA3AF' },
 ] as const;
 
@@ -28,7 +28,9 @@ export function ProfileModal({ isOpen, onClose }: Props) {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [editingName, setEditingName] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -98,7 +100,7 @@ export function ProfileModal({ isOpen, onClose }: Props) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        className="bg-white rounded-[0.25rem] shadow-2xl w-full max-w-md mx-4 overflow-hidden"
         style={{ animation: 'modalSlideIn 0.22s cubic-bezier(.34,1.48,.64,1)' }}
       >
         {/* Header */}
@@ -106,97 +108,95 @@ export function ProfileModal({ isOpen, onClose }: Props) {
           <h2 className="text-base font-bold text-[#1F2937]">Chỉnh sửa hồ sơ</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+            className="w-8 h-8 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         </div>
 
         <div className="px-6 py-5 space-y-5 overflow-y-auto no-scrollbar max-h-[75vh]">
-          {/* Avatar */}
-          <div className="flex flex-col items-center gap-3">
-            <div className="relative group">
-              {currentAvatar ? (
-                <img
-                  src={currentAvatar}
-                  alt="avatar"
-                  className="w-24 h-24 rounded-full object-cover ring-4 ring-[#0068FF]/20"
+          <div className="flex items-center gap-5">
+            {/* Avatar */}
+            <div className="flex flex-col items-center gap-2 flex-shrink-0">
+              <div className="relative group">
+                {currentAvatar ? (
+                  <img
+                    src={currentAvatar}
+                    alt="avatar"
+                    className="w-15 h-15 rounded-full object-cover ring-4 ring-[#0068FF]/20"
+                  />
+                ) : (
+                  <div className="w-15 h-15 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center text-2xl font-bold ring-4 ring-[#0068FF]/20">
+                    {initials}
+                  </div>
+                )}
+                {/* Status badge */}
+                <span
+                  className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white"
+                  style={{ background: currentStatus?.color ?? '#22C55E' }}
                 />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-[#0068FF]/15 text-[#0068FF] flex items-center justify-center text-3xl font-bold ring-4 ring-[#0068FF]/20">
-                  {initials}
-                </div>
-              )}
-              {/* Status badge */}
-              <span
-                className="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white"
-                style={{ background: currentStatus?.color ?? '#22C55E' }}
-              />
-              {/* Hover overlay */}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-              >
-                <Camera size={20} color="white" />
-              </button>
-            </div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarChange}
-            />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="text-xs text-[#0068FF] font-medium hover:underline"
-            >
-              Đổi ảnh đại diện
-            </button>
-          </div>
-
-          {/* Status selector */}
-          <div>
-            <label className="block text-xs font-semibold text-[#6B7280] mb-2 uppercase tracking-wide">Trạng thái</label>
-            <div className="flex gap-2">
-              {STATUS_OPTIONS.map((opt) => (
+                {/* Hover overlay */}
                 <button
-                  key={opt.value}
-                  onClick={() => setStatus(opt.value)}
-                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-2 text-sm font-medium transition-all ${
-                    status === opt.value
-                      ? 'border-[#0068FF] bg-[#E6F0FF] text-[#0068FF]'
-                      : 'border-[#E5E7EB] text-[#6B7280] hover:border-[#0068FF]/40 hover:bg-[#F5F7FA]'
-                  }`}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute inset-0 rounded-[0.25rem] bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
                 >
-                  <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: opt.color }} />
-                  {opt.label}
+                  <Camera size={18} color="white" />
                 </button>
-              ))}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
             </div>
-          </div>
 
-          {/* Display Name */}
-          <div>
-            <label className="block text-xs font-semibold text-[#6B7280] mb-1.5 uppercase tracking-wide">Tên hiển thị</label>
-            <input
-              type="text"
-              value={displayName}
-              maxLength={50}
-              onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-sm text-[#1F2937] bg-white outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all placeholder:text-[#9CA3AF]"
-              placeholder="Tên hiển thị của bạn"
-            />
-            <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{displayName.length}/50</p>
-          </div>
-
-          {/* Email (read-only) */}
-          <div>
-            <label className="block text-xs font-semibold text-[#6B7280] mb-1.5 uppercase tracking-wide">Email</label>
-            <div className="w-full px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-sm text-[#9CA3AF] bg-[#F5F7FA] select-all cursor-text">
-              {user?.email}
+            {/* Name + Email */}
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
+              {/* Display Name row */}
+              <div className="flex items-center gap-2">
+                {editingName ? (
+                  <input
+                    ref={nameInputRef}
+                    type="text"
+                    value={displayName}
+                    maxLength={50}
+                    autoFocus
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    onBlur={() => setEditingName(false)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') setEditingName(false); }}
+                    className="flex-1 min-w-0 px-3 py-1.5 rounded-[0.25rem] border border-[#0068FF] text-sm font-semibold text-[#1F2937] bg-white outline-none focus:ring-2 focus:ring-[#0068FF]/20 transition-all"
+                  />
+                ) : (
+                  <span className="text-[15px] font-bold text-[#1F2937] truncate">
+                    {displayName || 'Chưa đặt tên'}
+                  </span>
+                )}
+                <button
+                  onClick={() => { setEditingName(true); setTimeout(() => nameInputRef.current?.focus(), 50); }}
+                  className="flex-shrink-0 w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-[#6B7280] hover:text-[#0068FF] hover:bg-[#E6F0FF] transition-all"
+                  title="Chỉnh sửa tên"
+                >
+                  <Pencil size={13} strokeWidth={2.2} />
+                </button>
+              </div>
+              {/* Email */}
+              <p className="text-xs text-[#9CA3AF] truncate">{user?.email}</p>
+              {/* Status compact pill */}
+              <button
+                onClick={() => setStatus(status === 'online' ? 'offline' : 'online')}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#E5E7EB] hover:bg-[#F5F7FA] hover:border-[#0068FF]/40 transition-all w-fit mt-0.5"
+              >
+                <span
+                  className="w-2 h-2 rounded-full flex-shrink-0 transition-colors"
+                  style={{ background: currentStatus?.color }}
+                />
+                <span className="text-[11px] text-[#6B7280] font-medium">{currentStatus?.label}</span>
+                <ChevronDown size={10} className="text-[#9CA3AF]" />
+              </button>
             </div>
           </div>
 
@@ -209,20 +209,19 @@ export function ProfileModal({ isOpen, onClose }: Props) {
               onChange={(e) => setBio(e.target.value)}
               rows={3}
               placeholder="Giới thiệu về bạn…"
-              className="w-full px-4 py-2.5 rounded-xl border border-[#E5E7EB] text-sm text-[#1F2937] bg-white outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all resize-none placeholder:text-[#9CA3AF]"
+              className="w-full px-4 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] text-sm text-[#1F2937] bg-white outline-none focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 transition-all resize-none placeholder:text-[#9CA3AF]"
             />
-            <p className="text-[10px] text-[#9CA3AF] mt-1 text-right">{bio.length}/200</p>
           </div>
 
           {/* Feedback */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
+            <div className="p-3 bg-red-50 border border-red-200 rounded-[0.25rem] text-red-600 text-sm flex items-center gap-2">
               <AlertCircle size={14} strokeWidth={2} />
               {error}
             </div>
           )}
           {success && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm flex items-center gap-2">
+            <div className="p-3 bg-green-50 border border-green-200 rounded-[0.25rem] text-green-600 text-sm flex items-center gap-2">
               <Check size={14} strokeWidth={2} />
               {success}
             </div>
@@ -233,14 +232,14 @@ export function ProfileModal({ isOpen, onClose }: Props) {
         <div className="px-6 py-4 border-t border-[#F0F2F5] flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border border-[#E5E7EB] text-sm font-semibold text-[#6B7280] hover:bg-[#F5F7FA] transition-all"
+            className="flex-1 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] text-sm font-semibold text-[#6B7280] hover:bg-[#F5F7FA] transition-all"
           >
             Hủy
           </button>
           <button
             onClick={handleSave}
             disabled={isSaving || !displayName.trim()}
-            className="flex-1 py-2.5 rounded-xl bg-[#0068FF] text-white text-sm font-semibold hover:bg-[#0052CC] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white text-sm font-semibold hover:bg-[#0052CC] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSaving ? (
               <>

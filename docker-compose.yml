@@ -15,6 +15,20 @@ services:
       timeout: 5s
       retries: 5
 
+  seeder:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.seeder
+    container_name: chat_seeder
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_URI=mongodb://admin:adminpassword@mongo:27017/app_dev?authSource=admin
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: "no"
+
   redis:
     image: redis:7-alpine
     container_name: chat_redis

@@ -16,7 +16,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white rounded-2xl shadow-lg shadow-[#0068FF]/8 p-8 my-2">
+        <div className="bg-white rounded-[0.25rem] shadow-lg shadow-[#0068FF]/8 p-8 my-2">
           <div className="flex items-center justify-center gap-3 pb-6">
             <Link to="/" className="inline-flex items-center gap-3 no-underline">
               <img src="/logo.svg" alt="Kapta Logo" className="w-12 h-12" />

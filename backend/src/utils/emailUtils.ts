@@ -82,9 +82,6 @@ function buildEmailHtml({
         <tr>
           <td style="background:#0068FF;padding:28px 32px;text-align:center;">
             <div style="display:inline-flex;align-items:center;gap:10px;">
-              <div style="width:40px;height:40px;background:rgba(255,255,255,0.2);border-radius:10px;display:inline-block;text-align:center;line-height:40px;">
-                <span style="color:#fff;font-size:20px;">💬</span>
-              </div>
               <span style="color:#fff;font-size:22px;font-weight:700;letter-spacing:-0.5px;">${APP_NAME}</span>
             </div>
           </td>

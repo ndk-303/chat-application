@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
+import os from 'os';
 import * as messageService from '../services/messageService';
 import { uploadCloundinary } from '../utils/uploadUtils';
+
+const CONTAINER_ID = os.hostname();
 
 export const getMessages = async (req: Request, res: Response) => {
     try {
@@ -31,6 +34,8 @@ export const sendMessage = async (req: Request, res: Response) => {
         const { content } = req.body;
         const attachs = req.files as Express.Multer.File[];
 
+        console.log(`Container=${CONTAINER_ID} | user=${userId} | conv=${conversationId} | content="${(content || '').slice(0, 60)}"`);
+
         if (!content && (!attachs || attachs.length === 0)) {
             return res.status(400).json({ message: 'Tin nhắn không được để trống' });
         }
@@ -45,11 +50,11 @@ export const sendMessage = async (req: Request, res: Response) => {
                 const result = await uploadCloundinary(f.buffer, 'chat_app_storage', type);
 
                 return {
-                    url:          result.secure_url,
-                    publicId:     result.public_id,
+                    url: result.secure_url,
+                    publicId: result.public_id,
                     originalName: f.originalname,
-                    size:         f.size,
-                    mimeType:     f.mimetype,
+                    size: f.size,
+                    mimeType: f.mimetype,
                     type,
                 };
             });
@@ -59,6 +64,8 @@ export const sendMessage = async (req: Request, res: Response) => {
         }
 
         const message = await messageService.createMessage(conversationId as string, userId, content, files);
+
+        console.log(`Container=${CONTAINER_ID} | message saved | id=${message._id}`);
 
         res.status(201).json({
             message: 'Gửi tin nhắn thành công',

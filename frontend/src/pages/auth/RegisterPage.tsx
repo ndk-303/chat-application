@@ -48,7 +48,7 @@ export default function RegisterPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[0.25rem] text-red-600 text-sm flex items-center gap-2">
           <Info size={16} />
           {error}
         </div>
@@ -62,7 +62,7 @@ export default function RegisterPage() {
             type="text"
             placeholder="Tên của bạn"
             {...register('displayName', { required: 'Vui lòng nhập tên', minLength: { value: 2, message: 'Tối thiểu 2 ký tự' } })}
-            className="w-full px-4 py-2.5 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+            className="w-full px-4 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
           />
           {errors.displayName && <p className="mt-1 text-xs text-red-500">{errors.displayName.message}</p>}
         </div>
@@ -74,7 +74,7 @@ export default function RegisterPage() {
             type="email"
             placeholder="ban@example.com"
             {...register('email', { required: 'Vui lòng nhập email', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email không hợp lệ' } })}
-            className="w-full px-4 py-2.5 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+            className="w-full px-4 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
           />
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
         </div>
@@ -87,7 +87,7 @@ export default function RegisterPage() {
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               {...register('password', { required: 'Vui lòng nhập mật khẩu', minLength: { value: 6, message: 'Tối thiểu 6 ký tự' } })}
-              className="w-full px-4 py-2.5 pr-11 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+              className="w-full px-4 py-2.5 pr-11 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
@@ -112,7 +112,7 @@ export default function RegisterPage() {
                 required: 'Vui lòng xác nhận mật khẩu',
                 validate: (val) => val === password || 'Mật khẩu không khớp'
               })}
-              className="w-full px-4 py-2.5 pr-11 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+              className="w-full px-4 py-2.5 pr-11 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
             />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors">
@@ -129,7 +129,7 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2.5 rounded-xl bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+          className="w-full py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
         >
           {isLoading ? (
             <>

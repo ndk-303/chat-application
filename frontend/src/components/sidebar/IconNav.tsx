@@ -17,7 +17,7 @@ function NavButton({ title, active, onClick, children, badge }: NavButtonProps) 
     <button
       title={title}
       onClick={onClick}
-      className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 group ${active
+      className={`relative w-10 h-10 rounded-[0.25rem] flex items-center justify-center transition-all duration-200 group ${active
         ? 'bg-white text-[#0068FF] shadow-md shadow-[#0068FF]/20'
         : 'text-white/75 hover:text-white hover:bg-white/15'
         }`}
@@ -29,7 +29,7 @@ function NavButton({ title, active, onClick, children, badge }: NavButtonProps) 
         </span>
       )}
       {/* Tooltip (desktop only) */}
-      <span className="hidden md:block absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
+      <span className="hidden md:block absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-[0.25rem] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
         {title}
       </span>
     </button>
@@ -68,7 +68,7 @@ export function IconNav() {
               {(user?.displayName?.[0] ?? '?').toUpperCase()}
             </div>
           )}
-          <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
+          <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-[#1F2937] text-white text-xs rounded-[0.25rem] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 shadow-lg">
             Hồ sơ
           </span>
         </button>

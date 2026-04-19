@@ -182,7 +182,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
           </h3>
           <button
             onClick={() => setRightPanelOpen(false)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
+            className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all"
           >
             <X size={15} strokeWidth={2.5} />
           </button>
@@ -207,7 +207,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleRename(); if (e.key === 'Escape') setEditingName(false); }}
-                className="flex-1 px-2 py-1 text-sm rounded-lg border border-[#0068FF] outline-none text-center"
+                className="flex-1 px-2 py-1 text-sm rounded-[0.25rem] border border-[#0068FF] outline-none text-center"
                 disabled={savingName}
               />
               <button onClick={handleRename} disabled={savingName} className="text-[#0068FF] hover:text-[#0052CC]">
@@ -296,7 +296,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm tin nhắn..."
-              className="w-full px-3 py-2 text-sm rounded-xl bg-gray-50 border border-gray-200 outline-none focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] placeholder:text-gray-400"
+              className="w-full px-3 py-2 text-sm rounded-[0.25rem] bg-gray-50 border border-gray-200 outline-none focus:border-[#0068FF] focus:ring-1 focus:ring-[#0068FF] placeholder:text-gray-400"
             />
             {searchQuery.trim() && (
               <div className="max-h-44 overflow-y-auto mt-2 space-y-1">
@@ -309,7 +309,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                       const el = document.getElementById(`msg-${m._id}`);
                       if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('bg-yellow-50'); setTimeout(() => el.classList.remove('bg-yellow-50'), 2000); }
                     }}
-                    className="w-full text-left p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="w-full text-left p-2 rounded-[0.25rem] hover:bg-gray-50 transition-colors"
                   >
                     <p className="text-[11px] text-gray-400">{m.senderId.displayName}</p>
                     <p className="text-xs text-gray-700 line-clamp-2">{m.content}</p>
@@ -385,7 +385,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                     <p className="text-sm font-medium text-gray-800 truncate">{p.displayName}</p>
                   </div>
                   {conversation.adminId?._id === p._id && (
-                    <span className="text-[10px] bg-[#0068FF]/15 text-[#0068FF] font-semibold px-1.5 py-0.5 rounded-md shrink-0">Admin</span>
+                    <span className="text-[10px] bg-[#0068FF]/15 text-[#0068FF] font-semibold px-1.5 py-0.5 rounded-[0.25rem] shrink-0">Admin</span>
                   )}
                   {isAdmin && p._id !== user?._id && conversation.adminId?._id !== p._id && (
                     <button
@@ -403,7 +403,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                         finally { setKickingId(null); }
                       }}
                       disabled={kickingId === p._id}
-                      className="p-1 rounded-md text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50 shrink-0"
+                      className="p-1 rounded-[0.25rem] text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50 shrink-0"
                     >
                       {kickingId === p._id ? <Loader2 size={12} className="animate-spin" /> : <X size={12} strokeWidth={2.5} />}
                     </button>
@@ -449,7 +449,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                   if (isImg) return (
                     <button key={i} type="button"
                       onClick={() => openLightbox(imageGallery, galleryIndex >= 0 ? galleryIndex : 0)}
-                      className="relative aspect-square rounded-lg overflow-hidden group focus:outline-none"
+                      className="relative aspect-square rounded-[0.25rem] overflow-hidden group focus:outline-none"
                     >
                       <img src={file.url} alt={file.originalName ?? 'image'} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors" />
@@ -457,7 +457,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                   );
                   if (isVid) return (
                     <a key={i} href={file.url} target="_blank" rel="noopener noreferrer"
-                      className="relative aspect-square rounded-lg overflow-hidden group bg-gray-900 flex items-center justify-center"
+                      className="relative aspect-square rounded-[0.25rem] overflow-hidden group bg-gray-900 flex items-center justify-center"
                     >
                       <video src={file.url} className="w-full h-full object-cover opacity-70" muted />
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -503,7 +503,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                     className="flex items-center gap-3 py-3 border-b border-gray-50 last:border-0 group hover:bg-gray-50 transition-colors -mx-4 px-4 no-underline"
                   >
                     {/* File icon badge */}
-                    <div className={`w-10 h-10 ${color} rounded-lg flex flex-col items-center justify-center shrink-0 gap-0.5`}>
+                    <div className={`w-10 h-10 ${color} rounded-[0.25rem] flex flex-col items-center justify-center shrink-0 gap-0.5`}>
                       <File size={14} color="white" strokeWidth={2} />
                       <span className="text-[8px] font-bold text-white leading-none">{ext}</span>
                     </div>
@@ -551,7 +551,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                   cancel: { label: 'Hủy', onClick: () => { } },
                 });
               }}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-50 transition-colors text-sm font-semibold"
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[0.25rem] text-red-500 hover:bg-red-50 transition-colors text-sm font-semibold"
             >
               <Trash2 size={16} strokeWidth={2} />
               Giải tán nhóm
@@ -579,7 +579,7 @@ export function RightPanel({ conversation }: RightPanelProps) {
                 cancel: { label: 'Hủy', onClick: () => { } },
               });
             }}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors text-sm font-medium"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[0.25rem] text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors text-sm font-medium"
           >
             {conversation.type === 'group' ? <LogOut size={16} strokeWidth={2} /> : <Trash2 size={16} strokeWidth={2} />}
             {conversation.type === 'group' ? 'Rời nhóm' : 'Xóa cuộc trò chuyện'}

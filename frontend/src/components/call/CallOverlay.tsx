@@ -124,7 +124,7 @@ export function CallOverlay({
 
       {/* Local video PiP — always rendered in video mode so ref gets bound */}
       {isVideo && (
-        <div className="absolute bottom-28 right-5 w-32 h-44 rounded-2xl overflow-hidden border-2 border-white/40 shadow-2xl bg-gray-900">
+        <div className="absolute bottom-28 right-5 w-32 h-44 rounded-[0.25rem] overflow-hidden border-2 border-white/40 shadow-2xl bg-gray-900">
           <video
             ref={localVideoRef}
             autoPlay

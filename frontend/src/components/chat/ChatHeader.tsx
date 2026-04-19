@@ -55,7 +55,7 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
       {isMobile && (
         <button
           onClick={() => setActiveConversation(null)}
-          className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors shrink-0"
+          className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors shrink-0"
         >
           <ArrowLeft size={17} />
         </button>
@@ -87,7 +87,7 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
           <button
             title="Voice call"
             onClick={() => handleCall('audio')}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
+            className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
           >
             <Phone size={17} />
           </button>
@@ -96,7 +96,7 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
           <button
             title="Video call"
             onClick={() => handleCall('video')}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
+            className="w-7 h-7 rounded-[0.25rem] flex items-center justify-center text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10 transition-all"
           >
             <Video size={17} />
           </button>
@@ -104,7 +104,7 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
         <button
           title="Info"
           onClick={toggleRightPanel}
-          className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${isRightPanelOpen ? 'text-[#0068FF] bg-[#0068FF]/10' : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'}`}
+          className={`w-7 h-7 rounded-[0.25rem] flex items-center justify-center transition-all ${isRightPanelOpen ? 'text-[#0068FF] bg-[#0068FF]/10' : 'text-gray-400 hover:text-[#0068FF] hover:bg-[#0068FF]/10'}`}
         >
           <Menu size={17} />
         </button>

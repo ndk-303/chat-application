@@ -16,11 +16,14 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Response interceptor: tự động refresh token khi nhận 401
 api.interceptors.response.use(
     (res) => res,
     async (error) => {
         const originalRequest = error.config;
+
+        if (originalRequest.url?.includes('/auth/refresh-token') || originalRequest.url?.includes('/auth/logout')) {
+            return Promise.reject(error);
+        }
 
         // Nếu 401 và chưa retry, thử refresh token
         if (error.response?.status === 401 && !originalRequest._retry) {

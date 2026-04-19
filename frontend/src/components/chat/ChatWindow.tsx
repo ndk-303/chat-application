@@ -103,7 +103,7 @@ export function ChatWindow() {
         >
           {/* Dashed border frame */}
           <div
-            className="absolute inset-4 rounded-2xl border-2 border-dashed border-[#0068FF]/60"
+            className="absolute inset-4 rounded-[0.25rem] border-2 border-dashed border-[#0068FF]/60"
             style={{ animation: 'dragPulse 1.5s ease-in-out infinite' }}
           />
 
@@ -111,7 +111,7 @@ export function ChatWindow() {
           <div className="flex flex-col items-center gap-4 text-[#0068FF]">
             {/* Upload icon with animated bounce */}
             <div
-              className="w-20 h-20 rounded-2xl bg-white shadow-xl flex items-center justify-center"
+              className="w-20 h-20 rounded-[0.25rem] bg-white shadow-xl flex items-center justify-center"
               style={{ animation: 'dragBounce 1s ease-in-out infinite' }}
             >
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0068FF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -120,7 +120,7 @@ export function ChatWindow() {
                 <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
             </div>
-            <div className="text-center bg-white/90 px-6 py-3 rounded-2xl shadow-lg">
+            <div className="text-center bg-white/90 px-6 py-3 rounded-[0.25rem] shadow-lg">
               <p className="text-base font-bold text-[#0068FF]">Thả file vào đây</p>
               <p className="text-xs text-[#6B7280] mt-0.5">Ảnh, video, tài liệu (tối đa 5 file)</p>
             </div>

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/auth/AuthLayout';
 import { useAuthStore } from '../../stores/authStore';
-import { Info, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Info, Eye, EyeOff, Loader2, X } from 'lucide-react';
 
 interface LoginForm {
   email: string;
@@ -15,11 +15,23 @@ export default function LoginPage() {
   const { login, isLoading, error, clearError } = useAuthStore();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>();
   const [showPassword, setShowPassword] = useState(false);
+  const [showTestAlert, setShowTestAlert] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowTestAlert(true), 400);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!showTestAlert) return;
+    const t = setTimeout(() => setShowTestAlert(false), 15000);
+    return () => clearTimeout(t);
+  }, [showTestAlert]);
 
   // Tự động ẩn thông báo lỗi sau 4 giây
   useEffect(() => {
     if (!error) return;
-    const timer = setTimeout(() => clearError(), 4000);
+    const timer = setTimeout(() => clearError(), 3000);
     return () => clearTimeout(timer);
   }, [error, clearError]);
 
@@ -29,12 +41,10 @@ export default function LoginPage() {
       await login(data.email, data.password);
       navigate('/');
     } catch (err: unknown) {
-      // Tài khoản chưa xác thực → redirect sang trang verify email
       const e = err as { unverified?: boolean; email?: string };
       if (e?.unverified) {
         navigate('/verify-email', { state: { email: e.email } });
       }
-      // Các lỗi khác đã được xử lý bởi authStore (set error)
     }
   };
 
@@ -46,8 +56,43 @@ export default function LoginPage() {
         </h1>
       </div>
 
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          zIndex: 9999,
+          maxWidth: '340px',
+          width: 'calc(100vw - 48px)',
+          transform: showTestAlert ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+          opacity: showTestAlert ? 1 : 0,
+          pointerEvents: showTestAlert ? 'auto' : 'none',
+        }}
+      >
+        <div className="bg-white border border-blue-200 rounded-[0.25rem] shadow-xl shadow-blue-100/60 p-4 flex items-start gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Tài khoản Test</p>
+            <p className="text-sm text-gray-600 mb-0.5">
+              Email:{' '}
+              <code className="font-mono text-blue-800 px-1.5 py-0.5 rounded-[0.25rem] text-xs">alice@test.com</code>
+            </p>
+            <p className="text-sm text-gray-600">
+              Mật khẩu:{' '}
+              <code className="font-mono text-blue-800 px-1.5 py-0.5 rounded-[0.25rem] text-xs">Test@1234</code>
+            </p>
+          </div>
+          <button
+            onClick={() => setShowTestAlert(false)}
+            className="text-gray-300 hover:text-gray-500 transition-colors shrink-0 -mt-0.5"
+            aria-label="Đóng"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      </div>
+
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[0.25rem] text-red-600 text-sm flex items-center gap-2">
           <Info size={16} />
           {error}
         </div>
@@ -61,7 +106,7 @@ export default function LoginPage() {
             type="email"
             placeholder="ban@example.com"
             {...register('email', { required: 'Vui lòng nhập email' })}
-            className="w-full px-4 py-2.5 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+            className="w-full px-4 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
           />
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
         </div>
@@ -74,7 +119,7 @@ export default function LoginPage() {
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               {...register('password', { required: 'Vui lòng nhập mật khẩu' })}
-              className="w-full px-4 py-2.5 pr-11 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
+              className="w-full px-4 py-2.5 pr-11 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]"
             />
             <button
               type="button"
@@ -101,7 +146,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2.5 rounded-xl bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>

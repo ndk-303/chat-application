@@ -6,7 +6,7 @@ import { authService } from '../../services/authService';
 import { Info, Loader2, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 
 const inputCls =
-  'w-full px-4 py-2.5 rounded-[0.3rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]';
+  'w-full px-4 py-2.5 rounded-[0.25rem] border border-[#E5E7EB] bg-[#F5F7FA] text-[#1F2937] text-sm outline-none transition-all duration-200 focus:border-[#0068FF] focus:ring-2 focus:ring-[#0068FF]/15 focus:bg-white placeholder:text-[#9CA3AF]';
 
 interface ResetForm {
   newPassword: string;
@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
           </p>
           <Link
             to="/login"
-            className="inline-block w-full py-2.5 rounded-xl bg-[#0068FF] text-white font-semibold text-sm text-center transition-all hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 no-underline"
+            className="inline-block w-full py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white font-semibold text-sm text-center transition-all hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 no-underline"
           >
             Đăng nhập ngay
           </Link>
@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
       </div>
 
       {apiError && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm flex items-center gap-2">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-[0.25rem] text-red-600 text-sm flex items-center gap-2">
           <Info size={15} />
           {apiError}
         </div>
@@ -170,7 +170,7 @@ export default function ResetPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 rounded-xl bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-2.5 rounded-[0.25rem] bg-[#0068FF] text-white font-semibold text-sm transition-all duration-200 hover:bg-[#0052CC] hover:shadow-lg hover:shadow-[#0068FF]/25 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading
             ? <><Loader2 size={16} className="animate-spin" />Đang xử lý...</>
