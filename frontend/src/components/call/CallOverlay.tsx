@@ -85,7 +85,7 @@ export function CallOverlay({
     <div
       className="fixed inset-0 z-[90] flex flex-col"
       style={{
-        background: isVideo ? '#000' : 'linear-gradient(135deg, #0068FF 0%, #0040CC 100%)',
+        background: 'linear-gradient(135deg, #0068FF 0%, #0040CC 100%)',
         animation: 'callOverlayIn 0.3s ease-out',
       }}
     >

@@ -55,7 +55,7 @@ export function IncomingCallModal({ onAccept, onDecline }: Props) {
         {/* Top area */}
         <div className="bg-gradient-to-b from-[#0068FF] to-[#0052CC] px-6 pt-8 pb-10 text-white">
           <p className="text-sm font-medium opacity-80 mb-3">
-            {isVideo ? '📹 Cuộc gọi video' : '📞 Cuộc gọi thoại'}
+            {isVideo ? 'Cuộc gọi video' : 'Cuộc gọi thoại'}
           </p>
 
           {/* Avatar with pulsing ring */}

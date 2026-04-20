@@ -24,9 +24,14 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (!isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#f8f9ff]">
-        <div className="flex flex-col items-center gap-4">
-          <img src="/logo.svg" alt="" />
-          <p className="text-sm text-gray-500" style={{ fontFamily: 'Inter, sans-serif' }}>Đang tải...</p>
+        <div className="flex flex-col items-center gap-6">
+          <div className="animate-pulse">
+            <img src="/logo.svg" alt="Kapta" className="w-20 h-20 drop-shadow-md" />
+          </div>
+          <div className="flex items-center gap-3 text-[#0068FF]">
+            <div className="w-5 h-5 rounded-full border-[2.5px] border-[#0068FF] border-t-transparent animate-spin"></div>
+            <p className="text-sm font-medium tracking-wide">Đang tải...</p>
+          </div>
         </div>
       </div>
     );

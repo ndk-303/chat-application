@@ -71,10 +71,20 @@ export default function LoginPage() {
       >
         <div className="bg-white border border-blue-200 rounded-[0.25rem] shadow-xl shadow-blue-100/60 p-4 flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">Tài khoản Test</p>
+            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Tài khoản Test</p>
+            {/* Account 1 */}
             <p className="text-sm text-gray-600 mb-0.5">
               Email:{' '}
               <code className="font-mono text-blue-800 px-1.5 py-0.5 rounded-[0.25rem] text-xs">alice@test.com</code>
+            </p>
+            <p className="text-sm text-gray-600">
+              Mật khẩu:{' '}
+              <code className="font-mono text-blue-800 px-1.5 py-0.5 rounded-[0.25rem] text-xs">Test@1234</code>
+            </p>
+            <div className="my-2 border-t border-blue-100" />
+            <p className="text-sm text-gray-600 mb-0.5">
+              Email:{' '}
+              <code className="font-mono text-blue-800 px-1.5 py-0.5 rounded-[0.25rem] text-xs">bob@test.com</code>
             </p>
             <p className="text-sm text-gray-600">
               Mật khẩu:{' '}
