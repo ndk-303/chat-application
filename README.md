@@ -14,7 +14,7 @@ Backend cho hệ thống chat thời gian thực, cung cấp REST API, Socket.IO
 
 - `backend/`: API server, nghiệp vụ và Socket.IO.
 - `nginx/`: reverse proxy cho REST API và WebSocket.
-- `docker-compose.yml`: MongoDB, Redis, seeder, backend và Nginx.
+- `docker-compose.yml`: MongoDB, Redis, backend và Nginx.
 
 ## Khởi chạy bằng Docker
 
