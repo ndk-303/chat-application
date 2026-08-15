@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
             accessToken: accessToken
         });
     } catch (error: any) {
-        // Tài khoản chưa xác thực email → trả 403 kèm email để frontend redirect
+        // Tài khoản chưa xác thực email: trả 403 kèm email cho API client.
         if (error.message?.includes('chưa được xác thực')) {
             const { email } = req.body as LoginDto;
             return res.status(403).json({

@@ -64,7 +64,7 @@ const registerPresenceHandlers = (
     });
 
     // ── set_status (user preference) ─────────────────────────────────────────
-    // Frontend emits 'online' or 'hidden'
+    // The client emits 'online' or 'hidden'.
     socket.on('set_status', async (data: { status: 'online' | 'hidden' }) => {
         const { status: preference } = data;
         if (!['online', 'hidden'].includes(preference)) return;

@@ -22,7 +22,7 @@ const removeUserSocket = async (userId: string, socketId: string): Promise<void>
 };
 
 export const initSocket = (httpServer: HttpServer): Server => {
-    const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173,http://localhost')
+    const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost')
         .split(',').map(o => o.trim());
 
     io = new Server(httpServer, {

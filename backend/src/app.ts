@@ -12,7 +12,7 @@ const CONTAINER_ID = os.hostname();
 const app = express();
 app.set('trust proxy', 1);
 
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost')
     .split(',')
     .map(o => o.trim());
 
