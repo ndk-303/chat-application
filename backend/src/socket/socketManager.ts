@@ -4,7 +4,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { socketAuth } from './socketAuth';
 import registerChatHandlers from './handlers/chatHandler';
 import registerPresenceHandlers from './handlers/presenceHandler';
-import registerCallHandlers from './handlers/callHandler';
+import registerCallHandlers, { cleanupStaleCallStates } from './handlers/callHandler';
 import { pubClient, subClient, redisClient } from '../config/redis';
 
 let io: Server;
@@ -29,7 +29,8 @@ export const initSocket = (httpServer: HttpServer): Server => {
         cors: {
             origin: (origin, callback) => {
                 if (!origin) return callback(null, true);
-                if (origin.includes('ngrok')) return callback(null, true);
+                // T-015: restrict ngrok to known ngrok domains only (not a substring match)
+                if (/^https?:\/\/[a-z0-9-]+\.ngrok(\.io|\.app|-free\.app)?$/i.test(origin)) return callback(null, true);
                 if (allowedOrigins.includes(origin)) return callback(null, true);
                 callback(new Error(`CORS: origin ${origin} không được phép`));
             },
@@ -46,6 +47,13 @@ export const initSocket = (httpServer: HttpServer): Server => {
 
     io.adapter(createAdapter(pubClient, subClient));
     console.log('[Socket] Redis adapter initialized');
+
+    // T-037: Clear stale per-user socket hashes left from a previous server crash.
+    // Dead socket IDs would otherwise persist for up to 24 h and cause phantom emissions.
+    redisClient.keys('user:sockets:*')
+        .then(keys => keys.length > 0 ? redisClient.del(...keys) : Promise.resolve(0))
+        .then(count => count > 0 && console.log(`[Socket] Cleared ${count} stale user-socket hash(es) from Redis`))
+        .catch(err => console.error('[Socket] Failed to clear stale socket hashes:', err));
 
     io.use(socketAuth);
 
@@ -64,6 +72,11 @@ export const initSocket = (httpServer: HttpServer): Server => {
             await removeUserSocket(userId, socket.id);
         });
     });
+
+    // T-010: Write missed-call records for any call_state keys orphaned by a crash.
+    cleanupStaleCallStates(io).catch(err =>
+        console.error('[Socket] Startup stale-call cleanup error:', err)
+    );
 
     return io;
 };
