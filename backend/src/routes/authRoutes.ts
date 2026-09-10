@@ -6,6 +6,7 @@ import {
     passwordResetLimiter,
     verifyEmailLimiter,
 } from '../middlewares/rateLimiter';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.post('/resend-verification', passwordResetLimiter, authController.resendV
 router.post('/refresh-token', authController.refreshToken);
 router.post('/request-password-reset', passwordResetLimiter, authController.requestPasswordReset);
 router.post('/reset-password', passwordResetLimiter, authController.resetPassword);
-router.post('/logout', authController.logout);
+// Logout requires a valid access token so we can identify whose session to invalidate
+router.post('/logout', authMiddleware, authController.logout);
 
 export default router;
