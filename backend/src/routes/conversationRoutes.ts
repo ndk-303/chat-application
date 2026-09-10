@@ -32,6 +32,7 @@ router.delete('/:conversationId/pin', conversationController.unpinConversation);
 
 // Invite link
 router.post('/:conversationId/invite', conversationController.generateInvite);
+router.delete('/:conversationId/invite', conversationController.revokeInvite);
 router.get('/invite/:token', conversationController.getInviteInfo);
 router.post('/invite/:token/join', conversationController.joinByInvite);
 

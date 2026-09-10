@@ -27,6 +27,7 @@ export interface Conversation extends Document {
     mutedFor: MutedForEntry[];
     pinnedFor: PinnedForEntry[];
     inviteToken?: string;
+    inviteTokenExpiresAt?: Date;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -81,6 +82,10 @@ const conversationSchema = new Schema<Conversation>(
             type: String,
             unique: true,
             sparse: true,
+        },
+        inviteTokenExpiresAt: {
+            type: Date,
+            default: null,
         }
     },
     {

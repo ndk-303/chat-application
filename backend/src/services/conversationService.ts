@@ -7,11 +7,12 @@ import crypto from 'crypto';
 import { getIO, emitToUser } from '../socket/socketManager';
 import { errorUtil } from '../utils/errorUtils';
 
-export const getUserConversations = async (userId: string) => {
+export const getUserConversations = async (userId: string, page?: number, limit?: number) => {
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
+    // T-033: use userObjectId instead of string userId for type safety & index match
     const conversations = await ConversationModel.find({
-        participants: userId
+        participants: userObjectId
     })
         .populate('participants', 'displayName email avatar status lastSeen')
         .populate('adminId', 'displayName email')
@@ -26,8 +27,25 @@ export const getUserConversations = async (userId: string) => {
         return conv.lastMessageAt && conv.lastMessageAt > entry.hiddenAt;
     });
 
-    // Compute unreadCount for each visible conversation via aggregation
-    const conversationIds = visible.map((c) => c._id);
+    const now = new Date();
+
+    // Sort by pinned first, then lastMessageAt descending
+    visible.sort((a: any, b: any) => {
+        const aPinned = !!(a.pinnedFor?.some((p: any) => p.userId.toString() === userId));
+        const bPinned = !!(b.pinnedFor?.some((p: any) => p.userId.toString() === userId));
+        if (aPinned && !bPinned) return -1;
+        if (!aPinned && bPinned) return 1;
+        return new Date(b.lastMessageAt ?? 0).getTime() - new Date(a.lastMessageAt ?? 0).getTime();
+    });
+
+    // T-006: Paginate before computing unread counts to prevent memory bloat on large inboxes
+    const pageNum = page && page > 0 ? page : 1;
+    const pageSize = limit && limit > 0 ? limit : visible.length;
+    const startIndex = (pageNum - 1) * pageSize;
+    const paginated = (limit !== undefined && limit > 0) ? visible.slice(startIndex, startIndex + pageSize) : visible;
+
+    // Compute unreadCount only for the returned slice of conversations
+    const conversationIds = paginated.map((c) => c._id);
     const unreadAgg = await MessageModel.aggregate([
         {
             $match: {
@@ -51,8 +69,7 @@ export const getUserConversations = async (userId: string) => {
     }
 
     // Attach unreadCount + isMuted + isPinned
-    const now = new Date();
-    const result = visible.map((conv) => {
+    const result = paginated.map((conv) => {
         const obj = conv.toObject() as any;
         obj.unreadCount = unreadMap[conv._id.toString()] ?? 0;
         const muteEntry = conv.mutedFor?.find((m: any) => m.userId.toString() === userId);
@@ -60,11 +77,7 @@ export const getUserConversations = async (userId: string) => {
         obj.isPinned = !!(conv.pinnedFor?.some((p: any) => p.userId.toString() === userId));
         return obj;
     });
-    result.sort((a: any, b: any) => {
-        if (a.isPinned && !b.isPinned) return -1;
-        if (!a.isPinned && b.isPinned) return 1;
-        return new Date(b.lastMessageAt ?? 0).getTime() - new Date(a.lastMessageAt ?? 0).getTime();
-    });
+
     return result;
 };
 
@@ -473,25 +486,56 @@ export const hideConversation = async (conversationId: string, userId: string) =
 
 // ─── Invite Link ──────────────────────────────────────────────────────────────
 
-export const generateInviteToken = async (conversationId: string, userId: string) => {
+export const generateInviteToken = async (
+    conversationId: string,
+    userId: string,
+    forceRegenerate: boolean = false,
+    expiresInDays: number = 7
+) => {
     const conversation = await ConversationModel.findById(conversationId);
     if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
     if (conversation.type !== 'group') throw new errorUtil('Chỉ cuộc trò chuyện nhóm mới có thể dùng link mời', 400);
     if (conversation.adminId?.toString() !== userId) throw new errorUtil('Chỉ quản trị viên mới có thể tạo link mời', 400);
 
-    // Reuse existing token if available
-    if (conversation.inviteToken) {
-        return { inviteToken: conversation.inviteToken };
+    // Reuse existing valid token if available and not forcing regeneration
+    const now = new Date();
+    if (!forceRegenerate && conversation.inviteToken && (!conversation.inviteTokenExpiresAt || conversation.inviteTokenExpiresAt > now)) {
+        return {
+            inviteToken: conversation.inviteToken,
+            inviteTokenExpiresAt: conversation.inviteTokenExpiresAt
+        };
     }
 
     const token = crypto.randomBytes(16).toString('hex');
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+
     conversation.inviteToken = token;
+    conversation.inviteTokenExpiresAt = expiresAt;
     await conversation.save();
-    return { inviteToken: token };
+    return { inviteToken: token, inviteTokenExpiresAt: expiresAt };
+};
+
+export const revokeInviteToken = async (conversationId: string, userId: string) => {
+    const conversation = await ConversationModel.findById(conversationId);
+    if (!conversation) throw new errorUtil('Không tìm thấy cuộc trò chuyện', 400);
+    if (conversation.adminId?.toString() !== userId) throw new errorUtil('Chỉ quản trị viên mới có thể thu hồi link mời', 400);
+
+    conversation.inviteToken = undefined;
+    conversation.inviteTokenExpiresAt = undefined;
+    await conversation.save();
+    return { message: 'Đã thu hồi link mời thành công' };
 };
 
 export const getInviteInfo = async (token: string) => {
-    const conversation = await ConversationModel.findOne({ inviteToken: token })
+    const now = new Date();
+    const conversation = await ConversationModel.findOne({
+        inviteToken: token,
+        $or: [
+            { inviteTokenExpiresAt: null },
+            { inviteTokenExpiresAt: { $gt: now } }
+        ]
+    })
         .populate('participants', 'displayName email avatar status')
         .populate('adminId', 'displayName email');
 
@@ -507,7 +551,14 @@ export const getInviteInfo = async (token: string) => {
 };
 
 export const joinByInvite = async (token: string, userId: string) => {
-    const conversation = await ConversationModel.findOne({ inviteToken: token });
+    const now = new Date();
+    const conversation = await ConversationModel.findOne({
+        inviteToken: token,
+        $or: [
+            { inviteTokenExpiresAt: null },
+            { inviteTokenExpiresAt: { $gt: now } }
+        ]
+    });
     if (!conversation) throw new errorUtil('Link mời không hợp lệ hoặc đã hết hạn', 400);
     if (conversation.type !== 'group') throw new errorUtil('Link mời không hợp lệ', 400);
 
