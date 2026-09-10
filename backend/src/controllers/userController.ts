@@ -17,9 +17,14 @@ export const creatUser = async (req: Request, res: Response) => {
     }
 }
 
-export const getUsers = async (_: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await userService.getUsers();
+    const { page, limit, sortBy } = req.query;
+    const users = await userService.getUsers(
+      page as string | undefined,
+      limit as string | undefined,
+      sortBy as string | undefined
+    );
     res.json(users);
   } catch (error: any) {
     res.status(400).json({message: error.message})
@@ -29,7 +34,7 @@ export const getUsers = async (_: Request, res: Response) => {
 export const getMe = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.userId;
-    const user = await userService.getUserById(userId);
+    const user = await userService.getUserById(userId, userId);
     res.json(user);
   } catch (error: any) {
     return res.status(404).json({ message: error.message });
@@ -38,7 +43,8 @@ export const getMe = async (req: Request, res: Response) => {
 
 export const getUserById = async (req: Request, res: Response) => {
   try {
-    const user = await userService.getUserById(req.params.id as string);
+    const requesterId = (req as any).user?.userId;
+    const user = await userService.getUserById(req.params.id as string, requesterId);
     res.json(user);
   } catch (error: any) {
     return res.status(404).json({ message: error.message });

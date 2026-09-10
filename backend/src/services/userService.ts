@@ -1,4 +1,5 @@
-﻿import UserModel, { User } from "../models/User"
+import UserModel, { User } from "../models/User"
+import FriendshipModel from "../models/Friendship";
 import { getCache, setCache, delCache } from '../utils/cacheUtils';
 import { errorUtil } from '../utils/errorUtils';
 
@@ -32,27 +33,48 @@ export const getUsers = async (page?: string, limit?: string, sortBy?: string): 
     return users;
 }
 
-export const getUserById = async (id: string): Promise<User> => {
+export const getUserById = async (id: string, requesterId?: string): Promise<any> => {
     const cacheKey = `cache:user:${id}`;
 
-    // 1. Cache hit
-    const cached = await getCache<User>(cacheKey);
-    if (cached) return cached;
+    // 1. Cache hit (cached full raw user)
+    let user = await getCache<User>(cacheKey);
 
     // 2. Cache miss — query MongoDB
-    const user = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
-
     if (!user) {
-        throw new errorUtil('Không tìm thấy người dùng', 400);
+        const dbUser = await UserModel.findOne({ _id: id }).select('-password -createdAt -updatedAt -deletedAt');
+        if (!dbUser) {
+            throw new errorUtil('Không tìm thấy người dùng', 400);
+        }
+        user = dbUser.toObject() as User;
+        await setCache(cacheKey, user, 300);
     }
 
-    // 3. Populate cache (5 phút)
-    await setCache(cacheKey, user.toObject(), 300);
+    // T-016: IDOR Guard — If requester is not self and not a friend, restrict sensitive fields
+    if (requesterId && requesterId !== id) {
+        const isFriend = await FriendshipModel.exists({
+            $or: [
+                { user1Id: requesterId, user2Id: id },
+                { user1Id: id, user2Id: requesterId },
+            ]
+        });
+
+        if (!isFriend) {
+            return {
+                _id: (user as any)._id,
+                displayName: user.displayName,
+                avatar: user.avatar,
+                status: user.status,
+                lastSeen: user.lastSeen,
+            };
+        }
+    }
 
     return user;
 }
 
-
+/**
+ * Internal helper for administrative user updates (T-045: documented internal function).
+ */
 export const updateUser = async (id: string, data: User) => {
     const user = await UserModel.findByIdAndUpdate(id, data, { new: true });
 
