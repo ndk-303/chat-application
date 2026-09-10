@@ -1,11 +1,13 @@
+import crypto from 'crypto';
 import UserModel from "../models/User";
 import { hashPassword, comparePassword, generateResetPwdToken, generateResetExpiration } from "../utils/passwordUtils";
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/tokenUtils";
 import { sendVerificationEmail, sendPasswordResetEmail } from "../utils/emailUtils";
 import { errorUtil } from "../utils/errorUtils";
 
+/** Generates a 6-digit OTP using a cryptographically secure RNG. */
 function generateOTP(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 1000000).toString();
 }
 
 function getOTPExpiry(): Date {
@@ -153,8 +155,13 @@ export const refreshToken = async (token: string) => {
 export const requestPasswordReset = async (email: string) => {
     const user = await UserModel.findOne({ email: email });
 
+    // Always return a neutral message to prevent user-enumeration attacks.
+    // If the user does not exist, we return early without leaking that fact.
     if (!user) {
-        throw new errorUtil('Không tìm thấy người dùng', 400);
+        return {
+            message: 'Nếu email tồn tại trong hệ thống, liên kết đặt lại mật khẩu đã được gửi.',
+            expiresIn: '1 giờ',
+        };
     }
 
     const resetToken = generateResetPwdToken();
@@ -164,19 +171,17 @@ export const requestPasswordReset = async (email: string) => {
     user.passwordResetExpires = resetExpiration;
     await user.save();
 
-    // Send reset code via email
+    // Send reset code via email — use the already-fetched user object (no second DB query)
     try {
-        const userForEmail = await UserModel.findOne({ email });
-        await sendPasswordResetEmail(email, resetToken, userForEmail?.displayName);
-        console.log('[PasswordReset] Reset email sent to:', email);
+        await sendPasswordResetEmail(email, resetToken, user.displayName);
     } catch (emailErr) {
         console.error('[PasswordReset] ❌ Failed to send reset email:', emailErr);
     }
 
+    // resetToken is intentionally NOT returned — it travels only via email
     return {
-        message: 'Đã gửi mã đặt lại mật khẩu thành công',
-        resetToken: resetToken,
-        expiresIn: '1 giờ'
+        message: 'Nếu email tồn tại trong hệ thống, liên kết đặt lại mật khẩu đã được gửi.',
+        expiresIn: '1 giờ',
     };
 };
 

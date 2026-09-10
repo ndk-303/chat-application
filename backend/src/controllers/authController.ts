@@ -124,14 +124,12 @@ export const refreshToken = async (req: Request, res: Response) => {
 export const requestPasswordReset = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;
-        console.log('req reset', email);
         if (!email) {
             return res.status(400).json({ message: 'Vui lòng nhập email' });
         }
 
         const result = await authService.requestPasswordReset(email);
 
-        // SECURITY: resetToken KHÔNG được trả về client - chỉ gửi qua email
         res.status(200).json({
             message: result.message,
             expiresIn: result.expiresIn
