@@ -16,8 +16,13 @@ function getOTPExpiry(): Date {
     return d;
 }
 
+/** Hashes a refresh token with SHA-256 for secure DB storage (T-025). */
+function hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
+}
+
 export const login = async (email: string, password: string) => {
-    const user = await UserModel.findOne({ email: email }).select('+password');
+    const user = await UserModel.findOne({ email: email }).select('+password +refreshTokens');
     if (!user) {
         throw new errorUtil('Đăng nhập thất bại, không tìm thấy người dùng', 400);
     }
@@ -36,7 +41,10 @@ export const login = async (email: string, password: string) => {
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
-    user.refreshTokens = refreshToken;
+    // T-025: Store hashed refresh tokens in an array (supports multi-device, capped at 5 sessions)
+    const tokenHash = hashToken(refreshToken);
+    const existingTokens = Array.isArray(user.refreshTokens) ? user.refreshTokens : [];
+    user.refreshTokens = [...existingTokens.slice(-4), tokenHash];
     await user.save();
 
     return { accessToken, refreshToken };
@@ -63,7 +71,9 @@ export const register = async (displayName: string, email: string, password: str
 
     try {
         await sendVerificationEmail(email, code, displayName);
-        console.log('[Register] Verification email sent to:', email);
+        // T-032: Redact email PII in logs
+        const maskedEmail = email.replace(/^(.{2})(.*)(@.*)$/, '$1***$3');
+        console.log('[Register] Verification email sent to:', maskedEmail);
     } catch (emailErr) {
         console.error('[Register] ❌ Failed to send verification email:', emailErr);
     }
@@ -100,13 +110,20 @@ export const verifyEmail = async (email: string, code: string) => {
 };
 
 export const resendVerificationCode = async (email: string) => {
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email })
+        .select('+emailVerificationLastSent +emailVerificationExpires +emailVerificationCode');
 
-    if (!user) {
-        return { message: 'Nếu email tồn tại, mã mới đã được gửi.' };
+    // T-044: Unified response to prevent user enumeration
+    const genericResponse = { message: 'Nếu email tồn tại và chưa xác thực, mã mới đã được gửi.' };
+
+    if (!user || user.isVerified) {
+        return genericResponse;
     }
-    if (user.isVerified) {
-        throw new errorUtil('Email đã được xác thực', 400);
+
+    // T-030: Enforce 60-second cooldown per account
+    const now = new Date();
+    if (user.emailVerificationLastSent && (now.getTime() - user.emailVerificationLastSent.getTime()) < 60000) {
+        throw new errorUtil('Vui lòng đợi 60 giây trước khi yêu cầu gửi lại mã', 429);
     }
 
     const code = generateOTP();
@@ -114,6 +131,7 @@ export const resendVerificationCode = async (email: string) => {
 
     user.emailVerificationCode = code;
     user.emailVerificationExpires = expires;
+    user.emailVerificationLastSent = now;
     await user.save();
 
     await sendVerificationEmail(email, code, user.displayName);
@@ -123,13 +141,25 @@ export const resendVerificationCode = async (email: string) => {
 
 export const refreshToken = async (token: string) => {
     const payload = verifyRefreshToken(token);
-    const checked = await UserModel.findOne({ refreshTokens: token });
-
     if (!payload) {
         throw new errorUtil('Refresh token đã hết hạn', 400);
     }
-    if (!checked) {
+
+    const tokenHash = hashToken(token);
+    const user = await UserModel.findById(payload.userId).select('+refreshTokens');
+
+    if (!user) {
         throw new errorUtil('Refresh token không hợp lệ', 400);
+    }
+
+    const tokenList = Array.isArray(user.refreshTokens) ? user.refreshTokens : [];
+    const tokenIndex = tokenList.indexOf(tokenHash);
+
+    // T-025: Reuse / Theft detection — if token is not in active list, invalidate all tokens
+    if (tokenIndex === -1) {
+        user.refreshTokens = [];
+        await user.save();
+        throw new errorUtil('Phát hiện token không hợp lệ hoặc đã qua sử dụng. Vui lòng đăng nhập lại.', 401);
     }
 
     const newAccessToken = generateAccessToken({
@@ -142,9 +172,12 @@ export const refreshToken = async (token: string) => {
         role: payload.role,
     });
 
-    // Rotate refresh token: lưu token mới vào DB, invalidate token cũ
-    checked.refreshTokens = newRefreshToken;
-    await checked.save();
+    const newTokenHash = hashToken(newRefreshToken);
+
+    // Rotate: replace old token hash with new token hash
+    tokenList[tokenIndex] = newTokenHash;
+    user.refreshTokens = tokenList;
+    await user.save();
 
     return {
         accessToken: newAccessToken,
@@ -228,14 +261,19 @@ export const resetPassword = async (
     };
 };
 
-export const logout = async (userId: string) => {
-    const user = await UserModel.findById(userId);
+export const logout = async (userId: string, token?: string) => {
+    const user = await UserModel.findById(userId).select('+refreshTokens');
 
     if (!user) {
         throw new errorUtil('Không tìm thấy người dùng', 400);
     }
 
-    user.refreshTokens = undefined;
+    if (token) {
+        const tokenHash = hashToken(token);
+        user.refreshTokens = (user.refreshTokens || []).filter((h: string) => h !== tokenHash);
+    } else {
+        user.refreshTokens = [];
+    }
     await user.save();
 
     return {

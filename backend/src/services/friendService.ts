@@ -1,4 +1,4 @@
-﻿import FriendRequestModel from '../models/FriendRequest';
+import FriendRequestModel from '../models/FriendRequest';
 import FriendshipModel from '../models/Friendship';
 import UserModel from '../models/User';
 import { emitToUser } from '../socket/socketManager';
@@ -79,12 +79,11 @@ export const acceptFriendRequest = async (requestId: string, userId: string) => 
     request.status = 'accepted';
     await request.save();
 
-    const user1Id = request.senderId.toString() < request.receiverId.toString()
-        ? request.senderId
-        : request.receiverId;
-    const user2Id = request.senderId.toString() < request.receiverId.toString()
-        ? request.receiverId
-        : request.senderId;
+    // T-052: Enforce deterministic user1Id < user2Id ordering by string representation
+    // to prevent duplicate friendship records for the same pair
+    const isSenderFirst = request.senderId.toString().localeCompare(request.receiverId.toString()) < 0;
+    const user1Id = isSenderFirst ? request.senderId : request.receiverId;
+    const user2Id = isSenderFirst ? request.receiverId : request.senderId;
 
     const friendship = await FriendshipModel.create({
         user1Id,

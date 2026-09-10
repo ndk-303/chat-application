@@ -30,6 +30,18 @@ app.use(cors({
 // T-041: Explicit body size limit prevents large-payload DoS
 app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
+
+// T-042: Security headers middleware
+app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '0');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.removeHeader('X-Powered-By');
+    next();
+});
+
 app.use('/api', generalLimiter);
 
 // ─── Scale-demo middleware: log which container handles each request ──────────
