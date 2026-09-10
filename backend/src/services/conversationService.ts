@@ -149,19 +149,26 @@ export const createGroupConversation = async (
 
     const allParticipants = [userId, ...participantIds.filter(id => id !== userId)];
 
-    for (const participantId of participantIds) {
-        if (participantId !== userId) {
-            const friendship = await FriendshipModel.findOne({
-                $or: [
-                    { user1Id: userId, user2Id: participantId },
-                    { user1Id: participantId, user2Id: userId }
-                ]
-            });
+    // Batch-fetch all friendships between the creator and participants in one query
+    // instead of one query per participant (N+1 → 1).
+    const otherParticipantIds = participantIds.filter(id => id !== userId);
+    const friendships = await FriendshipModel.find({
+        $or: otherParticipantIds.flatMap(id => [
+            { user1Id: userId, user2Id: id },
+            { user1Id: id, user2Id: userId },
+        ])
+    }).lean();
 
-            if (!friendship) {
-                throw new Error(`Người dùng ${participantId} không phải bạn bè của bạn`);
-            }
-        }
+    const friendSet = new Set<string>(
+        friendships.flatMap(f => [f.user1Id.toString(), f.user2Id.toString()])
+    );
+
+    const notFriends = otherParticipantIds.filter(id => !friendSet.has(id));
+    if (notFriends.length > 0) {
+        throw new errorUtil(
+            `Người dùng sau không phải bạn bè của bạn: ${notFriends.join(', ')}`,
+            400
+        );
     }
 
     const conversation = await ConversationModel.create({
@@ -187,6 +194,7 @@ export const createGroupConversation = async (
 
     return conversation;
 };
+
 
 export const updateGroupDetails = async (
     conversationId: string,
