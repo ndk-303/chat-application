@@ -81,9 +81,17 @@ export const createMessage = async (
         status: 'sent',
     });
 
-    conversation.lastMessageId = message._id as mongoose.Types.ObjectId;
-    conversation.lastMessageAt = message.createdAt;
-    await conversation.save();
+    // T-035: Check if first message before updating lastMessageId (avoids expensive countDocuments)
+    const isFirstMessage = !conversation.lastMessageId;
+
+    // T-023: Atomically update conversation's lastMessageId and lastMessageAt
+    await ConversationModel.findByIdAndUpdate(conversationId, {
+        $set: {
+            lastMessageId: message._id,
+            lastMessageAt: message.createdAt
+        }
+    });
+
     await message.populate('senderId', 'displayName email avatar');
 
     try {
@@ -92,7 +100,6 @@ export const createMessage = async (
 
         // Nếu đây là tin nhắn ĐẦU TIÊN trong private conversation,
         // emit private_conversation_created để người nhận thấy conversation mới trong sidebar
-        const isFirstMessage = (await MessageModel.countDocuments({ conversationId })) === 1;
         if (isFirstMessage && conversation.type === 'private') {
             const populatedConv = await ConversationModel.findById(conversationId)
                 .populate('participants', 'displayName email avatar status lastSeen')
@@ -227,7 +234,7 @@ export const markConversationSeen = async (
     const userObjectId = new mongoose.Types.ObjectId(userId);
     const seenAt = new Date();
 
-    await MessageModel.updateMany(
+    const result = await MessageModel.updateMany(
         {
             conversationId,
             senderId: { $ne: userObjectId },
@@ -238,6 +245,17 @@ export const markConversationSeen = async (
             $set: { status: 'seen' },
         }
     );
+
+    // T-034: Emit real-time read receipt to conversation room
+    if (result.modifiedCount > 0) {
+        try {
+            getIO().to(conversationId).emit('conversation_seen', {
+                conversationId,
+                userId,
+                seenAt,
+            });
+        } catch (_) { }
+    }
 };
 
 export const deleteUserMessage = async (messageId: string, userId: string) => {
@@ -293,36 +311,48 @@ export const toggleReaction = async (messageId: string, userId: string, emoji: s
 
     const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    const cleanedReactions: { emoji: string; userIds: mongoose.Types.ObjectId[] }[] = message.reactions
-        .map((r: any) => ({
-            emoji: r.emoji,
-            userIds: r.emoji !== emoji
-                ? r.userIds.filter((uid: any) => uid.toString() !== userId)
-                : [...r.userIds],
-        }))
-        .filter((r) => r.userIds.length > 0);
+    // T-024 / T-036: Atomic reaction toggle using MongoDB operators to avoid race conditions.
+    // Check if user already reacted with this exact emoji
+    const existingSameReaction = message.reactions.find(
+        (r: any) => r.emoji === emoji && r.userIds.some((uid: any) => uid.toString() === userId)
+    );
 
-    const existingGroup = cleanedReactions.find((r) => r.emoji === emoji);
-
-    if (existingGroup) {
-        const alreadyReacted = existingGroup.userIds.some(
-            (uid: any) => uid.toString() === userId
+    if (existingSameReaction) {
+        // User clicked the same emoji again -> remove (toggle off)
+        await MessageModel.updateOne(
+            { _id: messageId, 'reactions.emoji': emoji },
+            { $pull: { 'reactions.$.userIds': userObjectId } }
         );
-        if (alreadyReacted) {
-            existingGroup.userIds = existingGroup.userIds.filter(
-                (uid: any) => uid.toString() !== userId
+    } else {
+        // Remove user from any other emoji (single reaction per user policy)
+        await MessageModel.updateOne(
+            { _id: messageId },
+            { $pull: { 'reactions.$[].userIds': userObjectId } }
+        );
+
+        // Try to add user to existing group with this emoji
+        const updateResult = await MessageModel.updateOne(
+            { _id: messageId, 'reactions.emoji': emoji },
+            { $addToSet: { 'reactions.$.userIds': userObjectId } }
+        );
+
+        // If no group for this emoji existed, create a new one
+        if (updateResult.matchedCount === 0) {
+            await MessageModel.updateOne(
+                { _id: messageId },
+                { $push: { reactions: { emoji, userIds: [userObjectId] } } }
             );
         }
-    } else {
-        cleanedReactions.push({ emoji, userIds: [userObjectId] });
     }
 
-    message.reactions = cleanedReactions.filter((r) => r.userIds.length > 0) as any;
-    message.markModified('reactions');
+    // Clean up empty reaction groups (userIds length == 0)
+    await MessageModel.updateOne(
+        { _id: messageId },
+        { $pull: { reactions: { userIds: { $size: 0 } } } }
+    );
 
-    await message.save();
-
-    const serializedReactions = message.reactions.map((r: any) => ({
+    const updated = await MessageModel.findById(messageId).select('reactions conversationId');
+    const serializedReactions = (updated?.reactions || []).map((r: any) => ({
         emoji: r.emoji,
         userIds: r.userIds.map((uid: any) => uid.toString()),
     }));

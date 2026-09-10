@@ -105,6 +105,8 @@ const messageSchema = new Schema<Message>(
 );
 
 messageSchema.index({ conversationId: 1, createdAt: -1 });
+// T-051: compound index for markConversationDelivered and markConversationSeen queries
+messageSchema.index({ conversationId: 1, status: 1 });
 
 const MessageModel = mongoose.model<Message>('Message', messageSchema);
 export default MessageModel;
