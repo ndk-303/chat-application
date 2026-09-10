@@ -187,28 +187,34 @@ export const markConversationDelivered = async (
     conversationId: string,
     userId: string
 ): Promise<string[]> => {
-    const result = await MessageModel.updateMany(
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    // Step 1: identify the exact messages to mark (status='sent', not from this user).
+    // Capturing IDs first ensures the returned list contains only the messages
+    // we actually transition — not a broader "all delivered" set (which could include
+    // messages already delivered before this call).
+    const toDeliver = await MessageModel.find(
         {
             conversationId,
-            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
+            senderId: { $ne: userObjectId },
             status: 'sent',
-        },
-        { $set: { status: 'delivered' } }
-    );
-
-    if (result.modifiedCount === 0) return [];
-
-    const updated = await MessageModel.find(
-        {
-            conversationId,
-            senderId: { $ne: new mongoose.Types.ObjectId(userId) },
-            status: 'delivered',
         },
         '_id'
     ).lean();
 
-    return updated.map((m: any) => m._id.toString());
+    if (toDeliver.length === 0) return [];
+
+    const ids = toDeliver.map((m: any) => m._id as mongoose.Types.ObjectId);
+
+    // Step 2: bulk-update only the targeted IDs.
+    await MessageModel.updateMany(
+        { _id: { $in: ids } },
+        { $set: { status: 'delivered' } }
+    );
+
+    return ids.map(id => id.toString());
 };
+
 
 /**
  * Mark ALL unread messages in a conversation as seen by userId.
