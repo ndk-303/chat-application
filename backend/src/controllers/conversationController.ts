@@ -4,8 +4,10 @@ import * as conversationService from '../services/conversationService';
 export const getConversations = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.userId;
+        const page = req.query.page ? parseInt(req.query.page as string, 10) : undefined;
+        const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : undefined;
 
-        const conversations = await conversationService.getUserConversations(userId);
+        const conversations = await conversationService.getUserConversations(userId, page, limit);
 
         res.status(200).json({
             count: conversations.length,
@@ -178,8 +180,27 @@ export const generateInvite = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.userId;
         const { conversationId } = req.params;
+        const { force, expiresInDays } = req.body || {};
 
-        const result = await conversationService.generateInviteToken(conversationId as string, userId);
+        const result = await conversationService.generateInviteToken(
+            conversationId as string,
+            userId,
+            Boolean(force),
+            expiresInDays ? Number(expiresInDays) : 7
+        );
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+export const revokeInvite = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.userId;
+        const { conversationId } = req.params;
+
+        const result = await conversationService.revokeInviteToken(conversationId as string, userId);
 
         res.status(200).json(result);
     } catch (error: any) {
@@ -220,8 +241,18 @@ export const muteConversation = async (req: Request, res: Response) => {
         const userId = (req as any).user.userId;
         const { conversationId } = req.params;
         const { mutedUntil } = req.body;
+
+        // T-038: Validate mutedUntil is a valid parseable date if provided
+        let parsedMutedUntil: Date | undefined = undefined;
+        if (mutedUntil) {
+            parsedMutedUntil = new Date(mutedUntil);
+            if (isNaN(parsedMutedUntil.getTime())) {
+                return res.status(400).json({ message: 'Thời gian tắt thông báo không hợp lệ' });
+            }
+        }
+
         const result = await conversationService.muteConversation(
-            conversationId as string, userId, mutedUntil ? new Date(mutedUntil) : undefined
+            conversationId as string, userId, parsedMutedUntil
         );
         res.status(200).json(result);
     } catch (error: any) {
