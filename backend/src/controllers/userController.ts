@@ -2,6 +2,12 @@ import { Request, Response } from "express";
 import * as userService from '../services/userService'
 import { uploadCloundinary } from '../utils/uploadUtils';
 
+/**
+ * @deprecated Use POST /api/auth/register instead.
+ * This endpoint is kept for compatibility but only an authenticated user
+ * can call it, and it creates a new account with no privilege escalation.
+ * TODO: remove from production routing.
+ */
 export const creatUser = async (req: Request, res: Response) => {
     try {
         const user = await userService.createUser(req.body);
@@ -75,9 +81,20 @@ export const uploadAvatar = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * T-011/T-017: Users may only delete their own account.
+ * Hard-delete is guarded by matching req.user.userId === req.params.id.
+ */
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    await userService.deleteUser(req.params.id as string);
+    const requesterId = (req as any).user.userId as string;
+    const targetId = req.params.id as string;
+
+    if (requesterId !== targetId) {
+      return res.status(403).json({ message: 'Bạn chỉ có thể xóa tài khoản của chính mình' });
+    }
+
+    await userService.deleteUser(targetId);
     res.json({ message: 'Xóa người dùng thành công' });
   } catch (error: any) {
     return res.status(404).json({ message: error.message});
