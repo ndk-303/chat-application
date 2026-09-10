@@ -19,14 +19,16 @@ const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost')
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        if (origin.includes('ngrok')) return callback(null, true);
+        // T-015: restrict ngrok to known ngrok domains only (not a substring match)
+        if (/^https?:\/\/[a-z0-9-]+\.ngrok(\.io|\.app|-free\.app)?$/i.test(origin)) return callback(null, true);
         if (allowedOrigins.includes(origin)) return callback(null, true);
         callback(new Error(`CORS: origin ${origin} không được phép`));
     },
     credentials: true,
 }));
 
-app.use(express.json());
+// T-041: Explicit body size limit prevents large-payload DoS
+app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 app.use('/api', generalLimiter);
 
