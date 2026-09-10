@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: 'strict',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -107,7 +107,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         res.cookie("refreshToken", tokens.refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: "lax",
+            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -164,8 +164,9 @@ export const resetPassword = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.userId;
+        const refreshToken = req.cookies?.refreshToken;
 
-        const result = await authService.logout(userId);
+        const result = await authService.logout(userId, refreshToken);
 
         res.clearCookie('refreshToken');
 

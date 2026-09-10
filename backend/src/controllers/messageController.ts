@@ -34,7 +34,8 @@ export const sendMessage = async (req: Request, res: Response) => {
         const { content } = req.body;
         const attachs = req.files as Express.Multer.File[];
 
-        console.log(`Container=${CONTAINER_ID} | user=${userId} | conv=${conversationId} | content="${(content || '').slice(0, 60)}"`);
+        // T-032: Avoid logging raw message content; log metadata only
+        console.log(`Container=${CONTAINER_ID} | user=${userId} | conv=${conversationId} | hasContent=${Boolean(content)} | attachments=${attachs?.length || 0}`);
 
         if (!content && (!attachs || attachs.length === 0)) {
             return res.status(400).json({ message: 'Tin nhắn không được để trống' });

@@ -11,12 +11,15 @@ export interface User extends Document {
     lastSeen?: Date;
     passwordResetToken?: string;
     passwordResetExpires?: Date;
-    refreshTokens?: string;
+    refreshTokens?: string[];
     isActive: boolean;
     isDeleted: boolean;
     isVerified: boolean;
     emailVerificationCode?: string;
     emailVerificationExpires?: Date;
+    emailVerificationLastSent?: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 const userSchema = new Schema<User>(
@@ -73,7 +76,7 @@ const userSchema = new Schema<User>(
             type: Date,
             select: false
         },
-        refreshTokens: { type: String },
+        refreshTokens: [{ type: String, select: false }],
         isActive: {
             type: Boolean,
             default: true
@@ -94,8 +97,15 @@ const userSchema = new Schema<User>(
         emailVerificationExpires: {
             type: Date,
             select: false
+        },
+        emailVerificationLastSent: {
+            type: Date,
+            select: false
         }
     },
+    {
+        timestamps: true
+    }
 );
 
 const UserModel = model<User>('User', userSchema);
