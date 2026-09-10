@@ -45,19 +45,23 @@ const registerChatHandlers = (io: Server, socket: Socket): void => {
                 return;
             }
 
+            const alreadyInRoom = socket.rooms.has(conversationId);
             socket.join(conversationId);
             console.log(`[Socket] User ${userId} joined conversation ${conversationId}`);
 
-            // Mark all unread messages as seen (fixes unread badge persisting after reload)
-            await markConversationSeen(conversationId, userId);
+            // T-039: Only trigger bulk status transitions on fresh room entry, not duplicate events/tabs
+            if (!alreadyInRoom) {
+                // Mark all unread messages as seen (fixes unread badge persisting after reload)
+                await markConversationSeen(conversationId, userId);
 
-            // Mark all 'sent' messages from others as 'delivered'
-            const deliveredIds = await markConversationDelivered(conversationId, userId);
-            if (deliveredIds.length > 0) {
-                io.to(conversationId).emit('messages_delivered', {
-                    conversationId,
-                    messageIds: deliveredIds,
-                });
+                // Mark all 'sent' messages from others as 'delivered'
+                const deliveredIds = await markConversationDelivered(conversationId, userId);
+                if (deliveredIds.length > 0) {
+                    io.to(conversationId).emit('messages_delivered', {
+                        conversationId,
+                        messageIds: deliveredIds,
+                    });
+                }
             }
         } catch (err) {
             socket.emit('error', { message: 'Failed to join conversation' });
