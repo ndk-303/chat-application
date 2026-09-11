@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="dark h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat — Screen Sharing Active View</title>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-primary-container": "#003224",
+            "on-surface": "#dce3f0",
+            "success": "#10B981",
+            "surface-container-highest": "#2e353f",
+            "primary-fixed-dim": "#5bdcb0",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-surface-variant": "#bccac2",
+            "on-error": "#690005",
+            "secondary": "#c4c6cd",
+            "tertiary": "#c6c6ca",
+            "on-primary-fixed": "#002116",
+            "border": "#23272F",
+            "tertiary-container": "#919296",
+            "surface-container-high": "#232a34",
+            "on-error-container": "#ffdad6",
+            "background": "#0D0F12",
+            "surface-container-low": "#151c25",
+            "surface-bright": "#333a44",
+            "primary": "#5bdcb0",
+            "surface-container-lowest": "#080f17",
+            "on-tertiary-container": "#292b2e",
+            "on-tertiary": "#2f3034",
+            "on-secondary-fixed": "#191c21",
+            "primary-fixed": "#7af9cc",
+            "primary-container": "#00a67e",
+            "error": "#EF4444",
+            "surface-dim": "#0d141d",
+            "inverse-on-surface": "#2a313b",
+            "on-secondary": "#2e3036",
+            "error-container": "#93000a",
+            "surface-variant": "#2e353f",
+            "on-secondary-container": "#b3b5bc",
+            "outline-variant": "#3d4a43",
+            "secondary-fixed": "#e1e2e9",
+            "on-tertiary-fixed-variant": "#45474a",
+            "inverse-primary": "#006c51",
+            "on-primary": "#003828",
+            "on-background": "#dce3f0",
+            "surface": "#16191E",
+            "inverse-surface": "#dce3f0",
+            "text-secondary": "#9CA3AF",
+            "secondary-container": "#44474d",
+            "surface-container": "#192029",
+            "tertiary-fixed": "#e2e2e6",
+            "text-primary": "#F3F4F6",
+            "on-primary-fixed-variant": "#00513c",
+            "outline": "#86948c",
+            "surface-tint": "#5bdcb0",
+            "on-secondary-fixed-variant": "#44474d"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "margin": "2rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem"
+          },
+          fontFamily: {
+            "body-md": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h2": ["Inter"],
+            "small": ["Inter"],
+            "h1": ["Inter"]
+          },
+          fontSize: {
+            "body-md": ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+            "mono": ["0.875rem", { fontWeight: "500" }],
+            "h2": ["1.5rem", { lineHeight: "1.3", fontWeight: "600" }],
+            "small": ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "h1": ["2.25rem", { lineHeight: "1.25", fontWeight: "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Syntax highlighting token classes */
+    .token-kw { color: #5bdcb0; }
+    .token-fn { color: #7af9cc; }
+    .token-type { color: #93c5fd; }
+    .token-str { color: #fde047; }
+    .token-comment { color: #6b7280; font-style: italic; }
+    .token-prop { color: #c4c6cd; }
+    .token-num { color: #f97316; }
+  </style>
+</head>
+<body class="bg-background text-text-primary h-full flex flex-col font-body-md overflow-hidden selection:bg-primary-container selection:text-white">
+<!-- TOP APPLICATION HEADER (Anchor: TopNavBar compliant structure) -->
+<header class="bg-background border-b border-border flex-shrink-0 z-30">
+<div class="flex justify-between items-center w-full px-5 py-3 max-w-7xl mx-auto gap-4">
+<!-- Brand & Channel Metadata -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-lg bg-surface border border-border flex items-center justify-center text-primary-container shadow-sm">
+<span class="material-symbols-outlined material-symbols-fill" style="font-size: 15px;">all_inclusive</span>
+</div>
+<span class="font-h2 text-h2 text-text-primary font-bold tracking-tight text-base sm:text-lg">Aether Chat</span>
+</div>
+<div class="h-4 w-px bg-border"></div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-small text-text-primary font-medium">Core Protocol Sync</span>
+<span class="font-mono text-small text-text-secondary">#core-protocol</span>
+</div>
+<div class="hidden lg:flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-surface border border-border">
+<span class="material-symbols-outlined text-primary" style="font-size: 13px;">lock</span>
+<span class="font-mono text-small text-text-secondary text-xs">E2EE MESH</span>
+</div>
+</div>
+<!-- Center Status Pill: Active Presentation & Time -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border shadow-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="material-symbols-outlined text-primary text-sm">screen_share</span>
+<span class="font-small text-small text-text-primary font-medium">Sarah Lin is presenting</span>
+</div>
+<span class="text-border">|</span>
+<div class="flex items-center gap-1">
+<span class="font-mono text-small text-text-secondary tracking-wide">44:19</span>
+</div>
+</div>
+<!-- Right Telemetry & Utility Actions -->
+<div class="flex items-center gap-3">
+<div class="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-lg bg-surface border border-border">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span class="font-mono text-small text-text-secondary text-xs">1440p · 60fps · AV1 Direct Peer</span>
+<span class="text-border">·</span>
+<span class="font-mono text-small text-text-secondary text-xs">4 peers</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent hover:border-border transition-colors duration-150 ease-out" title="Help &amp; Shortcuts">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface border border-transparent hover:border-border transition-colors duration-150 ease-out" title="Toggle Dark/Light Mode">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+<div class="h-4 w-px bg-border"></div>
+<!-- User Profile Avatar -->
+<div class="flex items-center gap-2 pl-1">
+<div class="relative w-7 h-7 rounded-lg bg-surface-variant border border-border flex items-center justify-center font-mono text-xs text-text-primary font-medium">
+            AR
+            <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-container border border-surface"></span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN VIEWPORT: Stage + Right Video Strip -->
+<main class="flex-1 flex overflow-hidden p-3 gap-3 relative max-w-7xl w-full mx-auto">
+<!-- PRESENTATION STAGE (Large Left Area) -->
+<section class="flex-1 flex flex-col bg-surface rounded-xl border border-border overflow-hidden relative shadow-lg">
+<!-- Stage Window Header & Toolbar -->
+<div class="h-10 bg-surface border-b border-border flex items-center justify-between px-4 select-none flex-shrink-0">
+<!-- macOS Style Dots & Tab Title -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-border"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-border"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-border"></div>
+</div>
+<div class="h-3 w-px bg-border"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xs">code</span>
+<span class="font-mono text-small text-text-secondary text-xs">mesh-negotiator.ts</span>
+<span class="font-small text-small text-text-secondary text-xs opacity-60">— Aether Core WebRTC Engine</span>
+</div>
+</div>
+<!-- Canvas Controls & Presenter Annotation Tools -->
+<div class="flex items-center gap-2">
+<!-- View Zoom -->
+<div class="flex items-center bg-background rounded-lg border border-border p-0.5 text-xs font-mono">
+<button class="px-2 py-0.5 text-text-secondary hover:text-text-primary transition-colors">Fit</button>
+<span class="text-border">/</span>
+<button class="px-2 py-0.5 text-primary font-medium">100%</button>
+</div>
+<div class="h-3 w-px bg-border"></div>
+<!-- Annotation Toolbar -->
+<div class="flex items-center gap-1">
+<button class="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary-container/10 border border-primary-container/30 text-primary hover:bg-primary-container/20 transition-colors text-xs font-medium" title="Active Laser Tool">
+<span class="material-symbols-outlined text-xs">stylus_laser_pointer</span>
+<span class="hidden sm:inline font-small text-small text-xs">Laser</span>
+</button>
+<button class="flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-background border border-transparent hover:border-border text-text-secondary hover:text-text-primary transition-colors text-xs" title="Annotate Stage">
+<span class="material-symbols-outlined text-xs">draw</span>
+<span class="hidden sm:inline font-small text-small text-xs">Annotate</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-background border border-transparent hover:border-border text-text-secondary hover:text-text-primary transition-colors" title="Snapshot Frame">
+<span class="material-symbols-outlined text-xs">screenshot_region</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-background border border-transparent hover:border-border text-text-secondary hover:text-text-primary transition-colors" title="Fullscreen">
+<span class="material-symbols-outlined text-xs">fullscreen</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Code Editor Canvas (Pristine High-Fidelity WebRTC Engine Architecture) -->
+<div class="flex-1 bg-background overflow-auto p-4 font-mono text-xs leading-relaxed text-text-secondary relative select-text">
+<!-- Live Simulated Cursor of Presenter Sarah Lin -->
+<div class="absolute top-28 left-64 pointer-events-none z-20 flex items-start gap-1 transition-all duration-300">
+<span class="material-symbols-outlined text-primary-container drop-shadow-md" style="font-size: 16px;">near_me</span>
+<span class="bg-primary-container text-white text-[10px] font-mono px-1.5 py-0.5 rounded-lg shadow-sm">Sarah Lin</span>
+</div>
+<!-- High-fidelity TypeScript WebRTC mesh code -->
+<div class="flex gap-4 min-w-[700px]">
+<!-- Line Numbers -->
+<div class="select-none text-right text-text-secondary/40 font-mono text-xs pr-2 flex flex-col space-y-1">
+<span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span><span>10</span>
+<span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span>20</span>
+<span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+</div>
+<!-- Code Tokens -->
+<div class="flex flex-col space-y-1 flex-1 font-mono text-xs text-text-primary">
+<div><span class="token-kw">import</span> { <span class="token-type">RTCPeerMesh</span>, <span class="token-type">MeshConfig</span>, <span class="token-type">EncryptedEnvelope</span> } <span class="token-kw">from</span> <span class="token-str">'@aether/mesh-crypto'</span>;</div>
+<div class="token-comment">// Zero-knowledge mesh renegotiation protocol for multi-peer screenshare</div>
+<div><span class="token-kw">export class</span> <span class="token-type">MeshNegotiator</span> <span class="token-kw">implements</span> <span class="token-type">IScreenStreamCoordinator</span> {</div>
+<div class="pl-4"><span class="token-kw">private readonly</span> <span class="token-prop">peerChannels</span>: <span class="token-type">Map</span>&lt;<span class="token-type">string</span>, <span class="token-type">RTCDataChannel</span>&gt; = <span class="token-kw">new</span> <span class="token-type">Map</span>();</div>
+<div class="pl-4"><span class="token-kw">private</span> <span class="token-prop">activeCodecProfile</span>: <span class="token-type">VideoCodecConfig</span> = { <span class="token-prop">codec</span>: <span class="token-str">'AV1'</span>, <span class="token-prop">profile</span>: <span class="token-str">'main'</span>, <span class="token-prop">fps</span>: <span class="token-num">60</span> };</div>
+<div class="pl-4"> </div>
+<div class="pl-4"><span class="token-kw">constructor</span>(<span class="token-kw">private readonly</span> <span class="token-prop">localSession</span>: <span class="token-type">AetherSessionIdentity</span>) {</div>
+<div class="pl-8"><span class="token-kw">this</span>.<span class="token-fn">initializeDtlsEncryption</span>();</div>
+<div class="pl-4">}</div>
+<div class="pl-4"> </div>
+<div class="pl-4"><span class="token-kw">public async</span> <span class="token-fn">dispatchFramePipeline</span>(<span class="token-prop">stream</span>: <span class="token-type">MediaStream</span>): <span class="token-type">Promise</span>&lt;<span class="token-type">void</span>&gt; {</div>
+<div class="pl-8"><span class="token-kw">const</span> <span class="token-prop">encoder</span> = <span class="token-kw">await</span> <span class="token-type">VideoEncoderTransform</span>.<span class="token-fn">createHardwarePipeline</span>({</div>
+<div class="pl-12"><span class="token-prop">sourceResolution</span>: { <span class="token-prop">width</span>: <span class="token-num">2560</span>, <span class="token-prop">height</span>: <span class="token-num">1440</span> },</div>
+<div class="pl-12"><span class="token-prop">bitrateMode</span>: <span class="token-str">'constant-ultra-low-latency'</span>,</div>
+<div class="pl-12"><span class="token-prop">targetBitrateBps</span>: <span class="token-num">8_400_000</span></div>
+<div class="pl-8">});</div>
+<div class="pl-8"> </div>
+<div class="pl-8 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary"><span class="token-comment">// Broadcast encrypted frame fragments via direct WebRTC SCTP data channels</span></div>
+<div class="pl-8 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary"><span class="token-kw">for</span> (<span class="token-kw">const</span> [<span class="token-prop">peerId</span>, <span class="token-prop">channel</span>] <span class="token-kw">of</span> <span class="token-kw">this</span>.<span class="token-prop">peerChannels</span>.<span class="token-fn">entries</span>()) {</div>
+<div class="pl-12 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary"><span class="token-kw">if</span> (<span class="token-prop">channel</span>.<span class="token-prop">readyState</span> === <span class="token-str">'open'</span>) {</div>
+<div class="pl-16 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary"><span class="token-kw">const</span> <span class="token-prop">packet</span> = <span class="token-kw">await</span> <span class="token-type">DTLSEncryptor</span>.<span class="token-fn">sealFragment</span>(<span class="token-prop">encoder</span>.<span class="token-fn">nextChunk</span>(), <span class="token-prop">peerId</span>);</div>
+<div class="pl-16 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary"><span class="token-prop">channel</span>.<span class="token-fn">send</span>(<span class="token-prop">packet</span>.<span class="token-prop">payloadBuffer</span>);</div>
+<div class="pl-12 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary">}</div>
+<div class="pl-8 bg-surface-container/60 -mx-2 px-2 py-0.5 rounded border-l-2 border-primary">}</div>
+<div class="pl-4">}</div>
+<div>}</div>
+</div>
+</div>
+</div>
+<!-- Stage Bottom Status Strip -->
+<div class="h-7 bg-surface border-t border-border flex items-center justify-between px-3 text-[11px] font-mono text-text-secondary select-none">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>TypeScript 5.4</span>
+<span>UTF-8</span>
+<span>LF</span>
+</div>
+<div class="flex items-center gap-3">
+<span>Target: 2560x1440 @ 60 FPS</span>
+<span class="text-primary font-medium">DTLS-SRTP 256-bit</span>
+</div>
+</div>
+</section>
+<!-- RIGHT PARTICIPANT VIDEO STRIP (Docked cleanly, ~220px width) -->
+<aside class="w-56 flex-shrink-0 flex flex-col gap-2.5 overflow-y-auto pr-0.5">
+<!-- Participant 1: Sarah Lin (Presenter · Active Speaker) -->
+<div class="relative rounded-lg overflow-hidden bg-surface border-2 border-primary-container aspect-[16/10] flex-shrink-0 group">
+<img alt="Sarah Lin speaking" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida/AEtjO1XVN7qiEP0fT_GX2eEAgE2nK476N7lHOS5veA2WGVTSyXrbiVOZRwUbmjSVFgeYN0ZkO4V66xtIyQKsMrdTYFQVyre_GXzbiXdZXMzGqSwIjBVyA6MP4rWgIviWiyBR5zR8tAOyWDuXCCtXqCaV8n3j_haPiZqr3-9R1KGNP3AhhoyFfuGLGFzdhB3OfYA9qZqSoQltWM6FTOkrYOmswxtZnCEmc93TT2T_d4wDE6F0e6SglAYlq6JgaJo"/>
+<!-- Presenter Audio Waveform / Indicator -->
+<div class="absolute top-2 right-2 flex items-center gap-0.5 px-1.5 py-0.5 rounded-lg bg-surface/80 backdrop-blur-sm border border-border">
+<span class="w-1 h-2 bg-primary-container animate-pulse rounded-full"></span>
+<span class="w-1 h-3.5 bg-primary-container animate-pulse delay-75 rounded-full"></span>
+<span class="w-1 h-1.5 bg-primary-container animate-pulse delay-150 rounded-full"></span>
+</div>
+<!-- Name Tag Badge -->
+<div class="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-1 rounded bg-background/85 backdrop-blur-sm border border-border/80">
+<span class="font-small text-small text-xs font-medium text-text-primary truncate">Sarah Lin</span>
+<span class="font-mono text-[10px] text-primary bg-primary-container/20 px-1 py-0.2 rounded font-semibold">PRESENTER</span>
+</div>
+</div>
+<!-- Participant 2: Alex Rivera (You) -->
+<div class="relative rounded-lg overflow-hidden bg-surface border border-border aspect-[16/10] flex-shrink-0">
+<img alt="Alex Rivera" class="w-full h-full object-cover object-center" src="https://lh3.googleusercontent.com/aida/AEtjO1Ud9MjBtYbl2A8EmRd869bu3B-rStDqtu91Jng_ApMUAEfBN4WH9ySDSaLbSNCyiUtUartP52ocXFFEvLGCuv2OazEBEKdrQTLifESoiDJ4Vc_c1uh9wZLhebiwGL9AqIDltP0OHCZ-56VUx_aYErAGSvoJ5_dG046hXllfkvMW98dkoeLNo8UJm2DFKRPRLW5tg5hX1spt_4Ww-OiTKU9wqE7X3nh_937i1TQcHt-jiAXWGaHsi3Uacr1g"/>
+<!-- Self indicator & Mic -->
+<div class="absolute top-2 right-2 px-1 py-0.5 rounded bg-surface/80 backdrop-blur-sm border border-border">
+<span class="material-symbols-outlined text-primary" style="font-size: 13px;">mic</span>
+</div>
+<div class="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-1 rounded bg-background/85 backdrop-blur-sm border border-border/80">
+<span class="font-small text-small text-xs font-medium text-text-primary truncate">Alex Rivera (You)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</div>
+</div>
+<!-- Participant 3: Elena Rostova -->
+<div class="relative rounded-lg overflow-hidden bg-surface border border-border aspect-[16/10] flex-shrink-0 flex flex-col justify-between p-2">
+<div class="w-full h-full absolute inset-0 bg-gradient-to-br from-surface to-background flex items-center justify-center">
+<div class="w-10 h-10 rounded-lg bg-surface-variant border border-border flex items-center justify-center text-sm font-medium text-text-secondary">
+            ER
+          </div>
+</div>
+<!-- Muted indicator -->
+<div class="relative self-end px-1 py-0.5 rounded bg-surface/80 backdrop-blur-sm border border-border z-10">
+<span class="material-symbols-outlined text-error" style="font-size: 13px;">mic_off</span>
+</div>
+<div class="relative flex items-center justify-between px-2 py-1 rounded bg-background/85 backdrop-blur-sm border border-border/80 z-10">
+<span class="font-small text-small text-xs font-medium text-text-primary truncate">Elena Rostova</span>
+<span class="material-symbols-outlined text-text-secondary" style="font-size: 12px;">videocam_off</span>
+</div>
+</div>
+<!-- Participant 4: Marcus Vance -->
+<div class="relative rounded-lg overflow-hidden bg-surface border border-border aspect-[16/10] flex-shrink-0 flex flex-col justify-between p-2">
+<div class="w-full h-full absolute inset-0 bg-gradient-to-br from-surface to-background flex items-center justify-center">
+<div class="w-10 h-10 rounded-lg bg-surface-variant border border-border flex items-center justify-center text-sm font-medium text-text-secondary">
+            MV
+          </div>
+</div>
+<!-- Active Mic -->
+<div class="relative self-end px-1 py-0.5 rounded bg-surface/80 backdrop-blur-sm border border-border z-10">
+<span class="material-symbols-outlined text-text-secondary" style="font-size: 13px;">mic</span>
+</div>
+<div class="relative flex items-center justify-between px-2 py-1 rounded bg-background/85 backdrop-blur-sm border border-border/80 z-10">
+<span class="font-small text-small text-xs font-medium text-text-primary truncate">Marcus Vance</span>
+<span class="material-symbols-outlined text-text-secondary" style="font-size: 12px;">videocam_off</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- FLOATING BOTTOM CALL CONTROLS BAR -->
+<div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-40">
+<nav class="bg-surface/95 backdrop-blur-md border border-border rounded-full px-5 py-2.5 shadow-2xl flex items-center gap-2">
+<!-- Microphone Toggle -->
+<button class="w-10 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border flex items-center justify-center text-text-primary hover:text-primary transition-all duration-150 group" title="Mute/Unmute Audio (Cmd+D)">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<!-- Camera Toggle -->
+<button class="w-10 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border flex items-center justify-center text-text-primary hover:text-primary transition-all duration-150" title="Start/Stop Video (Cmd+E)">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<div class="h-5 w-px bg-border mx-1"></div>
+<!-- Stop/Switch Share Toggle -->
+<button class="flex items-center gap-2 px-3 h-10 rounded-lg bg-primary-container text-white font-small text-small text-xs font-medium hover:brightness-110 transition-all duration-150 shadow-sm" title="Screen sharing active">
+<span class="material-symbols-outlined" style="font-size: 16px;">screen_share</span>
+<span>Viewing Screen</span>
+</button>
+<!-- Laser Pointer / Annotate tool -->
+<button class="w-10 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border flex items-center justify-center text-text-primary hover:text-primary transition-all duration-150" title="Annotation Tools">
+<span class="material-symbols-outlined">stylus_laser_pointer</span>
+</button>
+<!-- In-Call Chat with unread badge -->
+<button class="relative w-10 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border flex items-center justify-center text-text-primary hover:text-primary transition-all duration-150" title="Meeting Chat">
+<span class="material-symbols-outlined">chat_bubble_outline</span>
+<span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary-container text-white font-mono text-[10px] font-bold flex items-center justify-center shadow">3</span>
+</button>
+<!-- Participants List -->
+<button class="flex items-center gap-1.5 px-3 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border text-text-secondary hover:text-text-primary transition-all duration-150 font-small text-small text-xs" title="View participants">
+<span class="material-symbols-outlined" style="font-size: 16px;">group</span>
+<span class="font-mono">4</span>
+</button>
+<!-- Audio / Video Settings -->
+<button class="w-10 h-10 rounded-lg bg-background hover:bg-surface-variant border border-border flex items-center justify-center text-text-secondary hover:text-text-primary transition-all duration-150" title="Call Settings">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-5 w-px bg-border mx-1"></div>
+<!-- Leave Call Button (Red Destructive) -->
+<button class="h-10 px-4 rounded-full bg-error hover:bg-error/90 text-white font-small text-small text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 shadow-md" title="Disconnect and Leave Session">
+<span class="material-symbols-outlined material-symbols-fill" style="font-size: 16px;">call_end</span>
+<span>Leave</span>
+</button>
+</nav>
+</div>
+<!-- MINIMALIST FOOTER BAR (Anchor: Footer compliant structure) -->
+<footer class="bg-background border-t border-border flex-shrink-0 z-30">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-3 max-w-7xl mx-auto gap-4 font-small text-small text-text-secondary text-xs">
+<div class="flex items-center gap-2">
+<span>© 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.</span>
+<span class="text-border">·</span>
+<span class="font-mono text-primary text-[11px] font-medium">DTLS-SRTP Active</span>
+</div>
+<div class="flex items-center gap-4">
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#privacy">Privacy Policy</a>
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#terms">Terms of Service</a>
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#security">Security</a>
+<a class="flex items-center gap-1.5 hover:text-text-primary transition-colors duration-150 ease-out" href="#status">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span>System Status</span>
+</a>
+</div>
+</div>
+</footer>
+</body></html>

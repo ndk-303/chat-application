@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Core Protocol Sync</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-highest": "#2e353f",
+            "on-surface": "#dce3f0",
+            "border": "#23272F",
+            "on-secondary-container": "#b3b5bc",
+            "inverse-primary": "#006c51",
+            "tertiary-container": "#919296",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "inverse-surface": "#dce3f0",
+            "surface-variant": "#2e353f",
+            "on-primary-fixed": "#002116",
+            "inverse-on-surface": "#2a313b",
+            "on-tertiary": "#2f3034",
+            "on-secondary": "#2e3036",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-container": "#292b2e",
+            "surface-container-lowest": "#080f17",
+            "text-primary": "#F3F4F6",
+            "outline-variant": "#3d4a43",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-primary": "#003828",
+            "on-error": "#690005",
+            "outline": "#86948c",
+            "error-container": "#93000a",
+            "surface-tint": "#5bdcb0",
+            "surface-container-low": "#151c25",
+            "text-secondary": "#9CA3AF",
+            "on-surface-variant": "#bccac2",
+            "secondary-container": "#44474d",
+            "error": "#EF4444",
+            "surface": "#16191E",
+            "secondary-fixed-dim": "#c4c6cd",
+            "secondary-fixed": "#e1e2e9",
+            "on-secondary-fixed": "#191c21",
+            "background": "#0D0F12",
+            "tertiary-fixed": "#e2e2e6",
+            "primary": "#5bdcb0",
+            "surface-container": "#192029",
+            "on-background": "#dce3f0",
+            "tertiary": "#c6c6ca",
+            "surface-dim": "#0d141d",
+            "primary-fixed-dim": "#5bdcb0",
+            "surface-bright": "#333a44",
+            "primary-fixed": "#7af9cc",
+            "on-primary-container": "#003224",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-primary-fixed-variant": "#00513c",
+            "success": "#10B981",
+            "primary-container": "#00a67e",
+            "on-secondary-fixed-variant": "#44474d",
+            "surface-container-high": "#232a34",
+            "secondary": "#c4c6cd"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "h2": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "small": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes pulse-wave {
+      0%, 100% { height: 4px; }
+      50% { height: 14px; }
+    }
+    .wave-bar:nth-child(1) { animation: pulse-wave 0.8s ease-in-out infinite 0.1s; }
+    .wave-bar:nth-child(2) { animation: pulse-wave 0.8s ease-in-out infinite 0.3s; }
+    .wave-bar:nth-child(3) { animation: pulse-wave 0.8s ease-in-out infinite 0.2s; }
+  </style>
+</head>
+<body class="bg-background text-text-primary h-full flex flex-col font-body-md text-body-md overflow-x-hidden antialiased selection:bg-primary-container selection:text-white">
+<!-- Top App Bar Navigation (Shared Component Integration) -->
+<header class="bg-background border-b border-border w-full z-40 shrink-0">
+<div class="flex justify-between items-center w-full px-6 sm:px-8 py-3.5 max-w-7xl mx-auto">
+<!-- Brand & Session Context -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<span class="font-h2 text-h2 text-text-primary font-bold tracking-tight">Aether Chat</span>
+</div>
+<div class="hidden sm:flex items-center gap-2 pl-3 border-l border-border">
+<span class="text-text-secondary text-sm font-medium">Core Protocol Sync</span>
+<span class="px-2 py-0.5 rounded-full text-xs font-mono bg-surface border border-border text-text-secondary">#core-protocol</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-surface text-primary border border-border">
+<span class="material-symbols-outlined text-[13px]" data-icon="lock">lock</span>
+            E2EE Mesh
+          </span>
+</div>
+</div>
+<!-- Call Timer HUD -->
+<div class="flex items-center">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface rounded-full border border-border shadow-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
+</span>
+<span class="font-mono text-mono text-text-secondary tracking-wider text-xs">38:12</span>
+</div>
+</div>
+<!-- Trailing Controls & Layout Switcher -->
+<div class="flex items-center gap-3">
+<!-- View Mode Switcher -->
+<div class="hidden md:flex items-center bg-surface border border-border rounded-lg p-0.5 text-xs">
+<button class="px-2.5 py-1 rounded text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]" data-icon="person">person</span>
+            Speaker
+          </button>
+<button class="px-2.5 py-1 rounded bg-primary-container/20 text-primary border border-primary/30 font-medium flex items-center gap-1 transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[15px]" data-icon="grid_view">grid_view</span>
+            Grid
+          </button>
+</div>
+<!-- Connected Peers Badge -->
+<div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-surface border border-border rounded-lg text-xs font-medium text-text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>6 peers</span>
+</div>
+<!-- Trailing action icons matching JSON -->
+<button class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Help">
+<span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Dark Mode Active">
+<span class="material-symbols-outlined text-[18px]" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Video Grid Stage Area -->
+<main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+<!-- 3x2 Grid for 6 participants -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 w-full h-[calc(100vh-190px)] min-h-[540px] max-h-[780px]">
+<!-- Tile 1: Sarah Lin (Active Speaker) -->
+<div class="relative group rounded-xl bg-surface border-2 border-primary-container overflow-hidden shadow-lg shadow-primary-container/10 flex flex-col justify-between">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="A portrait of Sarah Lin in a warm minimalist home study environment during a professional conference call, soft focused background, architectural aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCaJNsfPPgbCY7pgsZsz3bO74Bhm_IuFvxZTu3KdvsfKbjpV7crXFCZ7xDCzjhHlYNwBIIxv1PpkXAhtm7A6dve2tOSL3qdInHXIaAFSRoODz_Fe5lOr62GHsPlhlOe_dYYss4mNZ9Q7_lFzSSbdn6hZ94wWHJKXzk0aYCwuBp1Y2q8mZsnMPwe6-aoZwPWy4jVTdVC_Fbg2jbToT-1E5PqoGIjy_nPk0RdsBhnKtbijWZP25eLc8QMFI2CACJnv-CEMjA7_S-Q9I-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/95 via-transparent to-black/30 pointer-events-none"></div>
+<!-- Tile Header Overlays -->
+<div class="relative z-10 p-3 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<!-- Audio visualizer active pill -->
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface/85 backdrop-blur-md rounded-full border border-border text-xs text-primary font-medium">
+<div class="flex items-end gap-0.5 h-3">
+<span class="wave-bar w-0.5 bg-primary rounded-full"></span>
+<span class="wave-bar w-0.5 bg-primary rounded-full"></span>
+<span class="wave-bar w-0.5 bg-primary rounded-full"></span>
+</div>
+<span>Speaking</span>
+</div>
+<!-- Telemetry Pill -->
+<span class="hidden sm:inline-block px-2 py-0.5 font-mono text-[11px] text-text-secondary bg-surface/85 backdrop-blur-md rounded border border-border">
+              60fps · 1080p · 18ms
+            </span>
+</div>
+<button class="w-7 h-7 rounded-lg bg-surface/80 hover:bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors duration-150" title="Pin stream">
+<span class="material-symbols-outlined text-[15px]" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+<!-- Tile Footer Info -->
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary-container/30 border border-primary text-primary flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="mic">mic</span>
+</span>
+<span class="text-sm font-semibold text-text-primary tracking-tight">Sarah Lin (Architect)</span>
+</div>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+<button class="w-7 h-7 rounded-lg bg-surface/80 border border-border flex items-center justify-center text-text-secondary hover:text-text-primary">
+<span class="material-symbols-outlined text-[15px]" data-icon="volume_up">volume_up</span>
+</button>
+<button class="w-7 h-7 rounded-lg bg-surface/80 border border-border flex items-center justify-center text-text-secondary hover:text-text-primary">
+<span class="material-symbols-outlined text-[15px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tile 2: Elena Rostova (Muted) -->
+<div class="relative group rounded-xl bg-surface border border-border overflow-hidden flex flex-col justify-between hover:border-surface-container-highest transition-colors duration-150">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Elena Rostova, a software tech leader wearing wireframe glasses in a sleek ambient home studio setting with subtle warm accent lighting, during a remote team conference call." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq9To1CSzvRhmkdp_uriLgd5CUjEVjmod_TK7zSycJsPTp0-UgP8BeQ_fMvUoqBYfnKml4g4fOHuBu1n-yK41c-vFenX8Ht931i-tYZpOCAgaq8Iy-8ZvOTErHUmqC0hOhluOSAAymZmx8ZguUGVr8wVtFE28tB2VKS4vx4AIj3AjhTBZViErhbDXlMQArraGcItfdPIoEf_lM6HDIKZWNS-OANqcOuh6dGe9tcqicbCn-opJzjJUAxADxlbNl0fkbEnzeJCtAkKkR"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-black/30 pointer-events-none"></div>
+<div class="relative z-10 p-3 flex justify-between items-center">
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface/80 backdrop-blur-md border border-border text-[11px] font-mono text-text-secondary">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="wifi">wifi</span>
+<span>4k · 22ms</span>
+</div>
+<button class="w-7 h-7 rounded-lg bg-surface/80 hover:bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-150">
+<span class="material-symbols-outlined text-[15px]" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-error/20 border border-error/40 text-error flex items-center justify-center text-xs" title="Microphone muted">
+<span class="material-symbols-outlined text-[13px]" data-icon="mic_off">mic_off</span>
+</span>
+<span class="text-sm font-medium text-text-primary">Elena Rostova</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-text-secondary" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</div>
+</div>
+<!-- Tile 3: Marcus Vance (Speaking periodically) -->
+<div class="relative group rounded-xl bg-surface border border-border overflow-hidden flex flex-col justify-between hover:border-surface-container-highest transition-colors duration-150">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Marcus Vance, an engineering lead in a clean modern workspace wearing a dark knit hoodie, looking attentively into webcam during an online synchronization call." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgfr6-5SediS-Z9zkx5itp0eK19bKOGUj9S7uLQpBxBRQTFFjonHxU1C2RQFSCHPF8dB7sET_ic4z9D-Ax-TbsvaWTZcgJRs3fg9c_iIoRp85NuhbNq2te_FL7Y9dGq3E1v9824cJ0LVv8_wjGbeZvQH2qVsO8Uw-tOpmZWmbyMX7bYUR5zYoHS1d08lsJB3YN0UmWpgutJ9sPaZW1BYntWnAqcz1LtPz9UGn92OrCEerM-WXWn1IqZI2mr855S1elr_rA4AMfRQ8r"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-black/30 pointer-events-none"></div>
+<div class="relative z-10 p-3 flex justify-between items-center">
+<span class="px-2 py-0.5 rounded bg-surface/80 backdrop-blur-md border border-border text-[11px] font-mono text-text-secondary">
+            60fps · 14ms
+          </span>
+<button class="w-7 h-7 rounded-lg bg-surface/80 hover:bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-150">
+<span class="material-symbols-outlined text-[15px]" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container border border-border text-text-secondary flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[13px]" data-icon="mic">mic</span>
+</span>
+<span class="text-sm font-medium text-text-primary">Marcus Vance</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-text-secondary" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</div>
+<!-- Tile 4: David Kim (Muted) -->
+<div class="relative group rounded-xl bg-surface border border-border overflow-hidden flex flex-col justify-between hover:border-surface-container-highest transition-colors duration-150">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="David Kim, senior platform engineer sitting in a contemporary minimalist studio with subtle plant accents, focused on the remote engineering standup." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRQm0sIs0dqILlumvbHB9f0-KU-dazJOJWyECtu2vRglunmzoxPq_Ey-eaI1hmHMpVh1yg59e-h8lXn-oTgdt79kBxU5bHWmwYY2Yf_9UjpHwfg_R1wt875x1WBtohgRbwVgzyQ7r6GyEsD9xUEqD64U10HdSLZF-pBKGd3b2quJaoF8T1nl-_w46YFW3C7Zo5THH76ZWrb2a89-zpcnUs7a3FTy6bgy_r0_YRm-PF80OFLNMEMkYJnJ62PUsIqx9ScX8sEbJiLyTE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-black/30 pointer-events-none"></div>
+<div class="relative z-10 p-3 flex justify-between items-center">
+<span class="px-2 py-0.5 rounded bg-surface/80 backdrop-blur-md border border-border text-[11px] font-mono text-text-secondary">
+            1080p · 24ms
+          </span>
+<button class="w-7 h-7 rounded-lg bg-surface/80 hover:bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-150">
+<span class="material-symbols-outlined text-[15px]" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-error/20 border border-error/40 text-error flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[13px]" data-icon="mic_off">mic_off</span>
+</span>
+<span class="text-sm font-medium text-text-primary">David Kim</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-text-secondary" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</div>
+<!-- Tile 5: Chloe Bennett (Muted) -->
+<div class="relative group rounded-xl bg-surface border border-border overflow-hidden flex flex-col justify-between hover:border-surface-container-highest transition-colors duration-150">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Chloe Bennett, product design lead in a brightly lit, clean Scandinavian styled work office with neutral tones and clean architecture in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoKLSxXBV4Cq30gceyXtHwW50v72eBhjuvR-cZUXsZRoTqjFBOYKe9JUkv_e6w4RzFzXWw02udUIDkAmE2m3MIgmtA3kDXG1sjIl1ydgx9L2SB-s9aH97_HkVolYkKl91StBLVShsPsxngBMOBRtnJESDLlVPm25dwiTKzEY4NNTlsG_7f-cOHdBYBrm0WBvDyfE8nB7yaI7FdmvhYkUfYjuWzgbzDe_I5sUd_rrInT6nGfNf1RBMJ-sYwyetoAfcCXILUZFNVOvfw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-black/30 pointer-events-none"></div>
+<div class="relative z-10 p-3 flex justify-between items-center">
+<span class="px-2 py-0.5 rounded bg-surface/80 backdrop-blur-md border border-border text-[11px] font-mono text-text-secondary">
+            1080p · 19ms
+          </span>
+<button class="w-7 h-7 rounded-lg bg-surface/80 hover:bg-surface border border-border flex items-center justify-center text-text-secondary hover:text-text-primary opacity-0 group-hover:opacity-100 transition-all duration-150">
+<span class="material-symbols-outlined text-[15px]" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-error/20 border border-error/40 text-error flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[13px]" data-icon="mic_off">mic_off</span>
+</span>
+<span class="text-sm font-medium text-text-primary">Chloe Bennett</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-text-secondary" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+</div>
+<!-- Tile 6: Alex Rivera (You - Local Video Feed) -->
+<div class="relative group rounded-xl bg-surface border border-border overflow-hidden flex flex-col justify-between hover:border-surface-container-highest transition-colors duration-150">
+<img class="absolute inset-0 w-full h-full object-cover" data-alt="Alex Rivera, tech lead at a sit-stand natural wood desk with ultrawide coding monitor and microphone, smiling warmly in a light modern office setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAntIll9NBt4znaMrC-mYusNgbKJLrLAC13_uD-V_5atQldbIQUNzUPpYA9491oNPD_vkAMB3_mgT85-7k4RforgbpioWNwQeP0VZbvi-PSABlmk2PIPmDNuc4efqSs5Z8jpOfeflOnCedyjhwKWB7TUPhgbgKtMfM2MeuvRRrZgb-sWCOAdBuOcBS2tTlCGRg8sE4DioCEKt_lPSgN9I5svt9wA2uffgrSrWqSwMwd1mtXao9W8-68Ve0-RTPAxJQfELGZ3Y29vUkN"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-black/30 pointer-events-none"></div>
+<!-- Local status indicator overlay -->
+<div class="relative z-10 p-3 flex justify-between items-center">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary border border-primary/30 text-[11px] font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Local Feed
+          </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface/80 backdrop-blur-md border border-border text-[11px] font-mono text-text-secondary">
+              HD · 0ms
+            </span>
+</div>
+</div>
+<!-- Bottom Pill -->
+<div class="relative z-10 p-3 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container border border-border text-primary flex items-center justify-center text-xs">
+<span class="material-symbols-outlined text-[13px]" data-icon="mic">mic</span>
+</span>
+<span class="text-sm font-semibold text-text-primary">Alex Rivera (You)</span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-text-secondary font-mono">
+<span class="material-symbols-outlined text-[15px] text-primary" data-icon="videocam">videocam</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Call Control Dock -->
+<div class="fixed bottom-14 left-1/2 -translate-x-1/2 z-50">
+<nav aria-label="Meeting actions" class="flex items-center gap-2 sm:gap-3 bg-surface/95 backdrop-blur-md border border-border px-4 sm:px-6 py-2.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.45)]">
+<!-- Microphone Toggle -->
+<button class="relative group p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Mute Microphone (⌘D)">
+<span class="material-symbols-outlined text-[20px]" data-icon="mic">mic</span>
+<span class="sr-only">Toggle Microphone</span>
+</button>
+<!-- Camera Toggle -->
+<button class="relative group p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Turn Off Camera (⌘E)">
+<span class="material-symbols-outlined text-[20px]" data-icon="videocam">videocam</span>
+<span class="sr-only">Toggle Camera</span>
+</button>
+<!-- Screen Share -->
+<button class="relative group p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Share Screen">
+<span class="material-symbols-outlined text-[20px]" data-icon="screen_share">screen_share</span>
+<span class="sr-only">Share Screen</span>
+</button>
+<!-- Quick Reactions Pill -->
+<div class="hidden sm:flex items-center bg-[#1E222A] border border-border/80 rounded-full px-2 py-1 gap-1">
+<button class="hover:scale-125 transition-transform duration-150 p-1 text-sm leading-none" title="Thumbs Up">👍</button>
+<button class="hover:scale-125 transition-transform duration-150 p-1 text-sm leading-none" title="Love">❤️</button>
+<button class="hover:scale-125 transition-transform duration-150 p-1 text-sm leading-none" title="Rocket">🚀</button>
+<button class="hover:scale-125 transition-transform duration-150 p-1 text-sm leading-none" title="Clap">👏</button>
+</div>
+<div class="h-6 w-px bg-border mx-1"></div>
+<!-- Participants Roster Toggle -->
+<button class="relative group p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="View Participants">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+<span class="absolute -top-1 -right-1 bg-surface-container-highest border border-border text-[10px] font-mono font-medium px-1.5 py-0.2 rounded-full text-text-primary">6</span>
+<span class="sr-only">Participants List</span>
+</button>
+<!-- In-Call Chat Drawer Toggle -->
+<button class="relative group p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Open Meeting Chat">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<span class="absolute -top-1 -right-1 bg-primary-container text-white text-[10px] font-mono font-medium px-1.5 py-0.2 rounded-full shadow-sm">4</span>
+<span class="sr-only">Meeting Chat</span>
+</button>
+<!-- Add / Invite Teammate -->
+<button class="hidden md:flex p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Invite Teammates">
+<span class="material-symbols-outlined text-[20px]" data-icon="person_add">person_add</span>
+<span class="sr-only">Invite Teammate</span>
+</button>
+<!-- Media Settings -->
+<button class="p-2.5 sm:p-3 rounded-full bg-[#1E222A] hover:bg-[#282D37] text-text-primary border border-border/80 transition-colors duration-150 ease-out" title="Audio &amp; Video Settings">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="sr-only">Settings</span>
+</button>
+<!-- End / Leave Call Button -->
+<button class="p-3 sm:p-3.5 rounded-full bg-error hover:bg-[#DC2626] text-white shadow-md shadow-error/20 transition-all duration-150 ease-out flex items-center justify-center ml-1" title="Leave Meeting">
+<span class="material-symbols-outlined text-[22px]" data-icon="call_end">call_end</span>
+<span class="sr-only">Leave Call</span>
+</button>
+</nav>
+</div>
+<!-- Minimalist WebRTC Footer (Shared Component Integration) -->
+<footer class="bg-background border-t border-border w-full shrink-0 z-30">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-3 max-w-7xl mx-auto gap-2">
+<div class="font-small text-small text-text-secondary flex items-center gap-2">
+<span>© 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.</span>
+<span class="hidden md:inline-flex items-center gap-1 text-xs text-primary font-mono bg-surface px-1.5 py-0.5 rounded border border-border">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> DTLS-SRTP Active
+        </span>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out font-small text-small" href="#privacy">Privacy Policy</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out font-small text-small" href="#terms">Terms of Service</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out font-small text-small" href="#security">Security</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out font-small text-small flex items-center gap-1" href="#status">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          System Status
+        </a>
+</div>
+</div>
+</footer>
+<!-- Micro-Interactions Script -->
+<script>
+    // Keyboard shortcut handler for sleek productivity feeling
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'd') {
+        e.preventDefault();
+        console.log('Toggled mute audio state');
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        console.log('Toggled video feed state');
+      }
+    });
+  </script>
+</body></html>

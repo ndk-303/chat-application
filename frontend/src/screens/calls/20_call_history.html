@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Call History &amp; Log</title>
+<!-- Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config Token Mirroring -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#44474d",
+            "on-primary": "#003828",
+            "on-background": "#dce3f0",
+            "surface-container-lowest": "#080f17",
+            "success": "#10B981",
+            "surface-dim": "#0d141d",
+            "secondary-container": "#44474d",
+            "surface-container-high": "#232a34",
+            "on-surface-variant": "#bccac2",
+            "on-secondary-container": "#b3b5bc",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-tertiary-fixed-variant": "#45474a",
+            "error-container": "#93000a",
+            "surface-tint": "#5bdcb0",
+            "primary-fixed": "#7af9cc",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "tertiary-container": "#919296",
+            "on-secondary": "#2e3036",
+            "on-error": "#690005",
+            "on-primary-fixed-variant": "#00513c",
+            "error": "#EF4444",
+            "tertiary": "#c6c6ca",
+            "surface-container-low": "#151c25",
+            "primary-container": "#00a67e",
+            "on-primary-container": "#003224",
+            "inverse-on-surface": "#2a313b",
+            "background": "#0D0F12",
+            "surface": "#16191E",
+            "on-primary-fixed": "#002116",
+            "inverse-surface": "#dce3f0",
+            "on-surface": "#dce3f0",
+            "on-tertiary-fixed": "#1a1c1f",
+            "tertiary-fixed": "#e2e2e6",
+            "on-tertiary": "#2f3034",
+            "on-error-container": "#ffdad6",
+            "surface-container-highest": "#2e353f",
+            "text-primary": "#F3F4F6",
+            "surface-container": "#192029",
+            "border": "#23272F",
+            "on-secondary-fixed": "#191c21",
+            "on-tertiary-container": "#292b2e",
+            "inverse-primary": "#006c51",
+            "primary-fixed-dim": "#5bdcb0",
+            "surface-bright": "#333a44",
+            "secondary-fixed": "#e1e2e9",
+            "outline": "#86948c",
+            "primary": "#5bdcb0",
+            "secondary": "#c4c6cd",
+            "surface-variant": "#2e353f",
+            "outline-variant": "#3d4a43",
+            "text-secondary": "#9CA3AF"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "h2": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary antialiased selection:bg-primary-container selection:text-white min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden">
+<!-- ========================================================================= -->
+<!-- Top Header Component (Mapped from Shared Components: TopNavBar)           -->
+<!-- ========================================================================= -->
+<header class="w-full h-14 flex items-center justify-between px-space-md bg-surface border-b border-border sticky top-0 z-50">
+<!-- Left Cluster: Brand, Mesh Version, E2EE Badge -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm cursor-pointer select-none">
+<div class="w-8 h-8 rounded-xl bg-primary-container flex items-center justify-center text-white shadow-sm">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<span class="font-h2 text-h2 font-bold text-text-primary tracking-tight">Aether Chat</span>
+</div>
+<div class="h-4 w-[1px] bg-border hidden sm:block"></div>
+<div class="hidden sm:flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-text-secondary font-mono text-mono text-xs border border-border">
+          v2.4.1
+        </span>
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-xs text-text-secondary border border-border">
+<span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+<span class="font-small text-small text-xs">E2EE Mesh Active</span>
+</div>
+</div>
+</div>
+<!-- Center/Right Cluster: Global Search & Profile Tools -->
+<div class="flex items-center gap-space-md">
+<!-- Global Search Command Bar -->
+<div class="relative hidden md:flex items-center w-72 lg:w-96">
+<span class="material-symbols-outlined absolute left-3 text-text-secondary text-[1.15rem]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-12 py-1.5 bg-background border border-border rounded-xl text-text-primary placeholder:text-text-secondary font-small text-small focus:outline-none focus:ring-1 focus:ring-primary-container transition-colors duration-150" placeholder="Search conversations, calls or peers..." type="text"/>
+<kbd class="absolute right-2.5 px-1.5 py-0.5 rounded bg-surface-container-high border border-border text-[10px] font-mono text-text-secondary">⌘K</kbd>
+</div>
+<!-- Icon Actions -->
+<div class="flex items-center gap-1">
+<button class="p-2 rounded-xl text-text-secondary hover:bg-surface-container-high hover:text-text-primary transition-colors duration-150" title="Security Status">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="lock">lock</span>
+</button>
+<button class="p-2 rounded-xl text-text-secondary hover:bg-surface-container-high hover:text-text-primary transition-colors duration-150 relative" title="Notifications">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-container"></span>
+</button>
+<button class="p-2 rounded-xl text-text-secondary hover:bg-surface-container-high hover:text-text-primary transition-colors duration-150" title="Quick Settings">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="tune">tune</span>
+</button>
+</div>
+<div class="h-4 w-[1px] bg-border"></div>
+<!-- User Profile Pill -->
+<div class="flex items-center gap-space-sm pl-1 cursor-pointer">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary">
+            AR
+          </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-surface"></span>
+</div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="font-small text-small font-medium text-text-primary leading-none">Alex Rivera (You)</span>
+<span class="font-small text-small text-xs text-text-secondary">Online</span>
+</div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- App Body Layout: Sidebar Rail + Main Call Log + Inspection Panel          -->
+<!-- ========================================================================= -->
+<div class="flex-1 flex w-full">
+<!-- Left Vertical Navigation Rail (Shared Components: SideNavBar) -->
+<aside class="w-64 flex-shrink-0 flex flex-col justify-between p-space-sm bg-surface-dim border-r border-border hidden md:flex select-none">
+<div class="flex flex-col gap-space-sm">
+<!-- Primary Action CTA -->
+<button class="w-full flex items-center justify-center gap-space-xs py-2 px-space-md bg-primary-container hover:brightness-110 text-white rounded-xl font-small text-small font-semibold transition-all duration-150 ease-out active:scale-[0.98] shadow-sm">
+<span class="material-symbols-outlined text-[1.2rem]" data-icon="add_call">add_call</span>
+<span>New Call</span>
+</button>
+<!-- Navigation Stack -->
+<nav class="flex flex-col gap-1 mt-2">
+<!-- Messages -->
+<a class="flex items-center justify-between px-3 py-2 text-text-secondary hover:bg-surface-container hover:text-text-primary rounded-xl transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-small text-small">Messages</span>
+</div>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container-high text-xs font-mono text-text-primary">4</span>
+</a>
+<!-- Calls (Active Lock) -->
+<a class="flex items-center justify-between px-3 py-2 bg-surface-container-high text-primary font-medium rounded-xl transition-all duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[1.25rem] text-primary" data-icon="call">call</span>
+<span class="font-small text-small font-semibold text-text-primary">Calls</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</a>
+<!-- Direct Channels -->
+<a class="flex items-center justify-between px-3 py-2 text-text-secondary hover:bg-surface-container hover:text-text-primary rounded-xl transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="forum">forum</span>
+<span class="font-small text-small">Direct Channels</span>
+</div>
+</a>
+<!-- Recordings -->
+<a class="flex items-center justify-between px-3 py-2 text-text-secondary hover:bg-surface-container hover:text-text-primary rounded-xl transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="fiber_manual_record">fiber_manual_record</span>
+<span class="font-small text-small">Recordings</span>
+</div>
+<span class="text-xs font-mono text-text-secondary">7</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center justify-between px-3 py-2 text-text-secondary hover:bg-surface-container hover:text-text-primary rounded-xl transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="settings">settings</span>
+<span class="font-small text-small">Settings</span>
+</div>
+</a>
+</nav>
+</div>
+<!-- Rail Footer Section -->
+<div class="flex flex-col gap-2 pt-space-sm border-t border-border">
+<a class="flex items-center gap-3 px-3 py-1.5 text-text-secondary hover:text-text-primary font-small text-small transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[1.15rem]" data-icon="menu_book">menu_book</span>
+<span>Docs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-text-secondary hover:text-text-primary font-small text-small transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[1.15rem]" data-icon="help_outline">help_outline</span>
+<span>Help</span>
+</a>
+<!-- Hardware & Mesh Health Card -->
+<div class="p-2.5 rounded-xl bg-surface border border-border mt-2">
+<div class="flex items-center justify-between text-xs text-text-secondary mb-1.5">
+<span class="font-mono text-mono">WEBRTC P2P</span>
+<span class="text-success font-mono">OPTIMAL</span>
+</div>
+<div class="w-full bg-surface-container-high h-1 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-full"></div>
+</div>
+<div class="flex justify-between items-center mt-2 text-[11px] text-text-secondary font-mono">
+<span>NAT: Host Pair</span>
+<span>0% Loss</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas: Call History List -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-y-auto">
+<!-- Content Canvas Header -->
+<div class="p-space-lg pb-space-sm flex flex-col gap-space-md border-b border-border bg-surface-dim">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div>
+<h1 class="font-h2 text-h2 font-bold text-text-primary tracking-tight">Calls</h1>
+<p class="font-small text-small text-text-secondary mt-0.5">Recent peer-to-peer audio and video calls across verified nodes.</p>
+</div>
+<!-- Header Context Actions -->
+<div class="flex items-center gap-space-sm">
+<!-- Filter by Peer Search -->
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-text-secondary text-[1.1rem]" data-icon="search">search</span>
+<input class="w-full pl-9 pr-8 py-1.5 bg-background border border-border rounded-xl text-text-primary placeholder:text-text-secondary font-small text-small focus:ring-1 focus:ring-primary-container focus:outline-none transition-colors" placeholder="Filter call history..." type="text"/>
+<span class="absolute right-2.5 top-2 px-1 rounded bg-surface-container text-[10px] font-mono text-text-secondary border border-border">⌘F</span>
+</div>
+<!-- Start Call Primary Trigger -->
+<button class="flex items-center gap-1.5 px-3.5 py-1.5 bg-primary-container hover:brightness-110 text-white rounded-xl font-small text-small font-medium transition-all duration-150 shadow-sm whitespace-nowrap">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="add">add</span>
+<span>Start Call</span>
+</button>
+</div>
+</div>
+<!-- Filter Segment Bar -->
+<div class="flex items-center justify-between pt-2">
+<div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+<!-- Tab: All Calls -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border text-primary font-small text-small font-medium transition-colors">
+<span>All Calls</span>
+<span class="px-1.5 py-0.2 rounded-md bg-surface-container text-xs font-mono text-text-secondary">32</span>
+</button>
+<!-- Tab: Missed -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary font-small text-small transition-colors">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                Missed
+              </span>
+<span class="px-1.5 py-0.2 rounded-md bg-surface-container text-xs font-mono text-text-secondary">3</span>
+</button>
+<!-- Tab: Group Rooms -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary font-small text-small transition-colors">
+<span>Group Rooms</span>
+<span class="px-1.5 py-0.2 rounded-md bg-surface-container text-xs font-mono text-text-secondary">12</span>
+</button>
+<!-- Tab: Recordings / Notes -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary hover:bg-surface hover:text-text-primary font-small text-small transition-colors">
+<span>Recordings / Notes</span>
+<span class="px-1.5 py-0.2 rounded-md bg-surface-container text-xs font-mono text-text-secondary">7</span>
+</button>
+</div>
+<!-- Secondary Quick Utility -->
+<div class="hidden sm:flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-2.5 py-1 text-xs text-text-secondary hover:text-text-primary rounded-lg border border-border bg-surface hover:bg-surface-container transition-colors font-small">
+<span class="material-symbols-outlined text-[1rem]" data-icon="file_download">file_download</span>
+<span>Export Logs</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Call Rows Table / Stack -->
+<div class="p-space-lg flex flex-col gap-2">
+<!-- Row 1: Sarah Lin (SELECTED / INSPECTED) -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-primary-container/40 ring-1 ring-primary-container/20 cursor-pointer transition-all duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<!-- Outgoing Video Icon Badge -->
+<div class="w-10 h-10 rounded-xl bg-primary-container/10 border border-primary-container/20 flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="call_made">call_made</span>
+</div>
+<!-- Meta info -->
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">Sarah Lin</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-border text-[11px] text-text-secondary font-mono">P2P Mesh</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Core Protocol Sync</p>
+</div>
+</div>
+<!-- Mid Meta: Duration & Date -->
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-primary">48:32</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Today, 10:32 AM</span>
+<span class="text-[11px] text-success font-medium">Completed</span>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-primary-container/10 hover:bg-primary-container text-primary hover:text-white rounded-lg text-xs font-medium border border-primary-container/30 transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="videocam">videocam</span>
+<span class="hidden md:inline">Start Video</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 2: Elena Rostova -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<!-- Incoming Audio Icon Badge -->
+<div class="w-10 h-10 rounded-xl bg-surface-container border border-border flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="call_received">call_received</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">Elena Rostova</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Incoming Audio Call</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-primary">12:05</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Today, 8:15 AM</span>
+<span class="text-[11px] text-success font-medium">Completed</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="call">call</span>
+<span class="hidden md:inline">Call Back</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 3: Marcus Vance (Missed Audio) -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<!-- Missed Call Icon Badge -->
+<div class="w-10 h-10 rounded-xl bg-error/10 border border-error/20 flex items-center justify-center text-error flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="phone_missed">phone_missed</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">Marcus Vance</span>
+<span class="px-1.5 py-0.2 rounded bg-error/15 text-error text-[10px] font-medium border border-error/20">Missed</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Missed Audio Call</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-secondary">-</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Yesterday, 6:40 PM</span>
+<span class="text-[11px] text-error font-medium">Unanswered</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="call">call</span>
+<span class="hidden md:inline">Call Back</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 4: David Kim (Outgoing Video) -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container border border-border flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="videocam">videocam</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">David Kim</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Outgoing Video Call</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-primary">34:10</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Oct 10, 3:20 PM</span>
+<span class="text-[11px] text-success font-medium">Completed</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="videocam">videocam</span>
+<span class="hidden md:inline">Start Video</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 5: Chloe Bennett (Missed Video) -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-error/10 border border-error/20 flex items-center justify-center text-error flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="missed_video_call">missed_video_call</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">Chloe Bennett</span>
+<span class="px-1.5 py-0.2 rounded bg-error/15 text-error text-[10px] font-medium border border-error/20">Missed</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Missed Video Call</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-secondary">-</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Oct 9, 11:00 AM</span>
+<span class="text-[11px] text-error font-medium">Unanswered</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="call">call</span>
+<span class="hidden md:inline">Call Back</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 6: #node-mesh Guild (Group Call) -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container border border-border flex items-center justify-center text-text-primary flex-shrink-0 font-mono text-sm font-bold">
+              #
+            </div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">node-mesh Architecture Guild</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-text-secondary text-[11px] font-mono">8 peers</span>
+</div>
+<!-- Avatar Stack Preview -->
+<div class="flex items-center gap-1.5 mt-1">
+<div class="flex -space-x-1.5 overflow-hidden">
+<div class="inline-block h-4 w-4 rounded-full bg-surface-container-high ring-1 ring-surface text-[8px] flex items-center justify-center text-text-secondary">SL</div>
+<div class="inline-block h-4 w-4 rounded-full bg-surface-container-high ring-1 ring-surface text-[8px] flex items-center justify-center text-text-secondary">MV</div>
+<div class="inline-block h-4 w-4 rounded-full bg-surface-container-high ring-1 ring-surface text-[8px] flex items-center justify-center text-text-secondary">DK</div>
+</div>
+<span class="text-[11px] text-text-secondary">Group Video Room</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-primary">1h 14m</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Oct 8, 2:00 PM</span>
+<span class="text-[11px] text-text-secondary">Archived</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="meeting_room">meeting_room</span>
+<span class="hidden md:inline">Rejoin Room</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Row 7: Ben Chen & Core Protocol -->
+<div class="group flex items-center justify-between p-3.5 rounded-xl bg-surface border border-border hover:bg-[#1E222A] cursor-pointer transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container border border-border flex items-center justify-center text-text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="groups">groups</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary truncate">Ben Chen &amp; Core Protocol</span>
+</div>
+<p class="font-small text-small text-xs text-text-secondary truncate mt-0.5">Group Audio Huddle</p>
+</div>
+</div>
+<div class="flex items-center gap-6 text-right font-small text-small">
+<div class="hidden lg:flex flex-col items-end">
+<span class="font-mono text-mono text-xs text-text-primary">22:18</span>
+<span class="text-[11px] text-text-secondary">Duration</span>
+</div>
+<div class="hidden sm:flex flex-col items-end min-w-[100px]">
+<span class="text-xs text-text-primary">Oct 7, 4:15 PM</span>
+<span class="text-[11px] text-success font-medium">Completed</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-lg text-xs font-medium border border-border transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="call">call</span>
+<span class="hidden md:inline">Call Back</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- ========================================================================= -->
+<!-- Right Inspection Detail Panel (Selected Call: Sarah Lin)                 -->
+<!-- ========================================================================= -->
+<aside class="w-80 lg:w-96 flex-shrink-0 bg-surface-dim border-l border-border flex flex-col justify-between hidden xl:flex">
+<div class="p-space-lg flex flex-col gap-space-lg overflow-y-auto">
+<!-- Inspection Header -->
+<div class="flex items-center justify-between pb-2 border-b border-border">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[1.2rem]" data-icon="info">info</span>
+<span class="font-small text-small font-semibold text-text-primary">Call Summary</span>
+</div>
+<button class="p-1 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[1.15rem]" data-icon="close">close</span>
+</button>
+</div>
+<!-- Participant Profile Bento Card -->
+<div class="p-space-md rounded-xl bg-surface border border-border flex flex-col items-center text-center">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full bg-surface-container-high border-2 border-border flex items-center justify-center font-mono text-base font-bold text-text-primary shadow-sm">
+              SL
+            </div>
+<span class="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-success border-2 border-surface"></span>
+</div>
+<h2 class="font-h2 text-base font-bold text-text-primary">Sarah Lin</h2>
+<p class="font-small text-small text-xs text-text-secondary mt-0.5">Core Protocol Lead · @sarahlin</p>
+<div class="flex items-center gap-2 mt-4 w-full">
+<button class="flex-1 py-1.5 px-3 bg-primary-container hover:brightness-110 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+<span class="material-symbols-outlined text-[1rem]" data-icon="videocam">videocam</span>
+<span>Start Video</span>
+</button>
+<button class="py-1.5 px-3 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-xl text-xs font-medium border border-border transition-colors">
+<span class="material-symbols-outlined text-[1rem]" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="py-1.5 px-3 bg-surface-container hover:bg-surface-container-high text-text-primary rounded-xl text-xs font-medium border border-border transition-colors">
+<span class="material-symbols-outlined text-[1rem]" data-icon="call">call</span>
+</button>
+</div>
+</div>
+<!-- WebRTC Telemetry Stats Bento -->
+<div class="flex flex-col gap-space-sm">
+<span class="font-mono text-mono text-xs text-text-secondary uppercase tracking-wider">WebRTC Telemetry</span>
+<div class="p-space-md rounded-xl bg-surface border border-border flex flex-col gap-2.5">
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Duration</span>
+<span class="font-mono text-text-primary font-semibold">48m 32s</span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Connection Type</span>
+<span class="font-mono text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                Direct P2P Mesh (Zero Relay)
+              </span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Audio Codec</span>
+<span class="font-mono text-text-primary">Opus 48kHz (Fullband)</span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Video Codec</span>
+<span class="font-mono text-text-primary">AV1 · 1440p60</span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Packet Loss</span>
+<span class="font-mono text-success">0.01%</span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Avg Latency</span>
+<span class="font-mono text-text-primary">19ms</span>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center text-xs">
+<span class="text-text-secondary">Cipher Suite</span>
+<span class="font-mono text-text-secondary text-[11px]">DTLS-SRTP AES-GCM-256</span>
+</div>
+</div>
+</div>
+<!-- Shared Artifacts in Session -->
+<div class="flex flex-col gap-space-sm">
+<span class="font-mono text-mono text-xs text-text-secondary uppercase tracking-wider">Shared in Call</span>
+<div class="flex flex-col gap-2">
+<!-- Artifact 1 -->
+<div class="p-2.5 rounded-xl bg-surface border border-border flex items-center justify-between hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-primary-container text-[1.2rem]" data-icon="image">image</span>
+<div class="truncate">
+<p class="font-small text-small text-xs font-medium text-text-primary truncate">webrtc_topology_v2.png</p>
+<p class="font-mono text-[10px] text-text-secondary">2.4 MB · PNG</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="download">download</span>
+</button>
+</div>
+<!-- Artifact 2 -->
+<div class="p-2.5 rounded-xl bg-surface border border-border flex items-center justify-between hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-primary-container text-[1.2rem]" data-icon="description">description</span>
+<div class="truncate">
+<p class="font-small text-small text-xs font-medium text-text-primary truncate">rfc-9000-quic-spec.md</p>
+<p class="font-mono text-[10px] text-text-secondary">64 KB · Markdown</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-text-primary p-1">
+<span class="material-symbols-outlined text-[1rem]" data-icon="download">download</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Panel Footer Trigger -->
+<div class="p-space-md border-t border-border bg-surface">
+<button class="w-full py-2 px-space-md bg-surface-container hover:bg-surface-container-high text-text-primary border border-border rounded-xl font-small text-small font-medium flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[1.1rem]" data-icon="troubleshoot">troubleshoot</span>
+<span>Download Session Diagnostics</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- ========================================================================= -->
+<!-- Footer Bar: Security Credentials & Policy Links                           -->
+<!-- ========================================================================= -->
+<footer class="w-full py-2 px-space-md bg-surface-dim border-t border-border flex flex-col sm:flex-row items-center justify-between text-xs text-text-secondary gap-2 select-none">
+<div class="flex items-center gap-2 font-small text-small text-xs">
+<span>© 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.</span>
+<span class="hidden md:inline text-border">|</span>
+<span class="hidden md:flex items-center gap-1 text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+        DTLS-SRTP Active
+      </span>
+</div>
+<div class="flex items-center gap-4 font-small text-small text-xs">
+<a class="hover:text-text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-text-primary transition-colors" href="#">Security</a>
+<a class="hover:text-text-primary transition-colors" href="#">System Status</a>
+</div>
+</footer>
+</body></html>
