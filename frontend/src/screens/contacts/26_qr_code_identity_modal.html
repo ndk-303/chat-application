@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Peer Identity QR Code</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed-variant": "#44474d",
+            "surface-container-lowest": "#080f17",
+            "surface-container-high": "#232a34",
+            "surface-container": "#192029",
+            "on-tertiary-container": "#292b2e",
+            "on-error": "#690005",
+            "surface-dim": "#0d141d",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-secondary": "#2e3036",
+            "secondary": "#c4c6cd",
+            "error": "#EF4444",
+            "on-secondary-fixed": "#191c21",
+            "surface": "#16191E",
+            "primary": "#5bdcb0",
+            "outline-variant": "#3d4a43",
+            "on-surface": "#dce3f0",
+            "surface-tint": "#5bdcb0",
+            "primary-fixed": "#7af9cc",
+            "on-primary-container": "#003224",
+            "text-primary": "#F3F4F6",
+            "text-secondary": "#9CA3AF",
+            "tertiary-fixed": "#e2e2e6",
+            "on-error-container": "#ffdad6",
+            "success": "#10B981",
+            "on-secondary-container": "#b3b5bc",
+            "secondary-container": "#44474d",
+            "inverse-surface": "#dce3f0",
+            "on-tertiary": "#2f3034",
+            "inverse-on-surface": "#2a313b",
+            "surface-container-highest": "#2e353f",
+            "background": "#0D0F12",
+            "surface-variant": "#2e353f",
+            "secondary-fixed": "#e1e2e9",
+            "inverse-primary": "#006c51",
+            "secondary-fixed-dim": "#c4c6cd",
+            "tertiary": "#c6c6ca",
+            "on-primary-fixed": "#002116",
+            "surface-container-low": "#151c25",
+            "error-container": "#93000a",
+            "border": "#23272F",
+            "primary-container": "#00a67e",
+            "outline": "#86948c",
+            "on-primary": "#003828",
+            "surface-bright": "#333a44",
+            "on-tertiary-fixed": "#1a1c1f",
+            "tertiary-container": "#919296",
+            "on-primary-fixed-variant": "#00513c",
+            "on-background": "#dce3f0",
+            "on-surface-variant": "#bccac2",
+            "primary-fixed-dim": "#5bdcb0",
+            "tertiary-fixed-dim": "#c6c6ca"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin": "2rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"],
+            "h2": ["Inter"]
+          },
+          "fontSize": {
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary antialiased selection:bg-primary-container selection:text-text-primary min-h-screen relative overflow-hidden font-body-md text-body-md">
+<!-- ========================================================= -->
+<!-- BACKDROP LAYER: Dimmed Desktop Workspace Shell for Aether -->
+<!-- ========================================================= -->
+<div class="fixed inset-0 flex flex-col pointer-events-none select-none filter blur-[1px] opacity-75">
+<!-- TopNavBar from Shared Components JSON -->
+<header class="w-full h-16 px-6 flex items-center justify-between border-b border-border dark:border-border bg-surface dark:bg-surface sticky top-0 z-40">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-primary-container flex items-center justify-center text-background font-mono font-bold text-mono">
+            Æ
+          </div>
+<span class="font-h2 text-h2 font-semibold text-text-primary dark:text-text-primary tracking-tight">Aether</span>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-text-secondary dark:text-text-secondary font-body-md text-body-md hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150" href="#">Channels</a>
+<a class="text-primary dark:text-primary font-body-md text-body-md border-b-2 border-primary dark:border-primary pb-1" href="#">Peers</a>
+<a class="text-text-secondary dark:text-text-secondary font-body-md text-body-md hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 text-text-secondary">
+<button class="p-2 rounded-lg hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary transition-colors duration-150 transition-all ease-out active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary transition-colors duration-150 transition-all ease-out active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary transition-colors duration-150 transition-all ease-out active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</div>
+<div class="h-5 w-px bg-border mx-1"></div>
+<button class="bg-primary-container hover:bg-primary text-on-primary font-small text-small font-medium px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition-all duration-150 ease-out active:scale-95">
+<span class="material-symbols-outlined text-small" data-icon="add">add</span>
+<span>New Session</span>
+</button>
+<div class="relative ml-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border overflow-hidden flex items-center justify-center text-text-primary font-small text-small">
+            AR
+          </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+</div>
+</header>
+<!-- Workspace Body Simulation -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Workspace Left Sidebar (Channels / DMs) -->
+<aside class="w-72 bg-surface border-r border-border flex flex-col">
+<div class="p-4 border-b border-border flex items-center justify-between">
+<span class="font-small text-small font-semibold text-text-primary">Encrypted Mesh</span>
+<span class="font-mono text-small text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">4 peers online</span>
+</div>
+<div class="p-3 space-y-4">
+<div>
+<div class="text-text-secondary font-mono text-small px-3 py-1 uppercase tracking-wider">Rooms</div>
+<div class="space-y-0.5 mt-1">
+<div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-container text-text-primary font-small text-small">
+<span class="text-text-secondary font-mono">#</span>
+<span>core-engineering</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 rounded-lg text-text-secondary font-small text-small">
+<span class="text-text-secondary font-mono">#</span>
+<span>distributed-consensus</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 rounded-lg text-text-secondary font-small text-small">
+<span class="text-text-secondary font-mono">#</span>
+<span>p2p-webrtc</span>
+</div>
+</div>
+</div>
+<div>
+<div class="text-text-secondary font-mono text-small px-3 py-1 uppercase tracking-wider">Direct Mesh</div>
+<div class="space-y-0.5 mt-1">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary font-small text-small">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span>Elena Rostov (0x7f2...)</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary font-small text-small">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span>Marcus Vance (0xa81...)</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary font-small text-small">
+<span class="w-2 h-2 rounded-full bg-border"></span>
+<span>Sora Tanaka (offline)</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Area Backdrop -->
+<main class="flex-1 bg-background flex flex-col p-6">
+<div class="border-b border-border pb-4 flex items-center justify-between">
+<div>
+<h1 class="font-h2 text-h2 text-text-primary">#core-engineering</h1>
+<p class="font-small text-small text-text-secondary font-mono">Swarm Hash: 4b29c991807d8a64930</p>
+</div>
+</div>
+<div class="mt-6 space-y-6 max-w-3xl">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center font-small text-small text-text-primary">
+              ER
+            </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary">Elena Rostov</span>
+<span class="font-mono text-small text-text-secondary">14:28:02 UTC</span>
+</div>
+<p class="mt-1 font-body-md text-body-md text-text-secondary">
+                WebRTC ephemeral handshake completed for candidate node pool. Keys refreshed without centralized signaling discovery.
+              </p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center font-small text-small text-primary">
+              AR
+            </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-semibold text-text-primary">Alex Rivera</span>
+<span class="font-mono text-small text-text-secondary">14:29:10 UTC</span>
+</div>
+<p class="mt-1 font-body-md text-body-md text-text-secondary">
+                Identity payload anchored to Ed25519 signature card. Distributing peer link via out-of-band QR session.
+              </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- ========================================================= -->
+<!-- MODAL OVERLAY BACKDROP (Dimmed & Blurred Workspace)        -->
+<!-- ========================================================= -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+<!-- ========================================================= -->
+<!-- MODAL CONTAINER (Max 460px, Refined Modern SaaS Polish)  -->
+<!-- ========================================================= -->
+<div class="w-full max-w-[460px] bg-surface border border-border rounded-full rounded-[16px] shadow-2xl overflow-hidden flex flex-col transition-all duration-200 ease-out">
+<!-- 1. Modal Header -->
+<div class="px-6 pt-5 pb-4 flex items-start justify-between border-b border-border/80">
+<div>
+<h2 class="font-h2 text-h2 font-semibold text-text-primary tracking-tight">Peer Identity QR Code</h2>
+<p class="font-small text-small text-text-secondary mt-0.5">Share your contact card or scan a peer to connect</p>
+</div>
+<button aria-label="Close dialog" class="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-container transition-colors duration-150 flex items-center justify-center" type="button">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Body Content Container -->
+<div class="p-6 space-y-4">
+<!-- 2. Segmented Tabs -->
+<div class="bg-background p-1 rounded-xl border border-border flex gap-1">
+<!-- Active Tab: My QR Code -->
+<button class="flex-1 py-1.5 px-3 rounded-lg bg-surface text-text-primary font-small text-small font-medium shadow-sm text-center transition-all duration-150 flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-small text-primary" data-icon="qr_code_2">qr_code_2</span>
+<span>My QR Code</span>
+</button>
+<!-- Inactive Tab: Scan QR Code -->
+<button class="flex-1 py-1.5 px-3 rounded-lg text-text-secondary hover:text-text-primary font-small text-small text-center transition-colors duration-150 flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-small" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Scan QR Code</span>
+</button>
+</div>
+<!-- 3. 'My QR Code' Content Card -->
+<div class="space-y-3.5">
+<!-- Profile Badge Card -->
+<div class="bg-[#121417] border border-border rounded-xl p-3.5 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<!-- Avatar with emerald status dot -->
+<div class="relative w-12 h-12 rounded-xl overflow-hidden border border-border bg-surface-container-high shrink-0">
+<img alt="User avatar with emerald status indicator" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Ud9MjBtYbl2A8EmRd869bu3B-rStDqtu91Jng_ApMUAEfBN4WH9ySDSaLbSNCyiUtUartP52ocXFFEvLGCuv2OazEBEKdrQTLifESoiDJ4Vc_c1uh9wZLhebiwGL9AqIDltP0OHCZ-56VUx_aYErAGSvoJ5_dG046hXllfkvMW98dkoeLNo8UJm2DFKRPRLW5tg5hX1spt_4Ww-OiTKU9wqE7X3nh_937i1TQcHt-jiAXWGaHsi3Uacr1g"/>
+<span class="absolute bottom-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-[#121417]"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-small text-small font-semibold text-text-primary">Alex Rivera</span>
+</div>
+<span class="font-mono text-small text-text-secondary">@alexrivera</span>
+</div>
+</div>
+<!-- Ed25519 Verified Badge -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-success/10 border border-success/20 font-mono text-small text-success tracking-tight">
+<span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+<span>Ed25519 Verified</span>
+</div>
+</div>
+<!-- Central QR Code Container -->
+<div class="bg-background border border-border rounded-2xl p-5 mx-auto flex flex-col items-center justify-center relative group">
+<!-- QR Code Graphic with Emerald Position Finders & Clean Matrix -->
+<div class="relative p-3 bg-[#0D0F12] rounded-xl border border-border/70 flex items-center justify-center">
+<svg class="w-[180px] h-[180px]" fill="none" viewbox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+<!-- Outer glow-free background -->
+<rect fill="#0D0F12" height="160" rx="10" width="160"></rect>
+<!-- Top Left Position Detection Square (Primary Emerald #00A67E) -->
+<rect fill="#00A67E" fill-opacity="0.12" height="36" rx="4" stroke="#00A67E" stroke-width="3" width="36" x="14" y="14"></rect>
+<rect fill="#00A67E" height="18" rx="2" width="18" x="23" y="23"></rect>
+<!-- Top Right Position Detection Square (Primary Emerald #00A67E) -->
+<rect fill="#00A67E" fill-opacity="0.12" height="36" rx="4" stroke="#00A67E" stroke-width="3" width="36" x="110" y="14"></rect>
+<rect fill="#00A67E" height="18" rx="2" width="18" x="119" y="23"></rect>
+<!-- Bottom Left Position Detection Square (Primary Emerald #00A67E) -->
+<rect fill="#00A67E" fill-opacity="0.12" height="36" rx="4" stroke="#00A67E" stroke-width="3" width="36" x="14" y="110"></rect>
+<rect fill="#00A67E" height="18" rx="2" width="18" x="23" y="119"></rect>
+<!-- Detailed QR Data Matrix Pattern (Clean White & Slate Contrast) -->
+<g fill="#F3F4F6">
+<!-- Timing columns and rows -->
+<rect height="5" rx="1" width="5" x="56" y="20"></rect>
+<rect height="5" rx="1" width="5" x="67" y="20"></rect>
+<rect height="5" rx="1" width="5" x="78" y="20"></rect>
+<rect height="5" rx="1" width="5" x="89" y="20"></rect>
+<rect height="5" rx="1" width="5" x="98" y="20"></rect>
+<rect height="5" rx="1" width="5" x="56" y="31"></rect>
+<rect height="5" rx="1" width="5" x="78" y="31"></rect>
+<rect height="5" rx="1" width="5" x="98" y="31"></rect>
+<rect height="5" rx="1" width="5" x="56" y="42"></rect>
+<rect height="5" rx="1" width="5" x="67" y="42"></rect>
+<rect height="5" rx="1" width="5" x="89" y="42"></rect>
+<rect height="5" rx="1" width="5" x="20" y="56"></rect>
+<rect height="5" rx="1" width="5" x="31" y="56"></rect>
+<rect height="5" rx="1" width="5" x="42" y="56"></rect>
+<rect height="5" rx="1" width="5" x="56" y="56"></rect>
+<rect height="5" rx="1" width="5" x="67" y="56"></rect>
+<rect height="5" rx="1" width="5" x="78" y="56"></rect>
+<rect height="5" rx="1" width="5" x="89" y="56"></rect>
+<rect height="5" rx="1" width="5" x="98" y="56"></rect>
+<rect height="5" rx="1" width="5" x="110" y="56"></rect>
+<rect height="5" rx="1" width="5" x="121" y="56"></rect>
+<rect height="5" rx="1" width="5" x="132" y="56"></rect>
+<!-- Data islands -->
+<rect height="5" rx="1" width="5" x="20" y="67"></rect>
+<rect height="5" rx="1" width="5" x="42" y="67"></rect>
+<rect height="5" rx="1" width="5" x="89" y="67"></rect>
+<rect height="5" rx="1" width="5" x="110" y="67"></rect>
+<rect height="5" rx="1" width="5" x="132" y="67"></rect>
+<rect height="5" rx="1" width="5" x="20" y="78"></rect>
+<rect height="5" rx="1" width="5" x="31" y="78"></rect>
+<rect height="5" rx="1" width="5" x="42" y="78"></rect>
+<rect height="5" rx="1" width="5" x="110" y="78"></rect>
+<rect height="5" rx="1" width="5" x="121" y="78"></rect>
+<rect height="5" rx="1" width="5" x="132" y="78"></rect>
+<rect height="5" rx="1" width="5" x="20" y="89"></rect>
+<rect height="5" rx="1" width="5" x="42" y="89"></rect>
+<rect height="5" rx="1" width="5" x="56" y="89"></rect>
+<rect height="5" rx="1" width="5" x="67" y="89"></rect>
+<rect height="5" rx="1" width="5" x="98" y="89"></rect>
+<rect height="5" rx="1" width="5" x="121" y="89"></rect>
+<rect height="5" rx="1" width="5" x="20" y="98"></rect>
+<rect height="5" rx="1" width="5" x="31" y="98"></rect>
+<rect height="5" rx="1" width="5" x="56" y="98"></rect>
+<rect height="5" rx="1" width="5" x="78" y="98"></rect>
+<rect height="5" rx="1" width="5" x="89" y="98"></rect>
+<rect height="5" rx="1" width="5" x="98" y="98"></rect>
+<rect height="5" rx="1" width="5" x="132" y="98"></rect>
+<!-- Bottom Right quadrant data bits -->
+<rect height="5" rx="1" width="5" x="56" y="110"></rect>
+<rect height="5" rx="1" width="5" x="67" y="110"></rect>
+<rect height="5" rx="1" width="5" x="89" y="110"></rect>
+<rect height="5" rx="1" width="5" x="98" y="110"></rect>
+<rect height="5" rx="1" width="5" x="110" y="110"></rect>
+<rect height="5" rx="1" width="5" x="126" y="110"></rect>
+<rect height="5" rx="1" width="5" x="67" y="121"></rect>
+<rect height="5" rx="1" width="5" x="78" y="121"></rect>
+<rect height="5" rx="1" width="5" x="98" y="121"></rect>
+<rect height="5" rx="1" width="5" x="121" y="121"></rect>
+<rect height="5" rx="1" width="5" x="132" y="121"></rect>
+<rect height="5" rx="1" width="5" x="56" y="132"></rect>
+<rect height="5" rx="1" width="5" x="78" y="132"></rect>
+<rect height="5" rx="1" width="5" x="89" y="132"></rect>
+<rect height="5" rx="1" width="5" x="110" y="132"></rect>
+<rect height="5" rx="1" width="5" x="126" y="132"></rect>
+<rect height="5" rx="1" width="5" x="137" y="132"></rect>
+</g>
+<!-- Center Brand Pill Anchor -->
+<rect fill="#16191E" height="24" rx="6" stroke="#00A67E" stroke-width="1.5" width="24" x="68" y="68"></rect>
+<path d="M76 83L80 73L84 83H81.8L80 78.5L78.2 83H76Z" fill="#5BDCB0"></path>
+</svg>
+</div>
+<!-- Peer Connection URI box -->
+<div class="w-full mt-4 bg-surface border border-border px-3 py-2 rounded-lg flex items-center justify-between gap-2">
+<div class="flex items-center gap-2 overflow-hidden">
+<span class="material-symbols-outlined text-text-secondary text-small shrink-0" data-icon="link">link</span>
+<span class="font-mono text-small text-text-secondary truncate select-all" id="p2p-uri">aether.chat/p2p/alexrivera#e3b0c442</span>
+</div>
+<button class="p-1 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container transition-colors duration-150 shrink-0" id="copy-uri-btn" title="Copy URI" type="button">
+<span class="material-symbols-outlined text-small" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Privacy Assurance Note -->
+<div class="bg-surface/50 border border-border/60 p-3 rounded-lg flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-small shrink-0 mt-0.5" data-icon="shield">shield</span>
+<p class="font-small text-small text-text-secondary leading-relaxed">
+              Scanning securely exchanges WebRTC public keys without routing through central servers.
+            </p>
+</div>
+</div>
+<!-- 4. Footer Action Buttons -->
+<div class="flex items-center gap-3 pt-2">
+<!-- Copy Invitation Link Button -->
+<button class="flex-1 bg-[#1E222A] hover:bg-[#23272F] border border-border text-text-primary font-small text-small font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-small" data-icon="share">share</span>
+<span>Copy Invitation Link</span>
+</button>
+<!-- Save QR Image CTA Button -->
+<button class="flex-1 bg-primary-container hover:bg-[#008f6c] text-white font-small text-small font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all duration-150 active:scale-[0.99]" type="button">
+<span class="material-symbols-outlined text-small" data-icon="download">download</span>
+<span>Save QR Image</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+    // Micro-interaction for fast clipboard copy
+    const copyBtn = document.getElementById('copy-uri-btn');
+    const uriText = document.getElementById('p2p-uri');
+
+    if (copyBtn && uriText) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(uriText.textContent.trim()).then(() => {
+          const iconSpan = copyBtn.querySelector('.material-symbols-outlined');
+          if (iconSpan) {
+            const originalIcon = iconSpan.textContent;
+            iconSpan.textContent = 'check';
+            iconSpan.classList.add('text-success');
+            setTimeout(() => {
+              iconSpan.textContent = originalIcon;
+              iconSpan.classList.remove('text-success');
+            }, 1800);
+          }
+        }).catch(() => {});
+      });
+    }
+  </script>
+</body></html>

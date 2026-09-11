@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Chat - Edit Profile Modal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            canvas: '#0D0F12',
+            surface: '#16191E',
+            hover: '#1E222A',
+            border: '#23272F',
+            accent: '#00A67E',
+            'accent-hover': '#00B88C',
+            'text-primary': '#F3F4F6',
+            'text-secondary': '#9CA3AF',
+            success: '#10B981',
+            destructive: '#EF4444',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0D0F12;
+      color: #F3F4F6;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #374151;
+    }
+  </style>
+</head>
+<body class="relative min-h-screen bg-canvas overflow-x-hidden select-none">
+
+  <!-- Underlying Workspace UI (Subtle blurred background for realistic modal context) -->
+  <div class="fixed inset-0 pointer-events-none filter blur-sm opacity-25 flex flex-col">
+    <!-- Top Header Mockup -->
+    <header class="w-full h-16 border-b border-border bg-surface px-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">
+          <span class="material-symbols-outlined text-lg">graphic_eq</span>
+        </div>
+        <span class="font-bold text-text-primary tracking-tight text-lg">Aether Chat</span>
+        <span class="text-xs px-2 py-0.5 rounded bg-surface border border-border text-text-secondary font-mono">v2.4.1</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-text-secondary">
+        <span class="text-text-primary font-medium">Chats</span>
+        <span>Calls</span>
+        <span>Contacts</span>
+        <span class="text-accent">Settings</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-border"></div>
+      </div>
+    </header>
+
+    <!-- Content Workspace Mockup -->
+    <main class="flex-1 max-w-6xl mx-auto w-full py-10 px-6">
+      <div class="h-8 w-48 bg-border/60 rounded mb-4"></div>
+      <div class="h-4 w-96 bg-border/40 rounded mb-8"></div>
+      <div class="grid grid-cols-3 gap-6">
+        <div class="h-64 rounded-xl bg-surface border border-border"></div>
+        <div class="h-64 rounded-xl bg-surface border border-border col-span-2"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dimmed Modal Backdrop -->
+  <div class="fixed inset-0 bg-[#0D0F12]/80 backdrop-blur-[6px] z-40 flex items-center justify-center p-4 sm:p-6">
+    
+    <!-- Modal Dialog Card (560px max width) -->
+    <div class="relative w-full max-w-[560px] bg-surface rounded-2xl border border-border shadow-[0_12px_40px_rgba(0,0,0,0.6)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between px-6 pt-6 pb-4 border-b border-border/80">
+        <div>
+          <h2 class="text-xl font-semibold tracking-tight text-text-primary">Edit Profile</h2>
+          <p class="text-xs text-text-secondary mt-1">Update your public persona and discovery preferences</p>
+        </div>
+        <button type="button" class="text-text-secondary hover:text-text-primary p-1.5 rounded-lg hover:bg-hover transition-colors duration-150 flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-accent" aria-label="Close modal">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable form) -->
+      <div class="px-6 py-5 overflow-y-auto max-h-[calc(86vh-140px)] space-y-6 custom-scrollbar">
+        
+        <!-- 2. Avatar Section -->
+        <div class="flex items-center gap-5 p-4 rounded-xl bg-canvas/40 border border-border/60">
+          <div class="relative group cursor-pointer">
+            <img 
+              src="https://lh3.googleusercontent.com/aida/AEtjO1Ud9MjBtYbl2A8EmRd869bu3B-rStDqtu91Jng_ApMUAEfBN4WH9ySDSaLbSNCyiUtUartP52ocXFFEvLGCuv2OazEBEKdrQTLifESoiDJ4Vc_c1uh9wZLhebiwGL9AqIDltP0OHCZ-56VUx_aYErAGSvoJ5_dG046hXllfkvMW98dkoeLNo8UJm2DFKRPRLW5tg5hX1spt_4Ww-OiTKU9wqE7X3nh_937i1TQcHt-jiAXWGaHsi3Uacr1g" 
+              alt="Alex Rivera" 
+              class="w-20 h-20 rounded-full object-cover border-2 border-border group-hover:border-accent transition-colors duration-150"
+            />
+            <div class="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+              <span class="material-symbols-outlined text-white text-xl">photo_camera</span>
+              <span class="text-[10px] text-white/90 font-medium mt-0.5">Change</span>
+            </div>
+            <!-- Presence indicator badge -->
+            <span class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-success border-2 border-surface" title="Online"></span>
+          </div>
+
+          <div class="flex flex-col justify-center gap-2">
+            <div class="flex items-center gap-2.5">
+              <button type="button" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-text-primary bg-surface hover:bg-hover border border-border hover:border-text-secondary/40 transition-all duration-150 flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-sm text-text-secondary">upload</span>
+                Upload New Photo
+              </button>
+              <button type="button" class="px-2.5 py-1.5 rounded-lg text-xs font-medium text-destructive/90 hover:text-destructive hover:bg-destructive/10 transition-colors duration-150">
+                Remove
+              </button>
+            </div>
+            <p class="text-[11px] text-text-secondary leading-tight">Recommended: Square PNG or JPG, min 400×400px. Encrypted locally.</p>
+          </div>
+        </div>
+
+        <!-- 3. Form Inputs -->
+        <div class="space-y-4">
+          <!-- Display Name -->
+          <div>
+            <label class="block text-[11px] font-semibold tracking-wider text-text-secondary uppercase mb-1.5">
+              DISPLAY NAME
+            </label>
+            <input 
+              type="text" 
+              value="Alex Rivera" 
+              class="w-full px-3.5 py-2.5 rounded-lg bg-canvas text-text-primary text-sm border border-border focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-150 placeholder:text-text-secondary/50 font-sans"
+              placeholder="e.g. Alex Rivera"
+            />
+          </div>
+
+          <!-- Public Handle -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-text-secondary uppercase">
+                PUBLIC HANDLE
+              </label>
+              <span class="flex items-center gap-1 text-[11px] font-medium text-success">
+                <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                Available
+              </span>
+            </div>
+            <div class="relative flex items-center">
+              <span class="absolute left-3 text-text-secondary font-mono text-sm">@</span>
+              <input 
+                type="text" 
+                value="alexrivera" 
+                class="w-full pl-8 pr-24 py-2.5 rounded-lg bg-canvas text-text-primary text-sm font-mono border border-border focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-150"
+                placeholder="username"
+              />
+              <span class="absolute right-3 text-[11px] font-mono text-text-secondary bg-surface px-1.5 py-0.5 rounded border border-border/60">
+                p2p-mesh
+              </span>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold tracking-wider text-text-secondary uppercase">
+                BIO
+              </label>
+              <span class="text-[11px] font-mono text-text-secondary">88/160</span>
+            </div>
+            <textarea 
+              rows="3" 
+              class="w-full px-3.5 py-2.5 rounded-lg bg-canvas text-text-primary text-sm border border-border focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-150 resize-none font-sans leading-relaxed placeholder:text-text-secondary/50 custom-scrollbar"
+              placeholder="Tell peers what you work on..."
+            >Staff Infrastructure & WebRTC Systems Architect. Building peer-to-peer data channels.</textarea>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label class="block text-[11px] font-semibold tracking-wider text-text-secondary uppercase mb-1.5">
+              STATUS
+            </label>
+            <div class="relative flex items-center">
+              <span class="absolute left-3 text-base flex items-center justify-center select-none" role="img" aria-label="lightning bolt">⚡</span>
+              <input 
+                type="text" 
+                value="Benchmarking WebRTC mesh latency" 
+                class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-canvas text-text-primary text-sm border border-border focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-150 font-sans"
+                placeholder="What's your current focus?"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Privacy & Discoverability Section -->
+        <div class="pt-2">
+          <div class="pb-2 mb-3 border-b border-border/60">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-text-secondary">Privacy & Discoverability</h3>
+          </div>
+
+          <div class="space-y-3.5">
+            <!-- Toggle 1: Public Profile Discovery -->
+            <label class="flex items-center justify-between p-3 rounded-xl bg-canvas/30 border border-border/60 hover:border-border cursor-pointer transition-colors duration-150">
+              <div class="pr-4">
+                <span class="block text-sm font-medium text-text-primary">Public Profile Discovery</span>
+                <span class="block text-xs text-text-secondary mt-0.5 leading-snug">Allow peers to find you by handle or email address</span>
+              </div>
+              <input type="checkbox" checked class="sr-only peer" />
+              <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent flex-shrink-0"></div>
+            </label>
+
+            <!-- Toggle 2: Show Online Presence -->
+            <label class="flex items-center justify-between p-3 rounded-xl bg-canvas/30 border border-border/60 hover:border-border cursor-pointer transition-colors duration-150">
+              <div class="pr-4">
+                <span class="block text-sm font-medium text-text-primary">Show Online Presence</span>
+                <span class="block text-xs text-text-secondary mt-0.5 leading-snug">Display active status dot to your verified contacts</span>
+              </div>
+              <input type="checkbox" checked class="sr-only peer" />
+              <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent flex-shrink-0"></div>
+            </label>
+
+            <!-- Toggle 3: Send Read Receipts -->
+            <label class="flex items-center justify-between p-3 rounded-xl bg-canvas/30 border border-border/60 hover:border-border cursor-pointer transition-colors duration-150">
+              <div class="pr-4">
+                <span class="block text-sm font-medium text-text-primary">Send Read Receipts</span>
+                <span class="block text-xs text-text-secondary mt-0.5 leading-snug">Let peers know when you have decrypted and read messages</span>
+              </div>
+              <input type="checkbox" checked class="sr-only peer" />
+              <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent flex-shrink-0"></div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 5. Action Footer -->
+      <div class="px-6 py-4 bg-canvas/40 border-t border-border flex items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5 text-text-secondary text-xs">
+          <span class="material-symbols-outlined text-sm text-accent">verified_user</span>
+          <span class="font-mono text-[11px]">E2EE Key Signature Preserved</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <button type="button" class="px-4 py-2 text-xs font-medium text-text-secondary hover:text-text-primary rounded-lg hover:bg-hover transition-colors duration-150 focus:outline-none">
+            Cancel
+          </button>
+          <button type="button" class="px-5 py-2 text-xs font-semibold text-white bg-accent hover:bg-accent-hover active:scale-[0.99] rounded-lg transition-all duration-150 shadow-sm flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-surface">
+            <span>Save Changes</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Add Contact Modal</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim from Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#151c25",
+            "success": "#10B981",
+            "secondary-fixed": "#e1e2e9",
+            "on-primary-fixed": "#002116",
+            "surface-container-high": "#232a34",
+            "on-tertiary-container": "#292b2e",
+            "secondary": "#c4c6cd",
+            "surface-variant": "#2e353f",
+            "text-primary": "#F3F4F6",
+            "tertiary-fixed": "#e2e2e6",
+            "tertiary": "#c6c6ca",
+            "inverse-primary": "#006c51",
+            "on-secondary-fixed": "#191c21",
+            "primary-fixed": "#7af9cc",
+            "surface": "#16191E",
+            "surface-tint": "#5bdcb0",
+            "primary-fixed-dim": "#5bdcb0",
+            "error-container": "#93000a",
+            "tertiary-container": "#919296",
+            "on-tertiary": "#2f3034",
+            "on-secondary": "#2e3036",
+            "outline": "#86948c",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#dce3f0",
+            "on-tertiary-fixed": "#1a1c1f",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "secondary-fixed-dim": "#c4c6cd",
+            "surface-dim": "#0d141d",
+            "on-surface": "#dce3f0",
+            "surface-container-highest": "#2e353f",
+            "on-surface-variant": "#bccac2",
+            "on-background": "#dce3f0",
+            "text-secondary": "#9CA3AF",
+            "on-tertiary-fixed-variant": "#45474a",
+            "border": "#23272F",
+            "on-primary-fixed-variant": "#00513c",
+            "background": "#0D0F12",
+            "outline-variant": "#3d4a43",
+            "on-primary": "#003828",
+            "surface-container": "#192029",
+            "surface-container-lowest": "#080f17",
+            "on-secondary-container": "#b3b5bc",
+            "primary": "#5bdcb0",
+            "on-error": "#690005",
+            "on-primary-container": "#003224",
+            "surface-bright": "#333a44",
+            "primary-container": "#00a67e",
+            "secondary-container": "#44474d",
+            "on-secondary-fixed-variant": "#44474d",
+            "error": "#EF4444",
+            "inverse-on-surface": "#2a313b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "h2": ["Inter"],
+            "body-md": ["Inter"],
+            "small": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"]
+          },
+          "fontSize": {
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0D0F12;
+      color: #F3F4F6;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary antialiased h-screen w-screen overflow-hidden select-none">
+<!-- ========================================== -->
+<!-- BACKGROUND WORKSPACE (AETHER CHAT DESKTOP)  -->
+<!-- ========================================== -->
+<div class="absolute inset-0 flex flex-col h-full w-full pointer-events-none filter blur-[1px]">
+<!-- Shared Component: TopNavBar -->
+<header class="flex justify-between items-center w-full px-space-lg h-16 bg-surface border-b border-border z-40">
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-xl bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<span class="text-h2 font-h2 font-bold text-text-primary tracking-tight">Aether Chat</span>
+</div>
+<!-- Search bar on left -->
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" data-icon="search">search</span>
+<input class="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-1.5 text-small font-small text-text-secondary" disabled="" placeholder="Search direct peers, channels..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs text-text-secondary">
+<button class="p-2 rounded-xl hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined" data-icon="security">security</span></button>
+<button class="p-2 rounded-xl hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="p-2 rounded-xl hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined" data-icon="help">help</span></button>
+</div>
+<div class="h-6 w-px bg-border"></div>
+<button class="flex items-center gap-2 bg-surface-container-high border border-border text-text-primary px-space-md py-1.5 rounded-xl text-small font-small font-medium">
+<span class="material-symbols-outlined text-primary" data-icon="video_call">video_call</span>
+          Start Meeting
+        </button>
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-border flex items-center justify-center font-mono text-small text-text-primary">
+          EC
+        </div>
+</div>
+</header>
+<div class="flex flex-1 h-[calc(100vh-4rem)] overflow-hidden">
+<!-- Shared Component: SideNavBar -->
+<aside class="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 flex flex-col justify-between p-space-md bg-surface-container-lowest border-r border-border z-30">
+<div>
+<!-- Workspace Header -->
+<div class="flex items-center gap-3 px-space-sm py-2 mb-4 rounded-xl bg-surface-container border border-border/50">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-base" data-icon="shield">shield</span>
+</div>
+<div>
+<div class="text-small font-medium text-text-primary">Aether Network</div>
+<div class="text-[11px] text-text-secondary leading-none">Enterprise Encrypted</div>
+</div>
+</div>
+<button class="w-full mb-4 flex items-center justify-center gap-2 bg-primary-container text-on-primary py-2 px-3 rounded-xl font-medium text-small shadow-sm">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+            New Room
+          </button>
+<!-- Main Nav Links -->
+<nav class="space-y-1">
+<div class="flex items-center gap-space-sm bg-surface-container-high text-primary rounded-xl px-space-md py-space-sm font-medium border-l-2 border-primary">
+<span class="material-symbols-outlined" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="text-small font-small">Chats</span>
+</div>
+<div class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary rounded-xl px-space-md py-space-sm transition-colors duration-150">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+<span class="text-small font-small">Calls</span>
+</div>
+<div class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary rounded-xl px-space-md py-space-sm transition-colors duration-150">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="text-small font-small">Channels</span>
+</div>
+<div class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary rounded-xl px-space-md py-space-sm transition-colors duration-150">
+<span class="material-symbols-outlined" data-icon="fiber_manual_record">fiber_manual_record</span>
+<span class="text-small font-small">Recordings</span>
+</div>
+<div class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary rounded-xl px-space-md py-space-sm transition-colors duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-small font-small">Settings</span>
+</div>
+</nav>
+</div>
+<!-- Rail Footer -->
+<div class="space-y-1 border-t border-border pt-space-sm">
+<div class="flex items-center gap-space-sm text-text-secondary px-space-md py-space-sm text-small">
+<span class="material-symbols-outlined text-success" data-icon="lan">lan</span>
+<span>Network Status</span>
+</div>
+<div class="flex items-center gap-space-sm text-text-secondary px-space-md py-space-sm text-small">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Help</span>
+</div>
+</div>
+</aside>
+<!-- Main Chat Canvas (Blurred Workspace Underlay) -->
+<main class="ml-64 flex-1 flex bg-background">
+<!-- Sub-panel: Peer Directory -->
+<div class="w-80 border-r border-border p-space-md flex flex-col gap-3">
+<div class="flex justify-between items-center text-text-secondary text-xs uppercase tracking-wider font-semibold">
+<span>Direct Mesh Peers</span>
+<span class="bg-surface-container px-2 py-0.5 rounded text-[10px]">14 Active</span>
+</div>
+<div class="space-y-2">
+<div class="p-2.5 rounded-xl bg-surface border border-border flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs">SK</div>
+<div>
+<div class="text-xs font-medium text-text-primary">Sarah Koenig</div>
+<div class="text-[11px] text-text-secondary">Key: 9fa2...e411</div>
+</div>
+</div>
+<div class="p-2.5 rounded-xl bg-surface/50 border border-border/50 flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs">DL</div>
+<div>
+<div class="text-xs font-medium text-text-primary">Devon Lane</div>
+<div class="text-[11px] text-text-secondary">Active 2m ago</div>
+</div>
+</div>
+<div class="p-2.5 rounded-xl bg-surface/50 border border-border/50 flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs">AL</div>
+<div>
+<div class="text-xs font-medium text-text-primary">Arlene McCoy</div>
+<div class="text-[11px] text-text-secondary">P2P Synced</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Conversation Area Dummy -->
+<div class="flex-1 flex flex-col justify-between p-6 bg-surface-dim">
+<div class="flex items-center justify-between pb-4 border-b border-border">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono">TK</div>
+<div>
+<div class="text-small font-semibold">Taras Kulyk</div>
+<div class="text-xs text-success flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                  E2E Encrypted Session
+                </div>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center text-center opacity-40">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="lock">lock</span>
+<div class="text-small font-medium">Session initialized with ratcheted keys</div>
+</div>
+<div class="h-12 rounded-xl bg-surface border border-border flex items-center px-4 text-text-secondary text-small">
+            Type encrypted message...
+          </div>
+</div>
+</main>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- MODAL BACKDROP OVERLAY                     -->
+<!-- ========================================== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-[#0D0F12]/80 backdrop-blur-sm p-4">
+<!-- ========================================== -->
+<!-- CENTERED MODAL OVERLAY DIALOG              -->
+<!-- ========================================== -->
+<div class="w-full max-w-[520px] bg-[#16191E] border border-[#23272F] rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.6)] p-6 relative text-[#F3F4F6] transition-all duration-200">
+<!-- Dialog Header -->
+<div class="flex items-start justify-between">
+<div>
+<h2 class="font-h2 text-xl font-semibold text-[#F3F4F6] tracking-tight">Add New Peer / Contact</h2>
+<p class="font-small text-sm text-[#9CA3AF] mt-1">Connect securely using handle, public key, or QR code</p>
+</div>
+<button class="p-1.5 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#1E222A] rounded-lg transition-colors" title="Close modal">
+<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+</button>
+</div>
+<!-- Segmented Control Tabs -->
+<div class="bg-[#0D0F12] p-1 rounded-xl border border-[#23272F] flex gap-1 mt-6">
+<!-- Active Tab: Handle / Username -->
+<button class="flex-1 bg-[#1E222A] text-[#F3F4F6] font-medium text-xs py-2 px-3 rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="alternate_email">alternate_email</span>
+<span>Handle / Username</span>
+</button>
+<!-- Tab 2: Public Key Fingerprint -->
+<button class="flex-1 text-[#9CA3AF] hover:text-[#F3F4F6] text-xs py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="key">key</span>
+<span>Public Key Fingerprint</span>
+</button>
+<!-- Tab 3: Scan QR Code -->
+<button class="flex-1 text-[#9CA3AF] hover:text-[#F3F4F6] text-xs py-2 px-3 rounded-lg transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-sm" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Scan QR Code</span>
+</button>
+</div>
+<!-- Active Tab Content ("Handle / Username") -->
+<div class="mt-5">
+<label class="text-xs font-medium uppercase tracking-wider text-[#9CA3AF] mb-2 block" for="peer-handle">
+          Peer Address or Handle
+        </label>
+<!-- Input Container with Live Validation -->
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-[#9CA3AF] text-base select-none pointer-events-none" data-icon="alternate_email">alternate_email</span>
+<input class="w-full bg-[#0D0F12] border border-[#00A67E] ring-1 ring-[#00A67E]/30 rounded-xl pl-9 pr-36 py-3 text-sm font-mono text-[#F3F4F6] focus:outline-none placeholder-[#9CA3AF]/40 transition-all" id="peer-handle" placeholder="e.g. @username or p2p:addr" type="text" value="@marcusv"/>
+<!-- Live Validation Pill Badge -->
+<div class="absolute right-3 flex items-center gap-1.5 bg-[#00A67E]/10 border border-[#00A67E]/30 text-success text-xs px-2.5 py-1 rounded-full font-medium pointer-events-none select-none">
+<span class="material-symbols-outlined text-sm text-success" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Verified Peer</span>
+</div>
+</div>
+<!-- Resolved Peer Profile Card (Inset Box) -->
+<div class="bg-[#0D0F12] border border-[#23272F] rounded-xl p-4 mt-4 flex flex-col gap-3">
+<!-- Top Row -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<!-- Avatar with active online ring -->
+<div class="relative w-12 h-12 rounded-full bg-surface-container-high border border-[#23272F] flex items-center justify-center font-semibold text-base text-[#F3F4F6] tracking-tight">
+<span>MV</span>
+<span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-success rounded-full ring-2 ring-[#0D0F12]"></span>
+</div>
+<!-- User Details -->
+<div>
+<div class="font-semibold text-sm text-[#F3F4F6] flex items-center gap-1.5">
+                  Marcus Vance
+                </div>
+<div class="text-xs text-[#9CA3AF] mt-0.5 flex items-center gap-1 font-mono">
+<span>@marcusv</span>
+<span>·</span>
+<span class="font-sans text-[#9CA3AF]">Product Design Lead</span>
+</div>
+</div>
+</div>
+<!-- Verification Badge -->
+<div class="bg-[#00A67E]/10 text-primary-container border border-[#00A67E]/30 text-xs px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="verified_user">verified_user</span>
+<span>Verified Ed25519</span>
+</div>
+</div>
+<!-- Divider -->
+<div class="border-t border-[#23272F]/60"></div>
+<!-- Bottom Meta Row -->
+<div class="flex items-center justify-between text-xs text-[#9CA3AF]">
+<!-- Mutual Channels -->
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-[#9CA3AF]" data-icon="tag">tag</span>
+<span>2 mutual channels (<span class="text-text-primary">#core-protocol</span>, <span class="text-text-primary">#design</span>)</span>
+</div>
+<!-- Latency / Mesh Status -->
+<div class="font-mono text-xs text-[#9CA3AF] flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>
+<span>Direct P2P Mesh · 12ms</span>
+</div>
+</div>
+</div>
+<!-- Optional Custom Note Input -->
+<div class="mt-5">
+<div class="flex justify-between items-center mb-2">
+<label class="text-xs font-medium uppercase tracking-wider text-[#9CA3AF]" for="invitation-note">
+              Invitation Note (Optional)
+            </label>
+<span class="text-[11px] text-[#9CA3AF] font-mono">82/140</span>
+</div>
+<textarea class="w-full bg-[#0D0F12] border border-[#23272F] focus:border-[#00A67E] focus:ring-1 focus:ring-[#00A67E]/20 rounded-xl p-3 text-sm text-[#F3F4F6] placeholder-[#9CA3AF]/40 resize-none font-sans outline-none transition-colors leading-relaxed" id="invitation-note" placeholder="Hey Marcus, let's connect on Aether Chat..." rows="3">Hey Marcus, let's connect on Aether Chat to coordinate on the WebRTC data channel UI benchmarks.</textarea>
+</div>
+</div>
+<!-- Footer Action Buttons -->
+<div class="flex items-center justify-between mt-6 pt-4 border-t border-[#23272F]">
+<!-- Left Action: Show QR Card -->
+<button class="bg-transparent hover:bg-[#1E222A] text-[#9CA3AF] hover:text-[#F3F4F6] text-xs font-medium px-3 py-2 rounded-lg border border-[#23272F] transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="qr_code">qr_code</span>
+<span>Show my QR Card</span>
+</button>
+<!-- Right Action Group -->
+<div class="flex items-center gap-2.5">
+<button class="hover:bg-[#1E222A] text-[#9CA3AF] hover:text-[#F3F4F6] text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
+            Cancel
+          </button>
+<button class="bg-[#00A67E] hover:bg-[#00A67E]/90 active:scale-95 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="person_add">person_add</span>
+<span>Send Connection Request</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

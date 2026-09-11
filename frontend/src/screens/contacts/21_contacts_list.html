@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Contacts Directory</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "success": "#10B981",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "primary-container": "#00a67e",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-container": "#292b2e",
+            "on-tertiary-fixed-variant": "#45474a",
+            "outline-variant": "#3d4a43",
+            "tertiary-container": "#919296",
+            "text-primary": "#F3F4F6",
+            "tertiary-fixed": "#e2e2e6",
+            "on-secondary-container": "#b3b5bc",
+            "surface-container-lowest": "#080f17",
+            "surface-container-highest": "#2e353f",
+            "surface-container": "#192029",
+            "surface-container-low": "#151c25",
+            "on-secondary-fixed": "#191c21",
+            "on-secondary": "#2e3036",
+            "secondary-container": "#44474d",
+            "on-primary-fixed-variant": "#00513c",
+            "tertiary": "#c6c6ca",
+            "error": "#EF4444",
+            "surface": "#16191E",
+            "surface-tint": "#5bdcb0",
+            "on-background": "#dce3f0",
+            "outline": "#86948c",
+            "secondary-fixed": "#e1e2e9",
+            "inverse-on-surface": "#2a313b",
+            "on-tertiary": "#2f3034",
+            "text-secondary": "#9CA3AF",
+            "on-error": "#690005",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-primary": "#003828",
+            "secondary": "#c4c6cd",
+            "on-primary-container": "#003224",
+            "surface-dim": "#0d141d",
+            "primary-fixed": "#7af9cc",
+            "inverse-primary": "#006c51",
+            "primary-fixed-dim": "#5bdcb0",
+            "on-secondary-fixed-variant": "#44474d",
+            "border": "#23272F",
+            "surface-variant": "#2e353f",
+            "secondary-fixed-dim": "#c4c6cd",
+            "surface-container-high": "#232a34",
+            "on-primary-fixed": "#002116",
+            "error-container": "#93000a",
+            "on-surface": "#dce3f0",
+            "surface-bright": "#333a44",
+            "primary": "#5bdcb0",
+            "on-surface-variant": "#bccac2",
+            "background": "#0D0F12",
+            "inverse-surface": "#dce3f0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h2": ["Inter"],
+            "body-md": ["Inter"],
+            "h1": ["Inter"]
+          },
+          "fontSize": {
+            "small": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "mono": [
+              "0.875rem",
+              {
+                "fontWeight": "500"
+              }
+            ],
+            "h2": [
+              "1.5rem",
+              {
+                "lineHeight": "1.3",
+                "fontWeight": "600"
+              }
+            ],
+            "body-md": [
+              "1rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "h1": [
+              "2.25rem",
+              {
+                "lineHeight": "1.25",
+                "fontWeight": "700"
+              }
+            ]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Material icon helper */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1;
+    }
+    /* Clean scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0F12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2e353f;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary antialiased font-body-md text-body-md h-screen flex flex-col overflow-hidden selection:bg-primary-container selection:text-white">
+<!-- ================= TOP NAV BAR (Shared Component Anchor) ================= -->
+<header class="flex justify-between items-center w-full px-space-lg h-16 bg-surface dark:bg-surface border-b border-border dark:border-border z-40 shrink-0">
+<div class="flex items-center gap-space-lg flex-1">
+<!-- Brand & Version -->
+<div class="flex items-center gap-space-sm cursor-pointer select-none">
+<div class="w-8 h-8 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary font-mono text-small font-bold">
+          Æ
+        </div>
+<div class="flex items-center gap-2">
+<span class="text-h2 font-h2 font-bold text-text-primary dark:text-text-primary tracking-tight">Aether Chat</span>
+<span class="text-small font-mono text-text-secondary bg-surface-container-high px-1.5 py-0.5 rounded text-[11px] border border-border">v2.4.1</span>
+</div>
+</div>
+<!-- Network Mesh Status Badge -->
+<div class="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container border border-border">
+<span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+<span class="text-small font-mono text-[12px] text-text-secondary">E2EE Mesh Active</span>
+<span class="text-text-secondary text-[11px]">•</span>
+<span class="text-small font-mono text-[11px] text-primary">0ms p2p latency</span>
+</div>
+<!-- Global Search Bar (on_left per JSON) -->
+<div class="relative w-full max-w-md hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-lg" data-icon="search">search</span>
+<input class="w-full bg-background border border-border rounded-xl pl-9 pr-12 py-1.5 text-small font-small text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-150" placeholder="Search conversations, calls or peers..." type="text"/>
+<div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
+<kbd class="px-1.5 py-0.5 text-[11px] font-mono text-text-secondary bg-surface-container border border-border rounded">⌘K</kbd>
+</div>
+</div>
+</div>
+<!-- Trailing Actions Cluster -->
+<div class="flex items-center gap-space-md">
+<!-- Icon Actions from JSON: security, notifications, help -->
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150" title="Security &amp; Encryption Keys">
+<span class="material-symbols-outlined text-[20px]" data-icon="security">security</span>
+</button>
+<div class="relative">
+<button class="w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150" title="Notifications">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary ring-2 ring-surface"></span>
+</div>
+<button class="w-9 h-9 flex items-center justify-center rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150" title="Support &amp; Docs">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+</button>
+</div>
+<div class="h-5 w-px bg-border"></div>
+<!-- Primary Action CTA -->
+<button class="hidden sm:inline-flex items-center gap-1.5 bg-primary-container hover:bg-[#008f6c] text-white font-small text-small px-3.5 py-1.5 rounded-xl transition-all duration-150 shadow-sm active:scale-95 font-medium">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+<span>Start Meeting</span>
+</button>
+<!-- Profile Avatar -->
+<div class="flex items-center gap-2 pl-1 cursor-pointer group">
+<div class="relative">
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full object-cover border border-border group-hover:border-primary transition-colors" data-alt="Professional profile headshot of Alex Rivera, an engineering sync lead sitting in a serene modern home office in soft morning light, dressed in a sleek dark zip hoodie with dual monitors in the background, sharp composition, ultra realistic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcPiXneNGGySeeyzk9lHMe7HAQSKFfMZc0I9vKdKV9vKLqM5USWJz2W4rrGlnaHDkugb0BVW0gKZTqjhF-QsaFTpKiIAI-bvF6ZDEB-M5JmVm6Gx8fEZOlTvQhOwfq8duZYWM-TsZLQGly58WTXloCOPPvrB68QAAjiiijVmAmZ0cPEN0ShRJOcD3JAytuxY10M-tTOVveqKsm5OqwtaLV95a6hsxa1hPrQnJn5pDjn2-dtGzhid2mY5Bri51r4uTyVuty_o5_eRFc"/>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+<div class="hidden lg:block text-left leading-tight">
+<div class="text-small font-small font-medium text-text-primary group-hover:text-primary transition-colors">Alex Rivera</div>
+<div class="text-[11px] font-mono text-text-secondary">@alex_r</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= BODY CANVAS ================= -->
+<div class="flex-1 flex overflow-hidden">
+<!-- ================= LEFT NAVIGATION RAIL (SideNavBar Component Anchor) ================= -->
+<aside class="w-64 shrink-0 bg-surface-container-lowest dark:bg-surface-container-lowest border-r border-border dark:border-border flex flex-col justify-between p-space-md z-30 select-none">
+<!-- Top Group: Header & CTA -->
+<div class="flex flex-col gap-space-md">
+<!-- Organization Workspace Card -->
+<div class="flex items-center gap-2.5 px-2 py-1.5 rounded-xl bg-surface-container-low border border-border/80">
+<div class="w-7 h-7 rounded-lg bg-surface flex items-center justify-center text-primary border border-border">
+<span class="material-symbols-outlined text-base" data-icon="shield">shield</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-small font-small font-medium text-text-primary truncate">Aether Network</h4>
+<p class="text-[11px] font-mono text-text-secondary truncate">Enterprise Encrypted</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-sm" data-icon="unfold_more">unfold_more</span>
+</div>
+<!-- Rail Primary CTA Button -->
+<button class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-surface hover:bg-surface-container-high border border-border text-text-primary text-small font-small font-medium transition-all duration-150 hover:border-text-secondary/40 active:scale-98">
+<span class="material-symbols-outlined text-primary text-base" data-icon="add">add</span>
+<span>New Room</span>
+</button>
+<!-- Main Navigation Links from JSON (Chats, Calls, Channels, Recordings, Settings) + Directory Selection -->
+<nav class="flex flex-col gap-1">
+<!-- Chat -->
+<a class="flex items-center justify-between text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary hover:bg-surface-container rounded-xl px-space-md py-space-sm transition-colors duration-150" href="#">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+<span class="text-small font-small">Chats</span>
+</div>
+<span class="text-[11px] font-mono px-1.5 py-0.2 rounded bg-surface-container-high text-text-secondary border border-border">3</span>
+</a>
+<!-- Calls -->
+<a class="flex items-center gap-space-sm text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary hover:bg-surface-container rounded-xl px-space-md py-space-sm transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+<span class="text-small font-small">Calls</span>
+</a>
+<!-- Channels -->
+<a class="flex items-center gap-space-sm text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary hover:bg-surface-container rounded-xl px-space-md py-space-sm transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="forum">forum</span>
+<span class="text-small font-small">Channels</span>
+</a>
+<!-- Contacts (ACTIVE DESTINATION: style_active_navigation executed) -->
+<a class="flex items-center justify-between bg-surface-container-high dark:bg-surface-container-high text-primary dark:text-primary rounded-xl px-space-md py-space-sm font-medium border-l-2 border-primary dark:border-primary" href="#">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-lg fill-icon" data-icon="person">person</span>
+<span class="text-small font-small">Contacts</span>
+</div>
+<span class="text-[11px] font-mono px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/30">128</span>
+</a>
+<!-- Recordings -->
+<a class="flex items-center gap-space-sm text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary hover:bg-surface-container rounded-xl px-space-md py-space-sm transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="fiber_manual_record">fiber_manual_record</span>
+<span class="text-small font-small">Recordings</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-space-sm text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary hover:bg-surface-container rounded-xl px-space-md py-space-sm transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="settings">settings</span>
+<span class="text-small font-small">Settings</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Rail Footer Actions -->
+<div class="flex flex-col gap-3 pt-4 border-t border-border">
+<!-- P2P Mesh Quality status card -->
+<div class="p-2.5 rounded-xl bg-surface-container-low border border-border">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-[11px] font-mono text-text-secondary flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+              P2P Mesh Quality
+            </span>
+<span class="text-[11px] font-mono text-success font-semibold">99.8%</span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden">
+<div class="bg-success h-full w-[99.8%]"></div>
+</div>
+<div class="flex justify-between items-center mt-1.5 text-[10px] font-mono text-text-secondary">
+<span>Optimal, 0% Loss</span>
+<span>TLS 1.3 / SRTP</span>
+</div>
+</div>
+<!-- Footer Links from JSON -->
+<div class="flex flex-col gap-0.5">
+<a class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary hover:bg-surface-container rounded-lg px-2 py-1 text-small font-small text-[13px] transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="lan">lan</span>
+<span>Network Status</span>
+</a>
+<a class="flex items-center gap-space-sm text-text-secondary hover:text-text-primary hover:bg-surface-container rounded-lg px-2 py-1 text-small font-small text-[13px] transition-colors" href="#">
+<span class="material-symbols-outlined text-base" data-icon="help">help</span>
+<span>Help</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- ================= MAIN CONTENT: CONTACTS DIRECTORY ================= -->
+<main class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden">
+<!-- Directory View Header -->
+<div class="px-space-xl pt-6 pb-4 border-b border-border bg-background shrink-0">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<h1 class="text-h2 font-h2 font-bold text-text-primary tracking-tight">Contacts</h1>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono bg-surface-container text-text-secondary border border-border">
+                128 Total Peers
+              </span>
+</div>
+<p class="text-small font-small text-text-secondary mt-0.5">128 peers in your encrypted network directory</p>
+</div>
+<!-- Header CTAs -->
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-xl bg-surface hover:bg-surface-variant border border-border text-text-secondary hover:text-text-primary transition-colors duration-150" title="Export Directory Public Keys">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+</button>
+<button class="flex items-center gap-1.5 bg-primary-container hover:bg-[#008f6c] text-white font-small text-small px-3.5 py-2 rounded-xl transition-all duration-150 font-medium active:scale-95">
+<span class="material-symbols-outlined text-lg" data-icon="person_add">person_add</span>
+<span>+ Add Contact</span>
+</button>
+</div>
+</div>
+<!-- Filter Bar & Filter Pills -->
+<div class="mt-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+<!-- Filter Search -->
+<div class="relative w-full md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-base" data-icon="filter_list">filter_list</span>
+<input class="w-full bg-surface border border-border rounded-xl pl-9 pr-10 py-1.5 text-small font-small text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm" placeholder="Filter contacts..." type="text"/>
+<kbd class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-[10px] font-mono text-text-secondary bg-surface-container-high border border-border rounded">⌘F</kbd>
+</div>
+<!-- Pill Tabs -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0">
+<button class="px-3 py-1.5 rounded-xl bg-surface-container-high text-primary border border-primary/30 text-small font-small font-medium text-xs whitespace-nowrap">
+              All Contacts <span class="ml-1 opacity-70">128</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl hover:bg-surface text-text-secondary hover:text-text-primary text-small font-small text-xs whitespace-nowrap transition-colors">
+              Online <span class="ml-1 text-success">42</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl hover:bg-surface text-text-secondary hover:text-text-primary text-small font-small text-xs whitespace-nowrap transition-colors">
+              Favorites <span class="ml-1 opacity-70">12</span>
+</button>
+<button class="px-3 py-1.5 rounded-xl hover:bg-surface text-text-secondary hover:text-text-primary text-small font-small text-xs whitespace-nowrap transition-colors">
+              Workspaces <span class="ml-1 opacity-70">8</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Directory List & Alphabet Quick Jump -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Grouped Alphabetical Directory List -->
+<div class="flex-1 overflow-y-auto px-space-xl py-4 space-y-6">
+<!-- Section B -->
+<div class="space-y-2" id="letter-B">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-border flex items-center justify-center font-mono font-semibold text-xs text-text-secondary">B</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- Ben Chen Row -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-surface/50 hover:bg-surface-container border border-border/60 hover:border-border transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high border border-border flex items-center justify-center text-text-primary font-mono text-sm font-semibold">
+                    BC
+                  </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success ring-2 ring-background"></span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-semibold text-text-primary truncate">Ben Chen</span>
+<span class="text-xs font-mono text-text-secondary">@benchen</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container border border-border text-text-secondary">Distributed Mesh</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span class="text-success font-medium">Online</span>
+<span>•</span>
+<span class="font-mono text-[11px]">Last ping 12s ago</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Message">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Meeting">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section C -->
+<div class="space-y-2" id="letter-C">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-border flex items-center justify-center font-mono font-semibold text-xs text-text-secondary">C</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- Chloe Bennett Row -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-surface/50 hover:bg-surface-container border border-border/60 hover:border-border transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high border border-border flex items-center justify-center text-text-primary font-mono text-sm font-semibold">
+                    CB
+                  </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-text-secondary/60 ring-2 ring-background"></span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-semibold text-text-primary truncate">Chloe Bennett</span>
+<span class="text-xs font-mono text-text-secondary">@chloe_b</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container border border-border text-text-secondary">Frontend Systems</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span>Active 20m ago</span>
+<span>•</span>
+<span class="font-mono text-[11px]">London (GMT)</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Message">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Meeting">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section D -->
+<div class="space-y-2" id="letter-D">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-border flex items-center justify-center font-mono font-semibold text-xs text-text-secondary">D</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- David Kim Row -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-surface/50 hover:bg-surface-container border border-border/60 hover:border-border transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high border border-border flex items-center justify-center text-text-primary font-mono text-sm font-semibold">
+                    DK
+                  </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-amber-400 ring-2 ring-background"></span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-semibold text-text-primary truncate">David Kim</span>
+<span class="text-xs font-mono text-text-secondary">@davidkim</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container border border-border text-text-secondary">Security Engineer</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span class="text-amber-400 font-medium">In a call</span>
+<span>•</span>
+<span class="font-mono text-[11px]">Encrypted Session</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Message">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Meeting">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section L (Sarah Lin - ACTIVE SELECTED STATE) -->
+<div class="space-y-2" id="letter-L">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-primary/40 text-primary flex items-center justify-center font-mono font-semibold text-xs">L</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- Sarah Lin Card (Active Selected state matching provided visual tone) -->
+<div class="group relative flex items-center justify-between p-3.5 rounded-xl bg-surface-container-high border-2 border-primary shadow-sm transition-all duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<img alt="Sarah Lin Profile" class="w-11 h-11 rounded-xl object-cover border border-primary/50 ring-2 ring-primary/20" data-alt="Close up video call portrait of Sarah Lin, architect and core protocol lead, with friendly focused expression, seated at warm mahogany desk with architectural sketches, soft ambient lamp illumination, rich deep tones, photorealistic high definition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAoyNcUe-fGwSIX4cIaSHyj090D4NzH29tAz-Ol7Kr9IFnqgDfl49UpJe-Wo2Tbr2pk9GztQlHddVSMUZSX6_3K6_NEBjPyKiBPP3YVQ087thTI87OY2nLl517BDJRMtNu__RQV5Z-Tmq4Lo-RHkgdwSRNBuu-aRzbHPRcZuLppGcU7F2knnabkGKai12A97VEtNFGcor0LMZ9lKup1upSx6TS6nwUVgIy5LwnWXCmTziFyHhrbOA3xrJW5ylP_tB8SH3iEdvlAFAq"/>
+<span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-success ring-2 ring-surface-container-high flex items-center justify-center">
+<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-bold text-text-primary truncate">Sarah Lin</span>
+<span class="text-xs font-mono text-primary">@sarahlin</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-primary-container/20 border border-primary/40 text-primary font-medium">Core Protocol Lead</span>
+<span class="material-symbols-outlined text-amber-400 text-sm fill-icon" data-icon="star">star</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span class="text-success font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                      Online &amp; Available
+                    </span>
+<span>•</span>
+<span class="font-mono text-[11px] text-text-primary">E2EE Verified (DTLS-SRTP)</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Row -->
+<div class="flex items-center gap-1.5">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Chat">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-white text-xs font-medium flex items-center gap-1 hover:bg-[#008f6c] transition-colors" title="Start Meeting">
+<span class="material-symbols-outlined text-sm" data-icon="video_call">video_call</span>
+<span class="hidden md:inline">Call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Options">
+<span class="material-symbols-outlined text-lg" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section M -->
+<div class="space-y-2" id="letter-M">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-border flex items-center justify-center font-mono font-semibold text-xs text-text-secondary">M</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- Marcus Vance Row -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-surface/50 hover:bg-surface-container border border-border/60 hover:border-border transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high border border-border flex items-center justify-center text-text-primary font-mono text-sm font-semibold">
+                    MV
+                  </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-text-secondary/60 ring-2 ring-background"></span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-semibold text-text-primary truncate">Marcus Vance</span>
+<span class="text-xs font-mono text-text-secondary">@marcus_v</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container border border-border text-text-secondary">Infrastructure</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span>Last seen 2h ago</span>
+<span>•</span>
+<span class="font-mono text-[11px]">Mesh Relay node-04</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Message">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Meeting">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section V -->
+<div class="space-y-2" id="letter-V">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container border border-border flex items-center justify-center font-mono font-semibold text-xs text-text-secondary">V</span>
+<div class="h-px flex-1 bg-border/60"></div>
+</div>
+<!-- Victor Novak Row -->
+<div class="group flex items-center justify-between p-3 rounded-xl bg-surface/50 hover:bg-surface-container border border-border/60 hover:border-border transition-colors duration-150">
+<div class="flex items-center gap-3.5 min-w-0">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high border border-border flex items-center justify-center text-text-primary font-mono text-sm font-semibold">
+                    VN
+                  </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success ring-2 ring-background"></span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="text-small font-small font-semibold text-text-primary truncate">Victor Novak</span>
+<span class="text-xs font-mono text-text-secondary">@vnovak</span>
+<span class="hidden sm:inline-flex px-2 py-0.5 rounded text-[11px] font-mono bg-surface-container border border-border text-text-secondary">Cryptographer</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mt-0.5">
+<span class="text-success font-medium">Online</span>
+<span>•</span>
+<span class="font-mono text-[11px]">Signal Protocol Auditor</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Message">
+<span class="material-symbols-outlined text-lg" data-icon="chat">chat</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Voice Call">
+<span class="material-symbols-outlined text-lg" data-icon="call">call</span>
+</button>
+<button class="w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Meeting">
+<span class="material-symbols-outlined text-lg" data-icon="video_call">video_call</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Vertical Alphabet Quick Jump Rail -->
+<div class="w-7 shrink-0 flex flex-col items-center justify-center py-2 text-[10px] font-mono text-text-secondary/60 border-l border-border/40 select-none hidden sm:flex">
+<a class="hover:text-primary py-0.5" href="#letter-A">A</a>
+<a class="hover:text-primary font-bold text-text-secondary py-0.5" href="#letter-B">B</a>
+<a class="hover:text-primary font-bold text-text-secondary py-0.5" href="#letter-C">C</a>
+<a class="hover:text-primary font-bold text-text-secondary py-0.5" href="#letter-D">D</a>
+<a class="hover:text-primary py-0.5" href="#letter-E">E</a>
+<a class="hover:text-primary py-0.5" href="#letter-F">F</a>
+<a class="hover:text-primary py-0.5" href="#letter-G">G</a>
+<a class="hover:text-primary py-0.5" href="#letter-H">H</a>
+<a class="hover:text-primary py-0.5" href="#letter-I">I</a>
+<a class="hover:text-primary py-0.5" href="#letter-J">J</a>
+<a class="hover:text-primary py-0.5" href="#letter-K">K</a>
+<a class="text-primary font-bold py-0.5 scale-125" href="#letter-L">L</a>
+<a class="hover:text-primary font-bold text-text-secondary py-0.5" href="#letter-M">M</a>
+<a class="hover:text-primary py-0.5" href="#letter-N">N</a>
+<a class="hover:text-primary py-0.5" href="#letter-O">O</a>
+<a class="hover:text-primary py-0.5" href="#letter-P">P</a>
+<a class="hover:text-primary py-0.5" href="#letter-Q">Q</a>
+<a class="hover:text-primary py-0.5" href="#letter-R">R</a>
+<a class="hover:text-primary py-0.5" href="#letter-S">S</a>
+<a class="hover:text-primary py-0.5" href="#letter-T">T</a>
+<a class="hover:text-primary py-0.5" href="#letter-U">U</a>
+<a class="hover:text-primary font-bold text-text-secondary py-0.5" href="#letter-V">V</a>
+<a class="hover:text-primary py-0.5" href="#letter-W">W</a>
+<a class="hover:text-primary py-0.5" href="#letter-X">X</a>
+<a class="hover:text-primary py-0.5" href="#letter-Y">Y</a>
+<a class="hover:text-primary py-0.5" href="#letter-Z">Z</a>
+</div>
+</div>
+</main>
+<!-- ================= RIGHT DETAIL PANEL: SARAH LIN ================= -->
+<aside class="w-96 shrink-0 bg-surface border-l border-border flex flex-col justify-between overflow-y-auto hidden lg:flex">
+<div class="p-space-lg space-y-6">
+<!-- Panel Top Nav -->
+<div class="flex items-center justify-between pb-3 border-b border-border">
+<div class="flex items-center gap-2">
+<span class="text-xs font-mono uppercase tracking-wider text-text-secondary">Contact Profile</span>
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors" title="Expand View">
+<span class="material-symbols-outlined text-base" data-icon="open_in_full">open_in_full</span>
+</button>
+<button class="w-7 h-7 rounded-lg flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors" title="Close Panel">
+<span class="material-symbols-outlined text-base" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Identity Header -->
+<div class="flex flex-col items-center text-center">
+<div class="relative mb-3">
+<img alt="Sarah Lin Detail" class="w-24 h-24 rounded-2xl object-cover border-2 border-border shadow-md" data-alt="Editorial portrait of Sarah Lin in a dimly lit high performance home workspace, black sweater, golden necklace, warm architectural render art in background, high contrast, clean minimalist styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhKkdnvGUkVfKHIDSPRP-1bFScqEVqlK92f9MEASMn2v-uj7YekjkRQ4jPgQmMgHboa04LC2KWqJHVa_33xI-SDjw4sTMyZDdUrW3QBkYCG2myuQgGQIXGujaas1uH0c7yqkVyfCZE7pkHCadsi2JV3RotIxeF8F0t0bnTbAcQy05izxZk4V5emTYq2rNzjB2ijn5RVepMSC88WEZa0y9OYuoFZVOb3q-XGssGQlTzNdNijU-jfXZBrXhy7tGba7ENXzN0KbSQz3h5"/>
+<span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-success ring-4 ring-surface flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-white"></span>
+</span>
+</div>
+<div class="flex items-center gap-1.5">
+<h2 class="text-h2 font-h2 font-bold text-text-primary text-xl">Sarah Lin</h2>
+<button class="text-amber-400 hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-lg fill-icon" data-icon="star">star</span>
+</button>
+</div>
+<p class="text-small font-mono text-text-secondary">@sarahlin</p>
+<div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high border border-border text-xs font-mono text-primary font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+<span>Core Protocol Lead</span>
+</div>
+</div>
+<!-- Direct Action Buttons Bento -->
+<div class="grid grid-cols-3 gap-2">
+<button class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-primary-container hover:bg-[#008f6c] text-white transition-colors duration-150 active:scale-95 shadow-sm group">
+<span class="material-symbols-outlined text-xl mb-1 group-hover:scale-105 transition-transform" data-icon="video_call">video_call</span>
+<span class="text-xs font-medium font-small">Start Video</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-border text-text-primary transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-xl mb-1 text-text-secondary" data-icon="call">call</span>
+<span class="text-xs font-medium font-small">Audio Call</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-border text-text-primary transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-xl mb-1 text-text-secondary" data-icon="chat">chat</span>
+<span class="text-xs font-medium font-small">Message</span>
+</button>
+</div>
+<!-- Section: Cryptographic Identity -->
+<div class="space-y-2.5 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-mono text-text-secondary uppercase tracking-wider">Cryptographic Identity</h3>
+<span class="flex items-center gap-1 text-[11px] font-mono text-success">
+<span class="material-symbols-outlined text-xs" data-icon="verified_user">verified_user</span>
+              Verified
+            </span>
+</div>
+<div class="p-3 rounded-xl bg-background border border-border space-y-2">
+<div class="flex items-center justify-between text-xs font-mono text-text-secondary">
+<span>Peer Fingerprint</span>
+<button class="text-text-secondary hover:text-primary transition-colors" title="Copy fingerprint">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<p class="font-mono text-xs text-text-primary break-all bg-surface-container p-1.5 rounded border border-border/80">
+              SHA256: 7f8a:9b2c:410e:dd71:bb90:3ef4:b4c2:190a
+            </p>
+<div class="flex items-center justify-between pt-1 text-[11px] font-mono text-text-secondary">
+<span>Key Exchange: Curve25519</span>
+<span class="text-primary">Verified P2P Session</span>
+</div>
+</div>
+</div>
+<!-- Section: Mutual Channels -->
+<div class="space-y-2 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-mono text-text-secondary uppercase tracking-wider">Mutual Channels</h3>
+<span class="text-xs font-mono text-text-secondary">3 active</span>
+</div>
+<div class="space-y-1.5">
+<a class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 hover:bg-surface-container border border-border text-xs transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="text-text-secondary font-mono">#</span>
+<span class="font-medium text-text-primary">core-protocol</span>
+</div>
+<span class="text-[11px] font-mono text-text-secondary">18 peers</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 hover:bg-surface-container border border-border text-xs transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="text-text-secondary font-mono">#</span>
+<span class="font-medium text-text-primary">mobile-client</span>
+</div>
+<span class="text-[11px] font-mono text-text-secondary">9 peers</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 hover:bg-surface-container border border-border text-xs transition-colors" href="#">
+<div class="flex items-center gap-2">
+<span class="text-text-secondary font-mono">#</span>
+<span class="font-medium text-text-primary">mesh-architecture</span>
+</div>
+<span class="text-[11px] font-mono text-text-secondary">12 peers</span>
+</a>
+</div>
+</div>
+<!-- Section: Shared Encrypted Files -->
+<div class="space-y-2 pt-2">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-mono text-text-secondary uppercase tracking-wider">Shared Encrypted Files</h3>
+<span class="text-xs font-mono text-text-secondary">2 files</span>
+</div>
+<div class="space-y-1.5">
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 border border-border text-xs">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-base text-primary" data-icon="image">image</span>
+<div class="truncate">
+<p class="font-mono text-text-primary truncate">webrtc_topology_v2.png</p>
+<p class="text-[10px] text-text-secondary font-mono">2.4 MB • 4h ago</p>
+</div>
+</div>
+<button class="p-1 rounded hover:bg-surface text-text-secondary hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container/60 border border-border text-xs">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-base text-primary" data-icon="description">description</span>
+<div class="truncate">
+<p class="font-mono text-text-primary truncate">rfc-9000-quic-spec.md</p>
+<p class="text-[10px] text-text-secondary font-mono">64 KB • Yesterday</p>
+</div>
+</div>
+<button class="p-1 rounded hover:bg-surface text-text-secondary hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Panel Actions -->
+<div class="p-space-md border-t border-border bg-surface-container-low space-y-2">
+<button class="w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-surface text-text-secondary hover:text-text-primary text-xs transition-colors">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="notifications_off">notifications_off</span>
+<span>Mute Notifications</span>
+</span>
+<span class="text-text-secondary font-mono text-[10px]">Off</span>
+</button>
+<button class="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl hover:bg-error/10 text-error border border-transparent hover:border-error/20 text-xs font-medium transition-colors">
+<span class="material-symbols-outlined text-base" data-icon="person_remove">person_remove</span>
+<span>Remove Contact</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- ================= BOTTOM FOOTER SYSTEM STATUS ================= -->
+<footer class="h-9 px-space-lg bg-surface border-t border-border flex items-center justify-between text-[11px] font-mono text-text-secondary shrink-0 select-none z-40">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-text-primary">DTLS-SRTP Active</span>
+</div>
+<span class="hidden md:inline text-border">|</span>
+<span class="hidden md:inline">Decentralized Mesh: 14 Nodes Connected</span>
+<span class="hidden md:inline text-border">|</span>
+<span class="hidden lg:inline text-text-secondary">Noise Protocol Framework: XX-pattern</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="hover:text-text-primary transition-colors" href="#">Privacy</a>
+<span>•</span>
+<a class="hover:text-text-primary transition-colors" href="#">Terms</a>
+<span>•</span>
+<a class="hover:text-text-primary transition-colors" href="#">Security Audit</a>
+<span>•</span>
+<span class="text-text-secondary/70">© 2025 Aether Protocol</span>
+</div>
+</footer>
+<!-- Micro-Interactions Script -->
+<script>
+    // Smooth filter pill toggles
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // Simple subtle active feedback
+        if (this.innerText.includes('Start Video') || this.innerText.includes('Start Meeting')) {
+          console.log('Initiating E2EE WebRTC peer connection...');
+        }
+      });
+    });
+
+    // Keyboard shortcut handler for search focus
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"]');
+        if (searchInput) searchInput.focus();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault();
+        const filterInput = document.querySelector('input[placeholder*="Filter"]');
+        if (filterInput) filterInput.focus();
+      }
+    });
+  </script>
+</body></html>
