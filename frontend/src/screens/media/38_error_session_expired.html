@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat — Session Expired</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-container": "#919296",
+            "primary": "#5bdcb0",
+            "surface-container-highest": "#2e353f",
+            "on-primary-fixed-variant": "#00513c",
+            "surface-variant": "#2e353f",
+            "primary-fixed": "#7af9cc",
+            "tertiary": "#c6c6ca",
+            "surface-dim": "#0d141d",
+            "on-tertiary-fixed": "#1a1c1f",
+            "inverse-surface": "#dce3f0",
+            "surface": "#16191E",
+            "background": "#0D0F12",
+            "surface-container": "#192029",
+            "surface-container-low": "#151c25",
+            "surface-tint": "#5bdcb0",
+            "surface-bright": "#333a44",
+            "text-secondary": "#9CA3AF",
+            "surface-container-high": "#232a34",
+            "on-error-container": "#ffdad6",
+            "outline": "#86948c",
+            "secondary-container": "#44474d",
+            "on-tertiary": "#2f3034",
+            "on-primary-fixed": "#002116",
+            "on-background": "#dce3f0",
+            "inverse-primary": "#006c51",
+            "on-primary-container": "#003224",
+            "success": "#10B981",
+            "on-surface-variant": "#bccac2",
+            "error": "#EF4444",
+            "tertiary-fixed": "#e2e2e6",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "on-secondary-fixed-variant": "#44474d",
+            "secondary": "#c4c6cd",
+            "error-container": "#93000a",
+            "text-primary": "#F3F4F6",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-tertiary-container": "#292b2e",
+            "on-surface": "#dce3f0",
+            "primary-fixed-dim": "#5bdcb0",
+            "surface-container-lowest": "#080f17",
+            "on-secondary": "#2e3036",
+            "on-secondary-container": "#b3b5bc",
+            "border": "#23272F",
+            "outline-variant": "#3d4a43",
+            "secondary-fixed": "#e1e2e9",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-error": "#690005",
+            "on-primary": "#003828",
+            "on-secondary-fixed": "#191c21",
+            "inverse-on-surface": "#2a313b",
+            "primary-container": "#00a67e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "small": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h2": ["Inter"],
+            "h1": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-white">
+<!-- Top App Navigation Bar (Shared Anchor Component) -->
+<header class="bg-background dark:bg-background border-b border-border dark:border-border w-full">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="font-h2 text-h2 text-text-primary dark:text-text-primary font-bold tracking-tight">Aether Chat</span>
+</div>
+<span class="bg-[#1E222A] text-text-secondary text-xs px-2 py-0.5 rounded-full border border-border font-mono tracking-tight">v2.4.1</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low border border-border text-xs font-mono text-text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span>E2EE Mesh</span>
+</div>
+<div class="flex items-center gap-2 text-text-secondary">
+<button aria-label="Help" class="p-2 rounded-lg hover:text-text-primary hover:bg-surface-container transition-colors duration-150 ease-out" title="Help &amp; Support">
+<span class="material-symbols-outlined text-xl" data-icon="help_outline">help_outline</span>
+</button>
+<button aria-label="Dark Mode" class="p-2 rounded-lg hover:text-text-primary hover:bg-surface-container transition-colors duration-150 ease-out" title="Toggle Theme">
+<span class="material-symbols-outlined text-xl" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas / Error Session Container -->
+<main class="flex-1 flex items-center justify-center px-6 py-12">
+<div class="max-w-md w-full bg-surface border border-border rounded-xl p-8 shadow-2xl text-center flex flex-col items-center relative overflow-hidden">
+<!-- Subtle top status ambient glow -->
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-20 bg-error/10 blur-2xl rounded-full pointer-events-none"></div>
+<!-- Expired Graphic / Lockout Badge -->
+<div class="w-16 h-16 rounded-xl bg-error/10 border border-error/20 flex items-center justify-center mb-6 text-error shadow-inner">
+<span class="material-symbols-outlined text-3xl" data-icon="lock_clock">lock_clock</span>
+</div>
+<!-- Headings & Diagnostic Context -->
+<h1 class="font-h2 text-h2 text-text-primary font-bold tracking-tight mb-2">
+        Session Expired or Terminated
+      </h1>
+<p class="font-small text-small text-text-secondary leading-relaxed mb-6">
+        Your cryptographic session ratchets have expired or this device was revoked remotely from another active terminal.
+      </p>
+<!-- Diagnostic Telemetry Callout -->
+<div class="w-full bg-[#101216] border border-border rounded-lg p-4 text-left mb-6 space-y-2.5 font-mono text-xs">
+<div class="flex items-center justify-between border-b border-border/60 pb-2">
+<span class="tracking-wider text-[10px] text-text-secondary uppercase font-semibold">Telemetry Diagnostic</span>
+<span class="flex items-center gap-1.5 text-[10px] text-error font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+            REVOKED
+          </span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="text-text-secondary">Error Code:</span>
+<span class="text-error font-medium">ERR_RATENET_SESSION_REVOKED_401</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-text-secondary">Session ID:</span>
+<span class="text-text-primary">sess_99a8..4f21</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-text-secondary">Local Cache:</span>
+<span class="text-success flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="lock">lock</span>
+            Securely encrypted in enclave
+          </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-text-secondary">Terminated at:</span>
+<span class="text-text-secondary">14:38:02 UTC (via remote signal)</span>
+</div>
+</div>
+<!-- Action Controls -->
+<div class="w-full space-y-3">
+<button class="bg-primary-container hover:brightness-110 text-white font-semibold py-3 px-4 rounded-xl w-full flex items-center justify-center gap-2 text-sm shadow-md transition-colors duration-150 ease-out active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
+<span class="material-symbols-outlined text-base" data-icon="fingerprint">fingerprint</span>
+<span>Re-authenticate with Passkey</span>
+</button>
+<button class="bg-[#1E222A]/60 hover:bg-[#1E222A] border border-border text-text-primary font-medium py-3 px-4 rounded-xl w-full flex items-center justify-center gap-2 text-sm transition-colors duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-border">
+<span class="material-symbols-outlined text-base text-text-secondary" data-icon="key">key</span>
+<span>Log in with Recovery Phrase</span>
+</button>
+</div>
+<!-- Ghost / Ancillary Link -->
+<a class="font-small text-small text-xs text-text-secondary hover:text-text-primary mt-5 transition-colors duration-150 ease-out inline-flex items-center gap-1" href="#">
+<span>Switch or Disconnect Node</span>
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+</a>
+</div>
+</main>
+<!-- Footer (Shared Anchor Component) -->
+<footer class="bg-background dark:bg-background border-t border-border dark:border-border w-full">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-6 max-w-7xl mx-auto gap-4">
+<p class="font-small text-small text-text-secondary dark:text-text-secondary">
+        © 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.
+      </p>
+<div class="flex flex-wrap items-center gap-6 font-small text-small">
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Privacy Policy</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Terms of Service</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Security</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>

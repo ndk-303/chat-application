@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Network Reconnecting &amp; ICE Fallback Offline State</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "success": "#10B981",
+            "text-secondary": "#9CA3AF",
+            "surface-container": "#192029",
+            "surface-bright": "#333a44",
+            "primary-container": "#00a67e",
+            "tertiary-container": "#919296",
+            "outline-variant": "#3d4a43",
+            "secondary-container": "#44474d",
+            "on-secondary-fixed": "#191c21",
+            "primary": "#5bdcb0",
+            "on-tertiary": "#2f3034",
+            "inverse-surface": "#dce3f0",
+            "on-primary": "#003828",
+            "on-error-container": "#ffdad6",
+            "tertiary-fixed": "#e2e2e6",
+            "on-primary-fixed-variant": "#00513c",
+            "on-background": "#dce3f0",
+            "surface-container-high": "#232a34",
+            "surface-variant": "#2e353f",
+            "error": "#EF4444",
+            "inverse-primary": "#006c51",
+            "surface-tint": "#5bdcb0",
+            "on-secondary-container": "#b3b5bc",
+            "on-primary-container": "#003224",
+            "surface-container-highest": "#2e353f",
+            "inverse-on-surface": "#2a313b",
+            "error-container": "#93000a",
+            "border": "#23272F",
+            "on-surface-variant": "#bccac2",
+            "primary-fixed": "#7af9cc",
+            "on-error": "#690005",
+            "secondary": "#c4c6cd",
+            "background": "#0D0F12",
+            "on-primary-fixed": "#002116",
+            "on-secondary-fixed-variant": "#44474d",
+            "on-tertiary-fixed-variant": "#45474a",
+            "surface-container-lowest": "#080f17",
+            "text-primary": "#F3F4F6",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "surface-container-low": "#151c25",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-tertiary-container": "#292b2e",
+            "tertiary": "#c6c6ca",
+            "on-surface": "#dce3f0",
+            "surface": "#16191E",
+            "secondary-fixed": "#e1e2e9",
+            "outline": "#86948c",
+            "on-tertiary-fixed": "#1a1c1f",
+            "surface-dim": "#0d141d",
+            "on-secondary": "#2e3036",
+            "primary-fixed-dim": "#5bdcb0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "small": ["Inter"],
+            "h2": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes pulse-amber {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.92); }
+    }
+    .amber-ping {
+      animation: pulse-amber 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary antialiased font-body-md selection:bg-surface-container selection:text-primary min-h-screen flex flex-col overflow-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="w-full h-14 flex items-center justify-between px-space-md bg-surface dark:bg-surface border-b border-border dark:border-border sticky top-0 z-50">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-h2 text-h2 font-bold text-text-primary dark:text-text-primary tracking-tight text-[1.125rem] leading-none">Aether Chat</span>
+<span class="font-mono text-mono text-[0.6875rem] text-text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-border">v2.4.1</span>
+</div>
+<div class="h-4 w-[1px] bg-border mx-1"></div>
+<!-- Network Warning Status Pill -->
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#241A0E] border border-[#593A17] text-[0.75rem]">
+<span class="w-2 h-2 rounded-full bg-amber-400 amber-ping inline-block"></span>
+<span class="font-mono text-amber-300 font-medium tracking-tight">ICE Disconnected · Reconnecting</span>
+</div>
+<div class="hidden lg:flex items-center gap-2 text-text-secondary font-small text-small">
+<span class="text-border">/</span>
+<span class="flex items-center gap-1 font-mono text-[0.8125rem] text-text-primary">
+<span class="text-text-secondary">#</span>core-protocol &amp; Engineering
+        </span>
+<span class="px-1.5 py-0.2 bg-surface-container border border-border text-[0.6875rem] font-mono text-text-secondary rounded">Direct Mesh</span>
+</div>
+</div>
+<!-- Right Header Actions -->
+<div class="flex items-center gap-space-sm">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-text-secondary text-[18px]" data-icon="search">search</span>
+<input class="w-48 xl:w-60 bg-background border border-border rounded-xl pl-8 pr-3 py-1 text-small font-small text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Search direct buffer..." type="text"/>
+</div>
+<button class="p-1.5 text-text-secondary hover:bg-surface-container-high hover:text-text-primary rounded-xl transition-colors duration-150 ease-out" title="Notifications">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 text-text-secondary hover:bg-surface-container-high hover:text-text-primary rounded-xl transition-colors duration-150 ease-out" title="Settings">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+<div class="h-4 w-[1px] bg-border mx-1"></div>
+<!-- User Profile in Header -->
+<div class="flex items-center gap-2.5 pl-1">
+<div class="relative">
+<div class="w-7 h-7 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs text-text-primary font-semibold">
+            AR
+          </div>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-surface"></span>
+</div>
+<div class="hidden md:flex flex-col text-left">
+<span class="font-small text-small font-medium text-text-primary leading-tight">Alex Rivera</span>
+<span class="font-mono text-[0.6875rem] text-amber-400/90 leading-tight">ICE Standby</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Top Reconnection Alert Banner -->
+<aside aria-label="Network alert" class="w-full bg-[#1F170C] border-b border-[#593A17] px-space-md py-2.5 flex flex-col md:flex-row md:items-center justify-between gap-3 text-small font-small shadow-sm z-30">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-[#34200B] border border-[#7A4B1B] flex items-center justify-center text-amber-400 shrink-0">
+<span class="material-symbols-outlined amber-ping text-[18px]" data-icon="sync_problem">sync_problem</span>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+<span class="text-amber-200 font-semibold tracking-tight">Connection interrupted — Attempting ICE peer reconnection (Attempt 2 of 5)...</span>
+<span class="text-amber-400/70 text-[0.8125rem]">Negotiating STUN/TURN relay fallback (<span class="font-mono text-amber-300">turn-us-west.aether.net:3478</span>)</span>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0 self-end md:self-auto">
+<div class="flex items-center gap-1.5 text-amber-300/80 font-mono text-[0.8125rem]">
+<span>Next attempt in</span>
+<span class="font-mono text-amber-400 font-bold bg-[#331B05] px-2 py-0.5 rounded border border-[#7D4813] text-[0.8125rem]">00:06</span>
+</div>
+<button class="px-3 py-1 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-[#140F08] font-semibold text-[0.8125rem] rounded-xl transition-colors duration-150 shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="refresh">refresh</span>
+        Retry Now
+      </button>
+<a class="text-amber-400/80 hover:text-amber-300 flex items-center gap-0.5 text-[0.8125rem] font-medium transition-colors" href="#diagnostic">
+<span>Diagnostic Log</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+</a>
+</div>
+</aside>
+<!-- Application Body Layout -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Rail / Navigation (SideNavBar Shared Component Spec) -->
+<aside class="w-64 flex flex-col justify-between p-space-sm bg-surface-dim dark:bg-surface-dim border-r border-border dark:border-border shrink-0 select-none z-20">
+<div class="flex flex-col gap-space-sm">
+<!-- Sidebar Header User card -->
+<div class="p-2.5 bg-surface rounded-xl border border-border flex items-center gap-2.5">
+<div class="relative">
+<div class="w-9 h-9 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-sm font-semibold text-text-primary">
+              AR
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-surface"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-small text-small font-semibold text-text-primary truncate">Alex Rivera</span>
+<span class="font-mono text-[0.6875rem] text-amber-400/90 truncate flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              Reconnecting... (Offline cache)
+            </span>
+</div>
+</div>
+<!-- Rail Navigation Items (tab_labels from JSON: Messages, Calls, Direct Channels, Recordings, Settings) -->
+<nav class="flex flex-col gap-1 mt-1 font-body-md text-body-md">
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary dark:text-text-secondary rounded-xl hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out text-small font-small" href="#messages">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat_bubble">chat_bubble</span>
+<span>Messages</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary dark:text-text-secondary rounded-xl hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out text-small font-small" href="#calls">
+<span class="material-symbols-outlined text-[20px]" data-icon="call">call</span>
+<span>Calls</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-surface-container-high dark:bg-surface-container-high text-primary dark:text-primary font-medium rounded-xl text-small font-small" href="#channels">
+<span class="material-symbols-outlined text-[20px]" data-icon="forum">forum</span>
+<span class="flex-1 text-left">Direct Channels</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary dark:text-text-secondary rounded-xl hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out text-small font-small" href="#recordings">
+<span class="material-symbols-outlined text-[20px]" data-icon="fiber_manual_record">fiber_manual_record</span>
+<span>Recordings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary dark:text-text-secondary rounded-xl hover:bg-surface-container dark:hover:bg-surface-container hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out text-small font-small" href="#settings">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<!-- Active Direct Channel Sub-list -->
+<div class="mt-3 pt-3 border-t border-border flex flex-col gap-1">
+<div class="flex items-center justify-between px-3 mb-1">
+<span class="font-mono text-[0.6875rem] uppercase tracking-wider text-text-secondary font-medium">Active Mesh Peers</span>
+<span class="font-mono text-[0.6875rem] text-amber-400">1/3 Synced</span>
+</div>
+<!-- Channel 1: Active Room -->
+<div class="flex items-center justify-between px-3 py-2 rounded-xl bg-surface border border-border/80">
+<div class="flex items-center gap-2 min-w-0">
+<span class="text-text-secondary font-mono text-sm">#</span>
+<span class="font-small text-small font-semibold text-text-primary truncate">core-protocol</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+</div>
+<!-- Peer 2: Sarah Lin (Direct Partner) -->
+<div class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-surface-container text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-5 h-5 rounded-full bg-[#1F2530] border border-border flex items-center justify-center font-mono text-[10px] text-text-secondary">SL</div>
+<span class="font-small text-small truncate">Sarah Lin (Architect)</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400/80"></span>
+</div>
+<!-- Peer 3: Engineering Core -->
+<div class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-surface-container text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+<div class="flex items-center gap-2 min-w-0">
+<span class="text-text-secondary font-mono text-sm">#</span>
+<span class="font-small text-small truncate">eng-mesh-bridge</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-variant"></span>
+</div>
+<!-- Peer 4: Marcus Vance -->
+<div class="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-surface-container text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-5 h-5 rounded-full bg-[#1F2530] border border-border flex items-center justify-center font-mono text-[10px] text-text-secondary">MV</div>
+<span class="font-small text-small truncate">Marcus Vance</span>
+</div>
+<span class="w-1.5 h-1.5 rounded-full bg-surface-variant"></span>
+</div>
+</div>
+</div>
+<!-- Footer Rail (SideNavBar Footer Tabs) -->
+<div class="flex flex-col gap-2 pt-2 border-t border-border">
+<!-- New Call Button (CTA from SideNavBar JSON) -->
+<button class="w-full py-2 px-3 bg-surface hover:bg-surface-container border border-border text-text-secondary hover:text-text-primary font-small text-small font-medium rounded-xl flex items-center justify-center gap-2 transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[18px]" data-icon="call">call</span>
+<span>New Call</span>
+</button>
+<div class="flex items-center justify-between px-1 text-small font-small">
+<a class="flex items-center gap-1.5 text-text-secondary hover:text-text-primary transition-colors text-[0.8125rem]" href="#docs">
+<span class="material-symbols-outlined text-[16px]" data-icon="menu_book">menu_book</span>
+<span>Docs</span>
+</a>
+<a class="flex items-center gap-1.5 text-text-secondary hover:text-text-primary transition-colors text-[0.8125rem]" href="#help">
+<span class="material-symbols-outlined text-[16px]" data-icon="help_outline">help_outline</span>
+<span>Help</span>
+</a>
+<span class="font-mono text-[0.6875rem] text-text-secondary/60">E2EE Ready</span>
+</div>
+</div>
+</aside>
+<!-- Center Main Feed Canvas -->
+<main class="flex-1 flex flex-col bg-background relative overflow-hidden">
+<!-- Stream Header / Session Bar -->
+<div class="h-12 border-b border-border bg-surface/50 backdrop-blur-sm px-6 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<span class="font-mono text-text-secondary text-sm">#</span>
+<span class="font-small text-small font-semibold text-text-primary">core-protocol &amp; Engineering</span>
+</div>
+<span class="text-border">|</span>
+<div class="flex items-center gap-1.5 text-text-secondary font-mono text-[0.75rem]">
+<span class="material-symbols-outlined text-[14px] text-amber-400" data-icon="shield">shield</span>
+<span>Signal Protocol ECDH-P256 (P2P Mesh)</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container border border-border text-[0.75rem] font-mono text-text-secondary">
+<span class="material-symbols-outlined text-[14px]" data-icon="dns">dns</span>
+<span>ICE State: Checking (Relay candidate)</span>
+</div>
+<button class="p-1 text-text-secondary hover:text-text-primary hover:bg-surface-container rounded-lg transition-colors" title="Pinned Notes">
+<span class="material-symbols-outlined text-[18px]" data-icon="push_pin">push_pin</span>
+</button>
+<button class="p-1 text-text-secondary hover:text-text-primary hover:bg-surface-container rounded-lg transition-colors" title="Peer Details">
+<span class="material-symbols-outlined text-[18px]" data-icon="info">info</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Message Canvas with Cached State Visuals -->
+<div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+<!-- Earlier Cached Divider -->
+<div class="flex items-center gap-4 my-2">
+<div class="h-[1px] flex-1 bg-border"></div>
+<span class="font-mono text-[0.6875rem] text-text-secondary uppercase tracking-wider bg-surface px-2.5 py-0.5 rounded border border-border">
+            Today · Encrypted Session Active
+          </span>
+<div class="h-[1px] flex-1 bg-border"></div>
+</div>
+<!-- Incoming Message from Sarah Lin (Cached state / opacity 90%) -->
+<div class="flex items-start gap-3.5 opacity-90 transition-opacity">
+<!-- Sarah Lin Avatar -->
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary shrink-0 relative">
+            SL
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background"></span>
+</div>
+<div class="flex-1 max-w-2xl space-y-1.5">
+<div class="flex items-baseline gap-2">
+<span class="font-small text-small font-semibold text-text-primary">Sarah Lin (Architect)</span>
+<span class="font-mono text-[0.6875rem] text-text-secondary">14:28:44 UTC</span>
+<span class="font-mono text-[0.6875rem] text-primary bg-primary/10 px-1.5 py-0.2 rounded border border-primary/20">Verified PGP</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface border border-border text-text-primary font-small text-small leading-relaxed shadow-sm">
+              I just pushed the baseline candidate definitions for the STUN/TURN failover clusters. If the direct UDP punch fails across corporate NATs, our fallback relay on <code class="font-mono text-[0.8125rem] bg-surface-container-high px-1.5 py-0.5 rounded text-primary">turn-us-west.aether.net</code> should automatically negotiate candidate pairs within 400ms.
+            </div>
+<div class="flex items-center gap-2 font-mono text-[0.6875rem] text-text-secondary pl-1">
+<span class="material-symbols-outlined text-[13px] text-success" data-icon="done_all">done_all</span>
+<span>Delivered via direct mesh channel</span>
+</div>
+</div>
+</div>
+<!-- Another message from Sarah with architecture snippet -->
+<div class="flex items-start gap-3.5 opacity-90 pl-13">
+<div class="w-10 shrink-0"></div>
+<div class="flex-1 max-w-2xl space-y-1.5">
+<div class="p-3.5 rounded-xl bg-surface border border-border text-text-primary font-small text-small leading-relaxed shadow-sm">
+<p class="mb-2">Are you seeing smooth peer discovery on your local node? Here is the current candidate profile we're broadcasting:</p>
+<div class="bg-background border border-border rounded-lg p-2.5 font-mono text-[0.75rem] text-text-secondary overflow-x-auto">
+<span class="text-primary">candidate:842163049</span> 1 udp 16777295 192.168.1.104 54400 typ prflx raddr 10.0.0.1 rport 54400<br/>
+<span class="text-amber-400">candidate:116244583</span> 2 udp 41624063 52.34.12.89 3478 typ relay raddr 52.34.12.89 rport 3478
+              </div>
+</div>
+<div class="flex items-center gap-2 font-mono text-[0.6875rem] text-text-secondary pl-1">
+<span class="material-symbols-outlined text-[13px] text-success" data-icon="done_all">done_all</span>
+<span>Acked by 3 peers</span>
+</div>
+</div>
+</div>
+<!-- Prominent Inline System Notification Banner: WebRTC Disconnection -->
+<div class="rounded-xl bg-surface border border-border border-l-4 border-l-amber-500 p-4 my-4 shadow-lg shadow-black/20">
+<div class="flex items-start gap-3.5">
+<div class="w-9 h-9 rounded-xl bg-[#2A1D0B] border border-[#6B4012] flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]" data-icon="pause_circle">pause_circle</span>
+</div>
+<div class="flex-1 space-y-1.5">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<h4 class="font-small text-small font-semibold text-amber-200">
+                  WebRTC P2P direct stream suspended at 14:32:08 UTC
+                </h4>
+<span class="font-mono text-[0.6875rem] text-amber-400/80 bg-[#361E05] px-2 py-0.5 rounded border border-[#6A390B] self-start sm:self-auto">
+                  ICE-Restart in progress
+                </span>
+</div>
+<p class="font-small text-small text-text-secondary leading-relaxed">
+                DTLS-SRTP tunnel lost due to local network interface change. 2 pending messages securely queued in IndexedDB local storage and will sync immediately upon reconnection.
+              </p>
+<div class="pt-2 flex flex-wrap items-center gap-y-1 gap-x-4 font-mono text-[0.75rem] text-text-secondary border-t border-border/80">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  Buffer: <strong class="text-text-primary font-normal">4.8 KB</strong>
+</span>
+<span class="text-border">•</span>
+<span>Handshake protocol: <strong class="text-text-primary font-normal">ICE-Restart (Relay fallback)</strong></span>
+<span class="text-border">•</span>
+<span>Relay server: <strong class="text-amber-300 font-normal">turn-us-west.aether.net</strong></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Outbound Queued Message from Alex Rivera -->
+<div class="flex items-start justify-end gap-3.5 pl-12">
+<div class="flex-1 max-w-xl flex flex-col items-end space-y-1.5">
+<div class="flex items-baseline gap-2">
+<span class="font-mono text-[0.6875rem] text-amber-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+                Queued locally in IndexedDB
+              </span>
+<span class="font-mono text-[0.6875rem] text-text-secondary">14:32:12 UTC</span>
+<span class="font-small text-small font-semibold text-text-primary">Alex Rivera (You)</span>
+</div>
+<!-- Message bubble styled with dashed queued indicator -->
+<div class="p-3.5 rounded-xl bg-surface-container border border-amber-500/30 text-text-primary font-small text-small leading-relaxed shadow-sm relative">
+<p>Checking packet loss on US-West relay... The local gateway dropped routing tables briefly during WiFi 6 roaming.</p>
+<div class="mt-2 pt-2 border-t border-border/60 flex items-center justify-between text-[0.6875rem] font-mono text-amber-300/80">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] amber-ping" data-icon="pending">pending</span>
+                  Awaiting transport restart
+                </span>
+<span>Msg ID: #0x9F4A2</span>
+</div>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-amber-500/40 flex items-center justify-center font-mono text-xs font-semibold text-text-primary shrink-0 relative">
+            AR
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-background"></span>
+</div>
+</div>
+<!-- Second Outbound Queued Message -->
+<div class="flex items-start justify-end gap-3.5 pl-12">
+<div class="flex-1 max-w-xl flex flex-col items-end space-y-1.5">
+<div class="flex items-baseline gap-2">
+<span class="font-mono text-[0.6875rem] text-amber-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+                Queued locally in IndexedDB
+              </span>
+<span class="font-mono text-[0.6875rem] text-text-secondary">14:32:19 UTC</span>
+<span class="font-small text-small font-semibold text-text-primary">Alex Rivera (You)</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container border border-amber-500/30 text-text-primary font-small text-small leading-relaxed shadow-sm relative">
+<p>Triggering manual ping to the secondary STUN reflector now.</p>
+<div class="mt-2 pt-2 border-t border-border/60 flex items-center justify-between text-[0.6875rem] font-mono text-amber-300/80">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] amber-ping" data-icon="pending">pending</span>
+                  Awaiting transport restart
+                </span>
+<span>Msg ID: #0x9F4B7</span>
+</div>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-amber-500/40 flex items-center justify-center font-mono text-xs font-semibold text-text-primary shrink-0 relative">
+            AR
+            <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-400 border-2 border-background"></span>
+</div>
+</div>
+</div>
+<!-- Bottom Message Composer - Offline / Queued Mode -->
+<footer class="border-t border-border bg-surface p-4 flex flex-col gap-2 shrink-0">
+<!-- Offline Warning Bar Above Input -->
+<div class="flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#22190E] border border-[#593A17] text-[0.75rem]">
+<div class="flex items-center gap-2 text-amber-300">
+<span class="material-symbols-outlined text-[16px]" data-icon="cloud_off">cloud_off</span>
+<span class="font-medium">You are currently offline. New messages will be held in local queue.</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-amber-400/90">2 messages queued</span>
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+</div>
+</div>
+<!-- Composer Box -->
+<div class="relative bg-background border border-[#3A2A19] rounded-xl focus-within:border-amber-500/60 focus-within:ring-1 focus-within:ring-amber-500/30 transition-all p-2.5">
+<div class="flex items-center gap-2 mb-2 px-1">
+<button class="text-text-secondary/50 cursor-not-allowed hover:text-text-secondary/50 transition-colors p-1" disabled="" title="Attachments unavailable while offline">
+<span class="material-symbols-outlined text-[18px]" data-icon="attach_file">attach_file</span>
+</button>
+<button class="text-text-secondary/50 cursor-not-allowed hover:text-text-secondary/50 transition-colors p-1" disabled="" title="Voice notes unavailable while offline">
+<span class="material-symbols-outlined text-[18px]" data-icon="mic">mic</span>
+</button>
+<button class="text-text-secondary/50 cursor-not-allowed hover:text-text-secondary/50 transition-colors p-1" disabled="" title="Code snippets">
+<span class="material-symbols-outlined text-[18px]" data-icon="code">code</span>
+</button>
+<div class="h-3 w-[1px] bg-border mx-1"></div>
+<span class="font-mono text-[0.6875rem] text-text-secondary/70">Local Encrypted Store (AES-GCM 256)</span>
+</div>
+<div class="flex items-end gap-3">
+<textarea class="flex-1 bg-transparent border-none text-small font-small text-text-primary placeholder:text-text-secondary/60 focus:ring-0 p-1 resize-none leading-relaxed" placeholder="Type message to queue locally... (Press Enter to queue)" rows="1"></textarea>
+<!-- Send / Queue CTA Button -->
+<button class="px-3.5 py-1.5 bg-[#2B1F11] hover:bg-[#382816] text-amber-300 border border-[#6B4318] rounded-lg font-small text-small font-medium transition-colors flex items-center gap-1.5 shadow-sm shrink-0">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+<span>Queue Message</span>
+</button>
+</div>
+</div>
+<!-- Footer Diagnostic & Build Status Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-1 font-mono text-[0.6875rem] text-text-secondary">
+<div class="flex items-center gap-2">
+<span>Client build 2410-b9a3</span>
+<span class="text-border">•</span>
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[12px]" data-icon="lock">lock</span>
+              Local storage encrypted
+            </span>
+<span class="text-border">•</span>
+<span class="text-amber-400">WebRTC ICE restart active</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="hover:underline cursor-pointer text-text-secondary hover:text-text-primary">View STUN/TURN logs</span>
+<span>Relay latency: -- ms</span>
+</div>
+</div>
+</footer>
+</main>
+</div>
+</body></html>
