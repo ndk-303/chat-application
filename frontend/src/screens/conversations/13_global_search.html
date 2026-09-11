@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Global Search</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#003224",
+            "text-primary": "#F3F4F6",
+            "surface-container": "#192029",
+            "tertiary-fixed": "#e2e2e6",
+            "surface-dim": "#0d141d",
+            "on-secondary-container": "#b3b5bc",
+            "tertiary": "#c6c6ca",
+            "text-secondary": "#9CA3AF",
+            "primary-container": "#00a67e",
+            "outline-variant": "#3d4a43",
+            "primary-fixed": "#7af9cc",
+            "on-secondary-fixed-variant": "#44474d",
+            "inverse-on-surface": "#2a313b",
+            "on-primary-fixed-variant": "#00513c",
+            "outline": "#86948c",
+            "secondary": "#c4c6cd",
+            "inverse-surface": "#dce3f0",
+            "success": "#10B981",
+            "secondary-container": "#44474d",
+            "border": "#23272F",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-tertiary-container": "#292b2e",
+            "on-surface": "#dce3f0",
+            "on-background": "#dce3f0",
+            "secondary-fixed": "#e1e2e9",
+            "primary": "#5bdcb0",
+            "background": "#0D0F12",
+            "surface-container-highest": "#2e353f",
+            "surface-container-lowest": "#080f17",
+            "error": "#EF4444",
+            "inverse-primary": "#006c51",
+            "on-secondary": "#2e3036",
+            "on-surface-variant": "#bccac2",
+            "surface-tint": "#5bdcb0",
+            "surface-container-low": "#151c25",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-primary": "#003828",
+            "error-container": "#93000a",
+            "on-tertiary": "#2f3034",
+            "surface-variant": "#2e353f",
+            "surface": "#16191E",
+            "tertiary-container": "#919296",
+            "surface-container-high": "#232a34",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#333a44",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-secondary-fixed": "#191c21",
+            "on-primary-fixed": "#002116",
+            "on-error": "#690005",
+            "primary-fixed-dim": "#5bdcb0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "mono": [
+              "JetBrains Mono"
+            ],
+            "small": [
+              "Inter"
+            ],
+            "body-md": [
+              "Inter"
+            ],
+            "h1": [
+              "Inter"
+            ],
+            "h2": [
+              "Inter"
+            ]
+          },
+          "fontSize": {
+            "mono": [
+              "0.875rem",
+              {
+                "fontWeight": "500"
+              }
+            ],
+            "small": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "body-md": [
+              "1rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "h1": [
+              "2.25rem",
+              {
+                "lineHeight": "1.25",
+                "fontWeight": "700"
+              }
+            ],
+            "h2": [
+              "1.5rem",
+              {
+                "lineHeight": "1.3",
+                "fontWeight": "600"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #333a44;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary antialiased font-body-md text-body-md selection:bg-primary-container selection:text-text-primary overflow-hidden h-screen w-screen">
+<!-- ==================== BACKGROUND APPLICATION SHELL ==================== -->
+<div class="h-full w-full flex flex-col bg-background select-none">
+<!-- TopNavBar from Shared Components Hierarchy -->
+<header class="bg-background dark:bg-background border-b border-border dark:border-border w-full z-10 flex-shrink-0">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<!-- Logo & Product Identity -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-success"></span>
+<span class="font-h2 text-h2 text-text-primary dark:text-text-primary font-bold tracking-tight">Aether Chat</span>
+</div>
+<div class="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded bg-surface border border-border">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-small text-small text-text-secondary">Mesh Node: #4092-us-east (12ms)</span>
+</div>
+</div>
+<!-- Simulated Search Trigger & Actions -->
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center justify-between w-72 px-3 py-1.5 rounded bg-surface border border-border text-text-secondary cursor-pointer hover:border-outline-variant transition-colors duration-150">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-secondary" data-icon="search">search</span>
+<span class="font-small text-small">Search workspace...</span>
+</div>
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container-low px-1.5 py-0.5 rounded text-xs border border-border">⌘K</kbd>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Help">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Dark Mode Active">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+<div class="h-4 w-px bg-border mx-1"></div>
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-mono text-text-primary text-xs font-semibold">
+                AR
+              </div>
+<span class="font-small text-small text-text-primary font-medium hidden sm:inline">Alex Rivera</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- App Body: Sidebar + Main Stream Canvas -->
+<div class="flex-1 flex overflow-hidden max-w-7xl w-full mx-auto">
+<!-- App Sidebar (320px) -->
+<aside class="w-80 flex-shrink-0 bg-surface border-r border-border flex flex-col p-4 gap-6">
+<!-- Workspace Channels -->
+<div>
+<div class="flex items-center justify-between px-2 mb-2">
+<span class="font-small text-small font-medium text-text-secondary uppercase tracking-wider text-xs">Channels</span>
+<span class="material-symbols-outlined text-text-secondary text-base cursor-pointer hover:text-text-primary" data-icon="add">add</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded bg-surface-container text-text-primary font-medium">
+<div class="flex items-center gap-2">
+<span class="text-primary font-mono">#</span>
+<span class="font-small text-small">core-protocol</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-2">
+<span class="text-text-secondary font-mono">#</span>
+<span class="font-small text-small">node-mesh</span>
+</div>
+</div>
+<div class="flex items-center justify-between px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors">
+<div class="flex items-center gap-2">
+<span class="text-text-secondary font-mono">#</span>
+<span class="font-small text-small">mobile-client</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Direct Peers -->
+<div>
+<div class="flex items-center justify-between px-2 mb-2">
+<span class="font-small text-small font-medium text-text-secondary uppercase tracking-wider text-xs">Direct Peers</span>
+<span class="material-symbols-outlined text-text-secondary text-base cursor-pointer hover:text-text-primary" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors">
+<div class="relative">
+<span class="w-2 h-2 rounded-full bg-success block"></span>
+</div>
+<span class="font-small text-small">Sarah Lin</span>
+</div>
+<div class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors">
+<div class="relative">
+<span class="w-2 h-2 rounded-full bg-success block"></span>
+</div>
+<span class="font-small text-small">Elena Rostova</span>
+</div>
+<div class="flex items-center gap-2.5 px-2.5 py-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface-container-high transition-colors">
+<div class="relative">
+<span class="w-2 h-2 rounded-full bg-outline-variant block"></span>
+</div>
+<span class="font-small text-small">Marcus Vance</span>
+</div>
+</div>
+</div>
+<!-- System Diagnostic info in sidebar bottom -->
+<div class="mt-auto pt-4 border-t border-border">
+<div class="p-3 bg-surface-container-low rounded border border-border text-xs text-text-secondary font-mono space-y-1">
+<div class="flex justify-between">
+<span>E2EE CIPHER</span>
+<span class="text-text-primary">AES-GCM-256</span>
+</div>
+<div class="flex justify-between">
+<span>ICE CANDIDATE</span>
+<span class="text-primary">srflx (Direct)</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Stream Pane -->
+<main class="flex-1 flex flex-col bg-background overflow-hidden">
+<!-- Stream Header -->
+<div class="h-14 border-b border-border px-6 flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-3">
+<span class="font-mono text-text-secondary font-semibold">#</span>
+<span class="font-h2 text-h2 text-text-primary text-base font-semibold">core-protocol</span>
+<div class="h-3.5 w-px bg-border"></div>
+<span class="font-small text-small text-text-secondary">P2P audio/video signaling and sync architecture</span>
+</div>
+<div class="flex items-center gap-3 text-text-secondary">
+<span class="material-symbols-outlined cursor-pointer hover:text-text-primary" data-icon="videocam">videocam</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-text-primary" data-icon="person_add">person_add</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-text-primary" data-icon="tune">tune</span>
+</div>
+</div>
+<!-- Message List (realistic context) -->
+<div class="flex-1 p-6 space-y-6 overflow-y-auto">
+<!-- Sarah's message -->
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-text-primary text-xs font-semibold flex-shrink-0">
+              SL
+            </div>
+<div class="space-y-1.5 max-w-2xl">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-medium text-text-primary">Sarah Lin</span>
+<span class="font-mono text-text-secondary text-xs">10:42 AM</span>
+</div>
+<p class="text-text-secondary font-body-md text-body-md leading-relaxed">
+                Handling WebRTC renegotiation on ICE restart without dropping active audio buffers has been verified on the test bench. Let me push the renegotiation helper wrapper.
+              </p>
+<!-- Code block context -->
+<div class="p-3 bg-surface border border-border rounded font-mono text-mono text-xs text-text-primary overflow-x-auto">
+<code>await peerConnection.setLocalDescription(offer);<br/>sendSignalingMessage({ sdp: offer, renegotiate: true });</code>
+</div>
+</div>
+</div>
+<!-- Elena's message -->
+<div class="flex gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-text-primary text-xs font-semibold flex-shrink-0">
+              ER
+            </div>
+<div class="space-y-1.5 max-w-2xl">
+<div class="flex items-center gap-2">
+<span class="font-small text-small font-medium text-text-primary">Elena Rostova</span>
+<span class="font-mono text-text-secondary text-xs">10:48 AM</span>
+</div>
+<p class="text-text-secondary font-body-md text-body-md leading-relaxed">
+                We verified the renegotiation latency benchmark: zero jitter observed across 1,200 simulated peer nodes. Signaling channel remained under 4ms latency.
+              </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer from Shared Components Hierarchy -->
+<footer class="bg-background dark:bg-background border-t border-border dark:border-border w-full flex-shrink-0">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-6 max-w-7xl mx-auto gap-4">
+<span class="font-small text-small text-text-secondary dark:text-text-secondary">
+          © 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.
+        </span>
+<div class="flex items-center gap-6">
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Privacy Policy</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Terms of Service</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Security</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</div>
+<!-- ==================== COMMAND PALETTE MODAL OVERLAY ==================== -->
+<div class="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-sm">
+<!-- Modal Container: Raycast / Linear Inspired (~700px width, max 620px height) -->
+<div class="w-full max-w-[700px] max-h-[620px] bg-surface rounded-xl border border-border shadow-[0_4px_20px_rgba(0,0,0,0.45)] overflow-hidden flex flex-col transform transition-all ease-out animate-in fade-in zoom-in-95 duration-150">
+<!-- Modal Header / Search Bar Input -->
+<div class="px-4 py-3.5 flex items-center gap-3 border-b border-border bg-surface">
+<span class="material-symbols-outlined text-text-secondary text-xl flex-shrink-0" data-icon="search">search</span>
+<input aria-label="Global search query" class="flex-1 bg-transparent border-0 p-0 text-text-primary font-body-md text-body-md placeholder:text-text-secondary focus:ring-0 focus:outline-none" placeholder="Type a command or search..." type="text" value="webrtc renegotiation"/>
+<div class="flex items-center gap-2">
+<button class="text-text-secondary hover:text-text-primary transition-colors p-1" title="Clear input">
+<span class="material-symbols-outlined text-lg" data-icon="close">close</span>
+</button>
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container-high border border-border px-1.5 py-0.5 rounded text-xs leading-none">ESC</kbd>
+</div>
+</div>
+<!-- Filter Category Pills -->
+<div class="px-4 py-2.5 flex items-center gap-2 border-b border-border bg-[#12151A] overflow-x-auto">
+<button class="bg-[#00a67e]/15 text-primary border border-primary/30 font-medium px-3 py-1 rounded-full text-xs transition-colors flex items-center gap-1.5">
+<span>All</span>
+<span class="opacity-70 font-mono text-[10px]">24</span>
+</button>
+<button class="text-text-secondary hover:text-text-primary px-3 py-1 text-xs rounded-full hover:bg-surface-container transition-colors flex items-center gap-1.5">
+<span>Messages</span>
+<span class="opacity-60 font-mono text-[10px]">14</span>
+</button>
+<button class="text-text-secondary hover:text-text-primary px-3 py-1 text-xs rounded-full hover:bg-surface-container transition-colors flex items-center gap-1.5">
+<span>Teammates</span>
+<span class="opacity-60 font-mono text-[10px]">4</span>
+</button>
+<button class="text-text-secondary hover:text-text-primary px-3 py-1 text-xs rounded-full hover:bg-surface-container transition-colors flex items-center gap-1.5">
+<span>Files &amp; Media</span>
+<span class="opacity-60 font-mono text-[10px]">6</span>
+</button>
+</div>
+<!-- Search Results Stream (Scrollable) -->
+<div class="flex-1 overflow-y-auto custom-scrollbar px-3 py-3 space-y-4">
+<!-- SECTION 1: MESSAGES -->
+<div>
+<div class="px-3 pb-1.5 text-[11px] font-semibold text-text-secondary uppercase tracking-wider flex items-center justify-between">
+<span>Messages (14)</span>
+<span class="text-[10px] font-normal lowercase opacity-70">press ↵ to jump</span>
+</div>
+<div class="space-y-1">
+<!-- Active Selected Match Row -->
+<div class="group relative bg-[#1E222A] border-l-2 border-[#00A67E] rounded-r-lg p-3 cursor-pointer transition-colors duration-150">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2 font-small text-small">
+<span class="text-primary font-mono text-xs">#core-protocol</span>
+<span class="text-text-secondary text-xs">·</span>
+<span class="text-text-primary font-medium text-xs">Sarah Lin</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-text-secondary text-xs">2h ago</span>
+<span class="material-symbols-outlined text-primary text-base" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary text-sm line-clamp-2">
+                Handling <mark class="bg-[#00a67e]/20 text-primary font-medium px-1 rounded">WebRTC renegotiation</mark> on ICE restart without dropping active audio buffers...
+              </p>
+</div>
+<!-- Item 2 -->
+<div class="group rounded-lg p-3 hover:bg-[#1E222A]/70 cursor-pointer transition-colors duration-150">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2 font-small text-small">
+<span class="text-text-secondary text-xs">Direct Message</span>
+<span class="text-text-secondary text-xs">·</span>
+<span class="text-text-primary font-medium text-xs">Elena Rostova</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-text-secondary text-xs">Yesterday</span>
+<span class="material-symbols-outlined text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity text-base" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary text-sm line-clamp-2">
+                We verified the <mark class="bg-[#00a67e]/20 text-primary font-medium px-1 rounded">renegotiation</mark> latency benchmark: zero jitter observed across 1,200 simulated peer nodes.
+              </p>
+</div>
+<!-- Item 3 -->
+<div class="group rounded-lg p-3 hover:bg-[#1E222A]/70 cursor-pointer transition-colors duration-150">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2 font-small text-small">
+<span class="text-text-secondary font-mono text-xs">#mobile-client</span>
+<span class="text-text-secondary text-xs">·</span>
+<span class="text-text-primary font-medium text-xs">David Kim</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-text-secondary text-xs">3d ago</span>
+<span class="material-symbols-outlined text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity text-base" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-text-secondary text-sm line-clamp-2">
+                Does Android support seamless <mark class="bg-[#00a67e]/20 text-primary font-medium px-1 rounded">renegotiation</mark> during Wi-Fi to cellular handover?
+              </p>
+</div>
+</div>
+</div>
+<!-- SECTION 2: TEAMMATES -->
+<div>
+<div class="px-3 pb-1.5 text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
+            Teammates (4)
+          </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+<!-- Teammate 1 -->
+<div class="p-2.5 rounded-lg border border-border/60 bg-[#12151A] hover:bg-[#1E222A]/80 hover:border-outline-variant transition-colors cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-text-primary text-xs font-semibold">
+                    SL
+                  </div>
+<span class="w-2 h-2 rounded-full bg-success absolute bottom-0 right-0 border border-surface"></span>
+</div>
+<div>
+<div class="font-small text-small font-medium text-text-primary text-xs flex items-center gap-1.5">
+<span>Sarah Lin</span>
+<span class="text-[10px] text-text-secondary font-normal">@sarahlin</span>
+</div>
+<div class="text-[11px] text-text-secondary">Core Protocol Lead</div>
+</div>
+</div>
+<span class="text-[10px] font-mono text-primary bg-primary-container/10 px-2 py-0.5 rounded border border-primary/20">3 shared</span>
+</div>
+<!-- Teammate 2 -->
+<div class="p-2.5 rounded-lg border border-border/60 bg-[#12151A] hover:bg-[#1E222A]/80 hover:border-outline-variant transition-colors cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-text-primary text-xs font-semibold">
+                    ER
+                  </div>
+<span class="w-2 h-2 rounded-full bg-success absolute bottom-0 right-0 border border-surface"></span>
+</div>
+<div>
+<div class="font-small text-small font-medium text-text-primary text-xs flex items-center gap-1.5">
+<span>Elena Rostova</span>
+<span class="text-[10px] text-text-secondary font-normal">@elena_r</span>
+</div>
+<div class="text-[11px] text-text-secondary">WebRTC Security Eng</div>
+</div>
+</div>
+<span class="text-[10px] font-mono text-text-secondary bg-surface-container px-2 py-0.5 rounded border border-border">Peer</span>
+</div>
+</div>
+</div>
+<!-- SECTION 3: FILES & MEDIA -->
+<div>
+<div class="px-3 pb-1.5 text-[11px] font-semibold text-text-secondary uppercase tracking-wider">
+            Files &amp; Media (6)
+          </div>
+<div class="space-y-1">
+<!-- File 1: PDF -->
+<div class="p-2.5 rounded-lg hover:bg-[#1E222A]/70 border border-transparent hover:border-border transition-colors cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-error-container/20 border border-error/30 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-lg" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<div>
+<div class="font-mono text-mono text-xs text-text-primary font-medium flex items-center gap-2">
+<span><mark class="bg-[#00a67e]/20 text-primary font-medium px-0.5 rounded">webrtc-renegotiation</mark>-flow.pdf</span>
+<span class="text-text-secondary font-normal font-sans text-[11px]">2.4 MB</span>
+</div>
+<div class="text-xs text-text-secondary">Shared in #core-protocol by Sarah Lin</div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-text-secondary text-xs">
+<button class="hover:text-text-primary transition-colors flex items-center gap-1 font-small text-small">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+<span>Fetch</span>
+</button>
+</div>
+</div>
+<!-- File 2: TS Spec -->
+<div class="p-2.5 rounded-lg hover:bg-[#1E222A]/70 border border-transparent hover:border-border transition-colors cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container/20 border border-primary/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="code">code</span>
+</div>
+<div>
+<div class="font-mono text-mono text-xs text-text-primary font-medium flex items-center gap-2">
+<span>sdp-exchange-spec.ts</span>
+<span class="text-text-secondary font-normal font-sans text-[11px]">18 KB</span>
+</div>
+<div class="text-xs text-text-secondary">Shared by Sarah Lin · TypeScript Interface definitions</div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-text-secondary text-xs">
+<button class="hover:text-text-primary transition-colors flex items-center gap-1 font-small text-small">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+<span>View</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer (Raycast shortcut helper dock) -->
+<div class="px-4 py-2.5 bg-[#12151A] border-t border-border flex items-center justify-between text-xs text-text-secondary flex-shrink-0 select-none">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container border border-border px-1.5 py-0.5 rounded text-[11px] leading-none">↑↓</kbd>
+<span>Navigate</span>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container border border-border px-1.5 py-0.5 rounded text-[11px] leading-none">↵</kbd>
+<span>Open match</span>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container border border-border px-1.5 py-0.5 rounded text-[11px] leading-none">Tab</kbd>
+<span>Switch category</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<kbd class="font-mono text-mono text-text-secondary bg-surface-container border border-border px-1.5 py-0.5 rounded text-[11px] leading-none">ESC</kbd>
+<span>Dismiss</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Direct Messages</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Verbatim Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#2e353f",
+            "inverse-surface": "#dce3f0",
+            "outline": "#86948c",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-error": "#690005",
+            "inverse-primary": "#006c51",
+            "on-tertiary-container": "#292b2e",
+            "on-primary": "#003828",
+            "on-error-container": "#ffdad6",
+            "on-tertiary": "#2f3034",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "outline-variant": "#3d4a43",
+            "on-secondary": "#2e3036",
+            "tertiary-container": "#919296",
+            "secondary-container": "#44474d",
+            "surface-container-high": "#232a34",
+            "error-container": "#93000a",
+            "on-surface": "#dce3f0",
+            "on-tertiary-fixed": "#1a1c1f",
+            "inverse-on-surface": "#2a313b",
+            "text-primary": "#F3F4F6",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-primary-fixed-variant": "#00513c",
+            "on-secondary-fixed-variant": "#44474d",
+            "surface-tint": "#5bdcb0",
+            "surface-container": "#192029",
+            "secondary-fixed": "#e1e2e9",
+            "surface-bright": "#333a44",
+            "on-primary-container": "#003224",
+            "on-primary-fixed": "#002116",
+            "secondary": "#c4c6cd",
+            "on-secondary-container": "#b3b5bc",
+            "primary-fixed": "#7af9cc",
+            "surface-dim": "#0d141d",
+            "success": "#10B981",
+            "text-secondary": "#9CA3AF",
+            "on-background": "#dce3f0",
+            "on-secondary-fixed": "#191c21",
+            "error": "#EF4444",
+            "surface-container-highest": "#2e353f",
+            "primary": "#5bdcb0",
+            "border": "#23272F",
+            "on-surface-variant": "#bccac2",
+            "surface-container-low": "#151c25",
+            "primary-container": "#00a67e",
+            "surface": "#16191E",
+            "background": "#0D0F12",
+            "tertiary": "#c6c6ca",
+            "primary-fixed-dim": "#5bdcb0",
+            "tertiary-fixed": "#e2e2e6",
+            "surface-container-lowest": "#080f17"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "h2": [
+              "Inter"
+            ],
+            "small": [
+              "Inter"
+            ],
+            "body-md": [
+              "Inter"
+            ],
+            "h1": [
+              "Inter"
+            ],
+            "mono": [
+              "JetBrains Mono"
+            ]
+          },
+          "fontSize": {
+            "h2": [
+              "1.5rem",
+              {
+                "lineHeight": "1.3",
+                "fontWeight": "600"
+              }
+            ],
+            "small": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "body-md": [
+              "1rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "h1": [
+              "2.25rem",
+              {
+                "lineHeight": "1.25",
+                "fontWeight": "700"
+              }
+            ],
+            "mono": [
+              "0.875rem",
+              {
+                "fontWeight": "500"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary antialiased h-screen w-screen overflow-hidden flex flex-col select-none">
+<!-- Top App Bar (Docked Full Width, Shared Component Hierarchy) -->
+<header class="w-full bg-background border-b border-border z-30 flex-shrink-0">
+<div class="flex justify-between items-center w-full px-8 py-3 max-w-7xl mx-auto">
+<div class="flex items-center gap-6">
+<span class="font-h2 text-h2 text-text-primary font-bold tracking-tight">Aether Chat</span>
+<span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface border border-border font-small text-small text-text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+          WebRTC Encrypted
+        </span>
+</div>
+<div class="flex items-center gap-3">
+<button aria-label="Help" class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Help">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+</button>
+<button aria-label="Toggle theme" class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" title="Toggle theme">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Application Workspace (3-Column Architecture) -->
+<div class="flex-1 flex overflow-hidden w-full relative">
+<!-- 1. Left Navigation Rail (64px) -->
+<nav class="w-16 h-full bg-background border-r border-border py-5 flex flex-col justify-between items-center z-20 flex-shrink-0">
+<!-- Top: Minimal Brand Glyph -->
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center relative cursor-pointer hover:border-primary-container transition-colors duration-150">
+<svg class="w-5 h-5 text-text-primary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-primary-container ring-2 ring-background"></span>
+</div>
+</div>
+<!-- Middle: Navigation Actions -->
+<div class="flex flex-col items-center gap-3 w-full">
+<!-- Chats (Active) -->
+<div class="relative w-full flex items-center justify-center">
+<span class="absolute left-0 w-1 h-6 bg-primary-container rounded-r-full"></span>
+<button aria-label="Chats" class="p-2.5 rounded-xl bg-surface text-text-primary border border-border transition-colors duration-150 shadow-sm" title="Chats">
+<svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Contacts -->
+<button aria-label="Contacts" class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-150" title="Contacts">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Calls -->
+<button aria-label="Audio and Video Calls" class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-150" title="Audio/Video Calls">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Notifications -->
+<div class="relative">
+<button aria-label="Notifications" class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-150" title="Notifications">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+<!-- Settings -->
+<button aria-label="Settings" class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors duration-150" title="Settings">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Bottom: User Profile Squircle -->
+<div class="relative cursor-pointer group">
+<div class="w-9 h-9 rounded-xl bg-surface-variant flex items-center justify-center font-mono text-xs font-semibold text-text-primary border border-border group-hover:border-primary-container transition-colors">
+          AM
+        </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-background"></span>
+</div>
+</nav>
+<!-- 2. Conversations Sidebar (320px) -->
+<aside class="w-80 h-full bg-surface border-r border-border flex flex-col z-10 flex-shrink-0">
+<!-- Header Area -->
+<div class="px-4 pt-5 pb-3">
+<!-- Title and New Chat Action -->
+<div class="flex items-center justify-between">
+<h1 class="font-h2 text-h2 text-text-primary font-bold tracking-tight">Messages</h1>
+<button aria-label="New Chat" class="w-8 h-8 rounded-lg bg-surface hover:bg-surface-variant border border-border hover:border-primary-container/60 text-text-primary flex items-center justify-center transition-colors" title="New Chat">
+<svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Search Input with JetBrains Mono Badge -->
+<div class="mt-3 relative flex items-center">
+<svg class="w-4 h-4 text-text-secondary absolute left-3 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<input class="w-full bg-background border border-border focus:border-primary-container focus:ring-1 focus:ring-primary-container text-text-primary placeholder-text-secondary rounded-lg pl-9 pr-12 py-1.5 font-small text-small outline-none transition-colors" placeholder="Search conversations..." type="text"/>
+<kbd class="absolute right-2.5 font-mono text-[11px] text-text-secondary bg-surface border border-border px-1.5 py-0.5 rounded pointer-events-none">⌘K</kbd>
+</div>
+<!-- Filter Pills -->
+<div class="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+<button class="bg-surface-variant text-text-primary font-medium px-2.5 py-1 rounded-md border border-border flex-shrink-0 transition-colors">
+            All
+          </button>
+<button class="text-text-secondary hover:text-text-primary hover:bg-surface-variant/50 px-2.5 py-1 rounded-md transition-colors flex-shrink-0">
+            Unread
+          </button>
+<button class="text-text-secondary hover:text-text-primary hover:bg-surface-variant/50 px-2.5 py-1 rounded-md transition-colors flex-shrink-0">
+            Direct
+          </button>
+<button class="text-text-secondary hover:text-text-primary hover:bg-surface-variant/50 px-2.5 py-1 rounded-md transition-colors flex-shrink-0">
+            Groups
+          </button>
+</div>
+</div>
+<!-- Conversation List -->
+<div class="flex-1 overflow-y-auto px-2 space-y-1 py-1">
+<!-- Item 1: Selected / Active State (Sarah Lin) -->
+<div class="bg-surface-variant border border-border/80 rounded-xl p-3 cursor-pointer transition-all flex items-start gap-3">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center font-mono text-xs font-semibold text-text-primary border border-border">
+              SL
+            </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface-variant"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-small text-small font-semibold text-text-primary truncate">Sarah Lin</span>
+<span class="font-small text-[12px] text-text-secondary flex-shrink-0">10:42 AM</span>
+</div>
+<div class="flex items-center justify-between gap-1">
+<p class="font-small text-small text-text-secondary truncate">Are we still meeting at 3 PM?</p>
+<span class="font-mono text-[11px] font-semibold bg-primary-container text-white px-2 py-0.5 rounded-full flex-shrink-0">2</span>
+</div>
+</div>
+</div>
+<!-- Item 2: Engineering Core -->
+<div class="hover:bg-surface-variant/60 rounded-xl p-3 cursor-pointer transition-all flex items-start gap-3 border border-transparent">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border text-primary font-mono text-xs">
+<svg class="w-5 h-5 text-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-small text-small font-medium text-text-primary truncate">Engineering Core</span>
+<span class="font-small text-[12px] text-text-secondary flex-shrink-0">09:15 AM</span>
+</div>
+<div class="flex items-center justify-between gap-1">
+<p class="font-small text-small text-text-secondary truncate">Alex: Reviewing the WebRTC PR now</p>
+<span class="font-mono text-[11px] font-semibold bg-primary-container text-white px-2 py-0.5 rounded-full flex-shrink-0">4</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Marcus Vance -->
+<div class="hover:bg-surface-variant/60 rounded-xl p-3 cursor-pointer transition-all flex items-start gap-3 border border-transparent">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center font-mono text-xs font-semibold text-text-secondary border border-border">
+              MV
+            </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-outline ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-small text-small font-medium text-text-primary truncate">Marcus Vance</span>
+<span class="font-small text-[12px] text-text-secondary flex-shrink-0">Yesterday</span>
+</div>
+<p class="font-small text-small text-text-secondary truncate">Sounds great, let me test the audio stream</p>
+</div>
+</div>
+<!-- Item 4: Elena Rostova -->
+<div class="hover:bg-surface-variant/60 rounded-xl p-3 cursor-pointer transition-all flex items-start gap-3 border border-transparent">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center font-mono text-xs font-semibold text-text-primary border border-border">
+              ER
+            </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-small text-small font-medium text-text-primary truncate">Elena Rostova</span>
+<span class="font-small text-[12px] text-text-secondary flex-shrink-0">Sep 10</span>
+</div>
+<div class="flex items-center gap-1.5 text-text-secondary">
+<svg class="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7m-14 4l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<p class="font-small text-small text-text-secondary truncate">Thanks for the update!</p>
+</div>
+</div>
+</div>
+<!-- Item 5: Product Ops -->
+<div class="hover:bg-surface-variant/60 rounded-xl p-3 cursor-pointer transition-all flex items-start gap-3 border border-transparent">
+<div class="relative flex-shrink-0">
+<div class="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border text-text-secondary font-mono text-xs">
+              #
+            </div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="font-small text-small font-medium text-text-primary truncate">Product Ops</span>
+<span class="font-small text-[12px] text-text-secondary flex-shrink-0">Sep 08</span>
+</div>
+<p class="font-small text-small text-text-secondary truncate">David: Roadmap sync moved to Thursday</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- 3. Main Chat Panel (Fluid Area) -->
+<main class="flex-1 h-full bg-background flex flex-col min-w-0 relative">
+<!-- Chat Header -->
+<header class="h-16 px-6 border-b border-border bg-background/80 backdrop-blur flex items-center justify-between flex-shrink-0 z-10">
+<!-- Left: Partner Details -->
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-xl bg-surface flex items-center justify-center font-mono text-xs font-semibold text-text-primary border border-border">
+              SL
+            </div>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-background"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-body-md font-semibold text-text-primary">Sarah Lin</h2>
+<span class="font-mono text-[11px] text-text-secondary bg-surface px-1.5 py-0.5 rounded border border-border">Core Team</span>
+</div>
+<div class="flex items-center gap-1.5 text-text-secondary text-xs">
+<svg class="w-3 h-3 text-primary flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0110 0v4"></path>
+</svg>
+<span>Active now • End-to-end encrypted</span>
+</div>
+</div>
+</div>
+<!-- Right: Action Buttons -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-variant text-text-primary font-small text-small transition-colors">
+<svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Audio Call</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:bg-surface-variant text-text-primary font-small text-small transition-colors">
+<svg class="w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Video Call</span>
+</button>
+<button aria-label="More Options" class="p-2 rounded-lg border border-border bg-surface hover:bg-surface-variant text-text-secondary hover:text-text-primary transition-colors" title="More Options">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="1"></circle>
+<circle cx="19" cy="12" r="1"></circle>
+<circle cx="5" cy="12" r="1"></circle>
+</svg>
+</button>
+</div>
+</header>
+<!-- Message Conversation Stream -->
+<div class="flex-1 overflow-y-auto p-6 space-y-5">
+<!-- Date Separator -->
+<div class="flex items-center justify-center">
+<span class="font-small text-xs text-text-secondary bg-surface border border-border px-3 py-1 rounded-full shadow-sm">
+            Today
+          </span>
+</div>
+<!-- Incoming Message 1 -->
+<div class="flex items-start gap-3 max-w-xl">
+<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center font-mono text-[11px] font-semibold text-text-primary border border-border flex-shrink-0 mt-0.5">
+            SL
+          </div>
+<div class="space-y-1">
+<div class="bg-surface border border-border text-text-primary rounded-2xl rounded-tl-sm p-4 shadow-sm">
+<p class="font-body-md text-small leading-relaxed">
+                Hey Alex! Just pushed the changes for the WebRTC adaptive bitrate handling. Have you had a chance to test it under network throttling?
+              </p>
+</div>
+<div class="flex items-center gap-1.5 px-1">
+<span class="text-[11px] text-text-secondary">Sarah Lin</span>
+<span class="text-[11px] text-text-secondary">•</span>
+<span class="text-[11px] text-text-secondary">10:38 AM</span>
+</div>
+</div>
+</div>
+<!-- Outgoing Message 1 -->
+<div class="flex items-end justify-end gap-2">
+<div class="max-w-xl space-y-1 flex flex-col items-end">
+<div class="bg-primary-container text-white rounded-2xl rounded-tr-sm p-4 shadow-sm">
+<p class="font-body-md text-small leading-relaxed">
+                Yes! Latency is down to ~14ms on peer connections and packet loss recovery is rock solid.
+              </p>
+</div>
+<div class="flex items-center gap-1.5 px-1 text-[11px] text-text-secondary">
+<span>10:40 AM</span>
+<svg class="w-3.5 h-3.5 text-primary inline-block" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7m-14 4l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Incoming Message 2 -->
+<div class="flex items-start gap-3 max-w-xl">
+<div class="w-8 h-8 rounded-lg bg-surface flex items-center justify-center font-mono text-[11px] font-semibold text-text-primary border border-border flex-shrink-0 mt-0.5">
+            SL
+          </div>
+<div class="space-y-1">
+<div class="bg-surface border border-border text-text-primary rounded-2xl rounded-tl-sm p-4 shadow-sm">
+<p class="font-body-md text-small leading-relaxed">
+                Awesome. Are we still meeting at 3 PM to review the final deployment specs?
+              </p>
+</div>
+<div class="flex items-center gap-1.5 px-1">
+<span class="text-[11px] text-text-secondary">Sarah Lin</span>
+<span class="text-[11px] text-text-secondary">•</span>
+<span class="text-[11px] text-text-secondary">10:42 AM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Composer Bar (Docked at Bottom of Conversation) -->
+<div class="p-4 border-t border-border bg-surface/60 flex-shrink-0">
+<div class="rounded-xl bg-background border border-border focus-within:border-primary-container p-2 flex items-center gap-2 transition-colors">
+<!-- Attachment Button -->
+<button aria-label="Attach file" class="p-2 text-text-secondary hover:text-text-primary hover:bg-surface rounded-lg transition-colors" title="Attach file">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Input Field -->
+<input class="flex-1 bg-transparent border-0 outline-none text-text-primary placeholder-text-secondary font-small text-small focus:ring-0 px-2" placeholder="Reply to Sarah Lin... (Press Return to send)" type="text"/>
+<!-- Microphone Button -->
+<button aria-label="Record audio" class="p-2 text-text-secondary hover:text-text-primary hover:bg-surface rounded-lg transition-colors" title="Record audio">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Send Button -->
+<button aria-label="Send message" class="w-9 h-9 bg-primary-container hover:brightness-110 text-white rounded-lg transition-all flex items-center justify-center flex-shrink-0 shadow-sm" title="Send message">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer (Docked Full Width, Shared Component Hierarchy) -->
+<footer class="w-full bg-background border-t border-border flex-shrink-0 z-30">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto gap-4">
+<span class="font-small text-small text-text-secondary">© 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.</span>
+<div class="flex items-center gap-6 font-small text-small">
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" href="#privacy">Privacy Policy</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" href="#terms">Terms of Service</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" href="#security">Security</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out" href="#status">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Direct Messenger</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#7af9cc",
+            "surface-container-highest": "#2e353f",
+            "on-surface": "#dce3f0",
+            "on-background": "#dce3f0",
+            "tertiary": "#c6c6ca",
+            "on-surface-variant": "#bccac2",
+            "on-secondary-container": "#b3b5bc",
+            "text-secondary": "#9CA3AF",
+            "on-primary": "#003828",
+            "border": "#23272F",
+            "secondary-container": "#44474d",
+            "surface-container": "#192029",
+            "outline": "#86948c",
+            "on-tertiary-fixed": "#1a1c1f",
+            "inverse-surface": "#dce3f0",
+            "secondary-fixed": "#e1e2e9",
+            "on-secondary": "#2e3036",
+            "surface-container-lowest": "#080f17",
+            "on-secondary-fixed-variant": "#44474d",
+            "success": "#10B981",
+            "on-tertiary-container": "#292b2e",
+            "surface-tint": "#5bdcb0",
+            "primary-container": "#00a67e",
+            "surface-bright": "#333a44",
+            "surface": "#16191E",
+            "surface-dim": "#0d141d",
+            "on-tertiary": "#2f3034",
+            "surface-container-high": "#232a34",
+            "tertiary-container": "#919296",
+            "on-error-container": "#ffdad6",
+            "inverse-on-surface": "#2a313b",
+            "on-primary-fixed-variant": "#00513c",
+            "tertiary-fixed": "#e2e2e6",
+            "background": "#0D0F12",
+            "secondary": "#c4c6cd",
+            "on-primary-container": "#003224",
+            "on-primary-fixed": "#002116",
+            "on-secondary-fixed": "#191c21",
+            "outline-variant": "#3d4a43",
+            "inverse-primary": "#006c51",
+            "error": "#EF4444",
+            "text-primary": "#F3F4F6",
+            "primary-fixed-dim": "#5bdcb0",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "secondary-fixed-dim": "#c4c6cd",
+            "primary": "#5bdcb0",
+            "error-container": "#93000a",
+            "surface-container-low": "#151c25",
+            "on-error": "#690005"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-xl": "2rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "h2": ["Inter"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"],
+            "mono": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Subtle scrollbar customization */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0F12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2e353f;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary min-h-[1024px] flex flex-col font-body-md text-body-md antialiased select-none">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-background dark:bg-background border-b border-border dark:border-border w-full z-40">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-3">
+<span class="font-h2 text-h2 text-text-primary dark:text-text-primary font-bold tracking-tight">Aether Chat</span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface border border-border">
+<span class="w-2 h-2 rounded-full bg-success inline-block"></span>
+<span class="font-mono text-[11px] text-text-secondary tracking-tight">WebRTC Encrypted</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-text-secondary dark:text-text-secondary font-medium hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out flex items-center justify-center p-1.5 rounded hover:bg-surface" title="Help">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="text-text-secondary dark:text-text-secondary font-medium hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out flex items-center justify-center p-1.5 rounded hover:bg-surface" title="Theme Mode">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Body Shell: Left Rail + Conversation List + Chat Stream -->
+<main class="flex flex-1 overflow-hidden h-[calc(100dvh-135px)]">
+<!-- Left Navigation Rail -->
+<nav class="w-16 border-r border-border bg-background flex flex-col justify-between items-center py-4 shrink-0">
+<div class="flex flex-col items-center gap-3">
+<button class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Activity">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-2.5 rounded-xl bg-surface text-primary-container border border-border/80 shadow-sm" title="Messages">
+<svg class="w-5 h-5 text-primary-container" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Contacts / Team">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Video Calls">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors relative" title="Notifications">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</button>
+<button class="p-2.5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Settings">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Alex Morgan Profile Anchor -->
+<div class="relative cursor-pointer group" title="Alex Morgan (You)">
+<div class="w-9 h-9 rounded-full bg-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary group-hover:ring-1 group-hover:ring-primary-container transition-all">
+          AM
+        </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-background"></span>
+</div>
+</nav>
+<!-- Conversations Sidebar (320px) -->
+<aside class="w-80 border-r border-border bg-surface flex flex-col shrink-0">
+<!-- Top Title + Action -->
+<div class="p-4 border-b border-border flex items-center justify-between">
+<h1 class="text-base font-semibold text-text-primary tracking-tight">Messages</h1>
+<button class="w-7 h-7 rounded border border-border flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-text-secondary/40 transition-colors" title="New Chat">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Search and Shortcut -->
+<div class="px-4 pt-3 pb-2">
+<div class="relative flex items-center">
+<svg class="w-4 h-4 text-text-secondary absolute left-3" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<input class="w-full bg-background border border-border rounded-lg pl-9 pr-11 py-1.5 text-xs text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-primary-container transition-colors" placeholder="Search messages..." type="text"/>
+<span class="absolute right-2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-surface border border-border text-text-secondary">⌘K</span>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="px-4 py-2 border-b border-border flex items-center gap-1">
+<button class="px-2.5 py-1 text-xs font-medium rounded bg-background text-text-primary border border-border">All</button>
+<button class="px-2.5 py-1 text-xs font-medium rounded text-text-secondary hover:text-text-primary hover:bg-background/50 transition-colors">Unread</button>
+<button class="px-2.5 py-1 text-xs font-medium rounded text-text-secondary hover:text-text-primary hover:bg-background/50 transition-colors">Direct</button>
+<button class="px-2.5 py-1 text-xs font-medium rounded text-text-secondary hover:text-text-primary hover:bg-background/50 transition-colors">Groups</button>
+</div>
+<!-- Conversations Stream List -->
+<div class="flex-1 overflow-y-auto divide-y divide-border/40">
+<!-- Active Item: Sarah Lin -->
+<div class="bg-[#1E222A] border-l-2 border-primary-container p-3 flex gap-3 cursor-pointer transition-colors">
+<div class="relative shrink-0">
+<div class="w-10 h-10 rounded-full bg-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary">
+              SL
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-[#1E222A]"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-xs font-semibold text-text-primary truncate">Sarah Lin</span>
+<span class="text-[11px] font-mono text-text-secondary">10:36 AM</span>
+</div>
+<p class="text-xs text-primary-container truncate flex items-center gap-1.5 font-medium">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Voice note (0:28)</span>
+</p>
+</div>
+</div>
+<!-- Conversation: Engineering Core -->
+<div class="p-3 flex gap-3 cursor-pointer hover:bg-surface-bright/20 transition-colors">
+<div class="relative shrink-0">
+<div class="w-10 h-10 rounded-full bg-[#1F242C] border border-border flex items-center justify-center font-mono text-xs font-medium text-text-secondary">
+              EC
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-xs font-medium text-text-primary truncate">Engineering Core</span>
+<span class="text-[11px] font-mono text-text-secondary">09:54 AM</span>
+</div>
+<p class="text-xs text-text-secondary truncate">Marcus: Pull request #412 merged into main branch</p>
+</div>
+</div>
+<!-- Conversation: Marcus Vance -->
+<div class="p-3 flex gap-3 cursor-pointer hover:bg-surface-bright/20 transition-colors">
+<div class="relative shrink-0">
+<div class="w-10 h-10 rounded-full bg-border flex items-center justify-center font-mono text-xs font-medium text-text-secondary">
+              MV
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-text-secondary/40 rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-xs font-medium text-text-primary truncate">Marcus Vance</span>
+<span class="text-[11px] font-mono text-text-secondary">Yesterday</span>
+</div>
+<p class="text-xs text-text-secondary truncate">Benchmark latency logs are uploaded to S3.</p>
+</div>
+</div>
+<!-- Conversation: Elena Rostova -->
+<div class="p-3 flex gap-3 cursor-pointer hover:bg-surface-bright/20 transition-colors">
+<div class="relative shrink-0">
+<div class="w-10 h-10 rounded-full bg-border flex items-center justify-center font-mono text-xs font-medium text-text-secondary">
+              ER
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-xs font-medium text-text-primary truncate">Elena Rostova</span>
+<span class="text-[11px] font-mono text-text-secondary">Sep 09</span>
+</div>
+<p class="text-xs text-text-secondary truncate">STUN credentials regenerated.</p>
+</div>
+</div>
+<!-- Conversation: Product Ops -->
+<div class="p-3 flex gap-3 cursor-pointer hover:bg-surface-bright/20 transition-colors">
+<div class="relative shrink-0">
+<div class="w-10 h-10 rounded-full bg-[#1F242C] border border-border flex items-center justify-center font-mono text-xs font-medium text-text-secondary">
+              PO
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-text-secondary/40 rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-xs font-medium text-text-primary truncate">Product Ops</span>
+<span class="text-[11px] font-mono text-text-secondary">Sep 08</span>
+</div>
+<p class="text-xs text-text-secondary truncate">Sprint review scheduled for tomorrow at 2 PM.</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Stream Panel -->
+<section class="flex-1 flex flex-col bg-background overflow-hidden relative">
+<!-- Panel Header -->
+<div class="h-16 px-6 bg-surface border-b border-border flex items-center justify-between shrink-0">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-border text-text-primary flex items-center justify-center font-mono text-xs font-semibold">
+              SL
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-surface"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-sm font-semibold text-text-primary">Sarah Lin</h2>
+<span class="text-[10px] px-2 py-0.5 rounded bg-[#1E222A] text-text-secondary border border-border font-medium">Core Team</span>
+</div>
+<p class="text-xs text-text-secondary flex items-center gap-1.5 font-normal mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>
+              Active now • WebRTC Direct
+            </p>
+</div>
+</div>
+<!-- Ghost Action Buttons -->
+<div class="flex items-center gap-2">
+<button class="h-8 px-3 rounded border border-border bg-surface hover:bg-[#1E222A] text-text-secondary hover:text-text-primary transition-colors text-xs font-medium inline-flex items-center gap-1.5" title="Start Audio Call">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Audio Call</span>
+</button>
+<button class="h-8 px-3 rounded border border-border bg-surface hover:bg-[#1E222A] text-text-secondary hover:text-text-primary transition-colors text-xs font-medium inline-flex items-center gap-1.5" title="Start Video Call">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Video Call</span>
+</button>
+<button class="h-8 w-8 rounded border border-border bg-surface hover:bg-[#1E222A] text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center" title="Search in conversation">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="h-8 w-8 rounded border border-border bg-surface hover:bg-[#1E222A] text-text-secondary hover:text-text-primary transition-colors flex items-center justify-center" title="Conversation Details">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Message History Canvas -->
+<div class="flex-1 p-6 space-y-5 overflow-y-auto flex flex-col justify-start">
+<!-- Date Divider -->
+<div class="flex items-center justify-center my-2">
+<span class="bg-surface border border-border text-xs text-text-secondary px-3 py-1 rounded-full font-medium shadow-sm">
+            Today, September 11
+          </span>
+</div>
+<!-- Incoming Message 1 -->
+<div class="flex items-start gap-3 max-w-lg">
+<div class="w-8 h-8 rounded-full bg-border text-text-primary shrink-0 flex items-center justify-center font-mono text-[11px] font-semibold mt-1">
+            SL
+          </div>
+<div class="flex flex-col gap-1.5 items-start">
+<div class="bg-surface border border-border rounded-2xl rounded-tl-sm p-4 text-text-primary text-sm leading-relaxed shadow-sm">
+              Hey Alex! I have updated the WebRTC signaling parameters for the group mesh. Take a look at the architecture spec below.
+            </div>
+<div class="flex items-center gap-2 pl-1">
+<span class="text-text-secondary text-xs font-mono">10:32 AM</span>
+<!-- Reaction Pill -->
+<span class="bg-background border border-border px-2.5 py-0.5 rounded-full text-xs text-text-primary inline-flex items-center gap-1.5 shadow-sm">
+<svg class="w-3.5 h-3.5 text-error" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+</svg>
+<span class="font-mono text-[11px] font-medium">3</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Incoming Media Card Message -->
+<div class="flex items-start gap-3 max-w-sm">
+<div class="w-8 h-8 rounded-full bg-border text-text-primary shrink-0 flex items-center justify-center font-mono text-[11px] font-semibold mt-1">
+            SL
+          </div>
+<div class="flex flex-col gap-1.5 items-start w-full">
+<div class="bg-surface border border-border rounded-2xl rounded-tl-sm p-3 shadow-sm space-y-2.5 w-full">
+<!-- Network Topology Wireframe Preview -->
+<div class="aspect-video rounded-lg overflow-hidden bg-background border border-border p-4 flex flex-col items-center justify-center relative group">
+<svg class="w-full h-full max-h-28 text-primary-container/80" fill="none" stroke="currentColor" viewbox="0 0 200 100">
+<circle class="fill-surface stroke-primary-container" cx="35" cy="50" r="12" stroke-width="1.5"></circle>
+<circle class="fill-surface stroke-primary-container" cx="100" cy="25" r="14" stroke-width="1.5"></circle>
+<circle class="fill-surface stroke-primary-container" cx="100" cy="75" r="14" stroke-width="1.5"></circle>
+<circle class="fill-surface stroke-primary-container" cx="165" cy="50" r="12" stroke-width="1.5"></circle>
+<line stroke-dasharray="2 2" stroke-width="1.2" x1="47" x2="86" y1="46" y2="29"></line>
+<line stroke-dasharray="2 2" stroke-width="1.2" x1="47" x2="86" y1="54" y2="71"></line>
+<line stroke-width="1.5" x1="100" x2="100" y1="39" y2="61"></line>
+<line stroke-dasharray="2 2" stroke-width="1.2" x1="114" x2="153" y1="29" y2="46"></line>
+<line stroke-dasharray="2 2" stroke-width="1.2" x1="114" x2="153" y1="71" y2="54"></line>
+<text class="fill-text-primary text-[8px] font-mono font-medium" text-anchor="middle" x="35" y="53">PEER A</text>
+<text class="fill-text-primary text-[7px] font-mono font-medium" text-anchor="middle" x="100" y="28">STUN</text>
+<text class="fill-text-primary text-[7px] font-mono font-medium" text-anchor="middle" x="100" y="78">TURN</text>
+<text class="fill-text-primary text-[8px] font-mono font-medium" text-anchor="middle" x="165" y="53">PEER B</text>
+</svg>
+<div class="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="px-2.5 py-1 bg-surface border border-border text-xs rounded text-text-primary font-medium">Open Spec</span>
+</div>
+</div>
+<!-- File Info Row -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2 min-w-0">
+<svg class="w-4 h-4 text-primary-container shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<div class="truncate">
+<p class="text-text-primary font-medium text-xs truncate">webrtc_topology_v2.png</p>
+<p class="text-text-secondary text-[11px] font-mono">2.4 MB</p>
+</div>
+</div>
+<button class="p-1.5 rounded hover:bg-background text-text-secondary hover:text-text-primary transition-colors" title="Download Asset">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<span class="text-text-secondary text-xs font-mono pl-1">10:33 AM</span>
+</div>
+</div>
+<!-- Outgoing Message (Alex Morgan) -->
+<div class="flex flex-col items-end gap-1 max-w-lg ml-auto">
+<div class="bg-primary-container text-white rounded-2xl rounded-tr-sm p-4 shadow-sm leading-relaxed text-sm">
+            Looks fantastic Sarah. The STUN/TURN fallback will reduce connection handshake failure to near zero.
+          </div>
+<div class="flex items-center gap-2 pr-1">
+<span class="text-text-secondary text-xs font-mono flex items-center gap-1">
+              10:35 AM
+              <svg class="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7m-14 4l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+<!-- Outgoing Reaction Pill -->
+<span class="bg-surface border border-border px-2.5 py-0.5 rounded-full text-xs text-text-primary inline-flex items-center gap-1.5 shadow-sm mt-0.5">
+<svg class="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-mono text-[11px] font-medium">2</span>
+</span>
+</div>
+<!-- Outgoing Voice Note Audio Bubble -->
+<div class="flex flex-col items-end gap-1 max-w-md ml-auto">
+<div class="bg-primary-container text-white rounded-2xl rounded-tr-sm p-3.5 shadow-sm flex flex-col gap-2 w-80">
+<!-- Player Row -->
+<div class="flex items-center gap-3">
+<button class="w-8 h-8 rounded-full bg-white text-primary-container flex items-center justify-center shrink-0 shadow-sm hover:scale-105 transition-transform" title="Play Voice Message">
+<svg class="w-4 h-4 translate-x-0.5" fill="currentColor" viewbox="0 0 24 24">
+<path d="M8 5v14l11-7z"></path>
+</svg>
+</button>
+<!-- Waveform Visualization -->
+<div class="flex-1 flex items-center gap-0.5 h-6">
+<span class="w-1 bg-white/80 rounded-full h-3"></span>
+<span class="w-1 bg-white/80 rounded-full h-5"></span>
+<span class="w-1 bg-white/80 rounded-full h-2"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+<span class="w-1 bg-white/80 rounded-full h-6"></span>
+<span class="w-1 bg-white/80 rounded-full h-5"></span>
+<span class="w-1 bg-white/80 rounded-full h-3"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+<span class="w-1 bg-white/80 rounded-full h-2"></span>
+<span class="w-1 bg-white/80 rounded-full h-5"></span>
+<span class="w-1 bg-white/80 rounded-full h-6"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+<span class="w-1 bg-white/80 rounded-full h-3"></span>
+<span class="w-1 bg-white/80 rounded-full h-5"></span>
+<span class="w-1 bg-white/80 rounded-full h-2"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+<span class="w-1 bg-white/80 rounded-full h-6"></span>
+<span class="w-1 bg-white/80 rounded-full h-3"></span>
+<span class="w-1 bg-white/80 rounded-full h-5"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+<span class="w-1 bg-white/80 rounded-full h-2"></span>
+<span class="w-1 bg-white/80 rounded-full h-4"></span>
+</div>
+<span class="font-mono text-xs font-semibold text-white">0:28</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pr-1">
+<span class="text-text-secondary text-xs font-mono flex items-center gap-1">
+              10:36 AM
+              <svg class="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7m-14 4l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+</div>
+<!-- Live Typing Indicator -->
+<div class="pt-1">
+<div class="bg-surface border border-border px-3.5 py-1.5 rounded-full inline-flex items-center gap-2 text-xs text-text-secondary shadow-sm">
+<span>Sarah Lin is typing</span>
+<span class="inline-flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse [animation-delay:150ms]"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse [animation-delay:300ms]"></span>
+</span>
+</div>
+</div>
+</div>
+<!-- Message Composer Dock -->
+<div class="p-4 bg-surface/80 backdrop-blur-md border-t border-border shrink-0">
+<div class="rounded-xl bg-background border border-border focus-within:border-primary-container p-2 flex items-center gap-2.5 transition-colors">
+<!-- Attachment Actions -->
+<div class="flex items-center gap-1 pl-1">
+<button class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Add File Attachment">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Upload Media Image">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Main Input Field -->
+<input class="text-sm flex-1 bg-transparent outline-none border-none text-text-primary placeholder:text-text-secondary/70 focus:ring-0 px-1" placeholder="Write a message to Sarah... (Enter to send)" type="text"/>
+<!-- Right Utility & Send Tools -->
+<div class="flex items-center gap-1.5 pr-1">
+<button class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Insert Emoji">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="p-1.5 rounded text-text-secondary hover:text-text-primary hover:bg-surface transition-colors" title="Record Audio Note">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="bg-primary-container hover:bg-[#00916e] text-white p-2 rounded-lg flex items-center justify-center transition-colors shadow-sm ml-1" title="Send Message">
+<svg class="w-4 h-4 translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-background dark:bg-background border-t border-border dark:border-border w-full z-40">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-4 max-w-7xl mx-auto gap-4">
+<span class="font-small text-small text-text-secondary dark:text-text-secondary">
+        © 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.
+      </span>
+<div class="flex items-center gap-6">
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Privacy Policy</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Terms of Service</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">Security</a>
+<a class="font-small text-small text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary transition-colors duration-150 ease-out" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>

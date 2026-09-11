@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - New Direct Chat</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "text-primary": "#F3F4F6",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "on-primary-fixed-variant": "#00513c",
+            "tertiary": "#c6c6ca",
+            "surface-tint": "#5bdcb0",
+            "background": "#0D0F12",
+            "on-surface-variant": "#bccac2",
+            "success": "#10B981",
+            "error": "#EF4444",
+            "on-tertiary-container": "#292b2e",
+            "on-background": "#dce3f0",
+            "surface-dim": "#0d141d",
+            "on-surface": "#dce3f0",
+            "error-container": "#93000a",
+            "outline-variant": "#3d4a43",
+            "secondary-fixed": "#e1e2e9",
+            "text-secondary": "#9CA3AF",
+            "on-secondary": "#2e3036",
+            "primary-fixed-dim": "#5bdcb0",
+            "inverse-surface": "#dce3f0",
+            "secondary-container": "#44474d",
+            "surface": "#16191E",
+            "inverse-primary": "#006c51",
+            "on-tertiary-fixed": "#1a1c1f",
+            "surface-variant": "#2e353f",
+            "border": "#23272F",
+            "primary-container": "#00a67e",
+            "secondary-fixed-dim": "#c4c6cd",
+            "surface-bright": "#333a44",
+            "outline": "#86948c",
+            "tertiary-fixed": "#e2e2e6",
+            "surface-container-high": "#232a34",
+            "on-primary-container": "#003224",
+            "on-error-container": "#ffdad6",
+            "surface-container-lowest": "#080f17",
+            "surface-container-low": "#151c25",
+            "on-error": "#690005",
+            "on-tertiary": "#2f3034",
+            "on-secondary-fixed": "#191c21",
+            "primary-fixed": "#7af9cc",
+            "secondary": "#c4c6cd",
+            "on-primary-fixed": "#002116",
+            "on-secondary-container": "#b3b5bc",
+            "surface-container-highest": "#2e353f",
+            "primary": "#5bdcb0",
+            "tertiary-container": "#919296",
+            "surface-container": "#192029",
+            "inverse-on-surface": "#2a313b",
+            "on-tertiary-fixed-variant": "#45474a",
+            "on-secondary-fixed-variant": "#44474d",
+            "on-primary": "#003828"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "mono": ["JetBrains Mono", "monospace"],
+            "body-md": ["Inter", "sans-serif"],
+            "small": ["Inter", "sans-serif"],
+            "h1": ["Inter", "sans-serif"],
+            "h2": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-text-primary antialiased h-screen w-screen overflow-hidden flex flex-col font-body-md text-body-md select-none">
+<!-- Desktop App Header (Shared TopNavBar component representation) -->
+<header class="bg-background border-b border-border w-full z-10 shrink-0">
+<div class="flex justify-between items-center w-full px-8 py-3.5 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-h2 text-h2 text-text-primary font-bold tracking-tight">Aether Chat</span>
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface border border-border">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span class="font-small text-[11px] text-text-secondary font-mono tracking-tight uppercase">WebRTC Encrypted</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button aria-label="Help" class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out flex items-center justify-center rounded-lg hover:bg-surface" title="Help">
+<span class="material-symbols-outlined text-[20px]" data-icon="help_outline">help_outline</span>
+</button>
+<button aria-label="Dark Mode" class="p-2 text-text-secondary hover:text-text-primary transition-colors duration-150 ease-out flex items-center justify-center rounded-lg hover:bg-surface" title="Dark Mode">
+<span class="material-symbols-outlined text-[20px]" data-icon="dark_mode">dark_mode</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Application Shell Workspace (Icon Rail + Message List + Main Panel) -->
+<div class="flex-1 flex overflow-hidden relative">
+<!-- Left Navigation Icon Rail -->
+<aside class="w-16 bg-surface border-r border-border flex flex-col items-center py-4 justify-between shrink-0 z-10">
+<div class="flex flex-col items-center gap-4 w-full">
+<!-- Brand Glyph / Lightning -->
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[20px]" data-icon="bolt">bolt</span>
+</button>
+<div class="w-8 h-[1px] bg-border my-1"></div>
+<!-- Chat (Active) -->
+<button class="w-10 h-10 rounded-xl bg-primary-container text-text-primary flex items-center justify-center relative shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat" style="font-variation-settings: 'FILL' 1;">chat</span>
+</button>
+<!-- People -->
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+</button>
+<!-- Video -->
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[20px]" data-icon="videocam">videocam</span>
+</button>
+<!-- Notifications -->
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150 ease-out relative">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary-container ring-2 ring-surface"></span>
+</button>
+</div>
+<!-- Bottom Cluster: Settings + Profile Avatar -->
+<div class="flex flex-col items-center gap-3 w-full">
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-surface-variant transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<div class="relative cursor-pointer">
+<div class="w-9 h-9 rounded-full bg-[#1E222A] border border-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary">
+            AM
+          </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+</div>
+</aside>
+<!-- Sidebar Message List -->
+<div class="w-80 bg-surface border-r border-border flex flex-col shrink-0 z-10">
+<!-- Sidebar Header -->
+<div class="p-4 flex items-center justify-between border-b border-border">
+<div class="flex items-center gap-2">
+<span class="font-h2 text-sm font-semibold tracking-tight text-text-primary">Messages</span>
+<span class="px-1.5 py-0.5 text-[11px] font-mono bg-background border border-border rounded text-text-secondary">24</span>
+</div>
+<button class="w-7 h-7 rounded-lg bg-surface hover:bg-surface-variant border border-border flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+</button>
+</div>
+<!-- Quick Search inside Sidebar -->
+<div class="px-3 pt-3">
+<div class="bg-background border border-border rounded-lg px-2.5 py-1.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-text-secondary" data-icon="search">search</span>
+<span class="text-xs text-text-secondary">Search conversations...</span>
+</div>
+</div>
+<!-- Category Filter Tabs -->
+<div class="px-3 pt-3 pb-2 flex gap-1 border-b border-border">
+<button class="px-2.5 py-1 rounded bg-surface-variant text-text-primary font-small text-xs font-medium">All</button>
+<button class="px-2.5 py-1 rounded hover:bg-surface-variant text-text-secondary font-small text-xs transition-colors">Unread</button>
+<button class="px-2.5 py-1 rounded hover:bg-surface-variant text-text-secondary font-small text-xs transition-colors">Direct</button>
+<button class="px-2.5 py-1 rounded hover:bg-surface-variant text-text-secondary font-small text-xs transition-colors">Groups</button>
+</div>
+<!-- Conversation List Items -->
+<div class="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+<!-- Item 1: Sarah Lin -->
+<div class="p-2.5 rounded-lg bg-surface-variant border border-border/50 flex items-start gap-3 cursor-pointer">
+<div class="relative shrink-0 mt-0.5">
+<div class="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-semibold text-text-primary">
+              SL
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface-variant"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-small text-xs font-semibold text-text-primary truncate">Sarah Lin</span>
+<span class="font-mono text-[10px] text-text-secondary">10:42 AM</span>
+</div>
+<p class="font-small text-xs text-text-secondary truncate mt-0.5">The WebRTC session handshake is configured...</p>
+</div>
+</div>
+<!-- Item 2: Engineering Core -->
+<div class="p-2.5 rounded-lg hover:bg-surface-variant border border-transparent transition-colors flex items-start gap-3 cursor-pointer">
+<div class="relative shrink-0 mt-0.5">
+<div class="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-semibold text-text-secondary">
+              EC
+            </div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-small text-xs font-medium text-text-primary truncate">Engineering Core</span>
+<span class="font-mono text-[10px] text-text-secondary">Yesterday</span>
+</div>
+<p class="font-small text-xs text-text-secondary truncate mt-0.5">Marcus: Node key rotation completed.</p>
+</div>
+</div>
+<!-- Item 3: Marcus Vance -->
+<div class="p-2.5 rounded-lg hover:bg-surface-variant border border-transparent transition-colors flex items-start gap-3 cursor-pointer">
+<div class="relative shrink-0 mt-0.5">
+<div class="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-semibold text-text-secondary">
+              MV
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-small text-xs font-medium text-text-primary truncate">Marcus Vance</span>
+<span class="font-mono text-[10px] text-text-secondary">Sep 28</span>
+</div>
+<p class="font-small text-xs text-text-secondary truncate mt-0.5">Can we review the peer signaling flow?</p>
+</div>
+</div>
+<!-- Item 4: Elena Rostova -->
+<div class="p-2.5 rounded-lg hover:bg-surface-variant border border-transparent transition-colors flex items-start gap-3 cursor-pointer">
+<div class="relative shrink-0 mt-0.5">
+<div class="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-semibold text-text-secondary">
+              ER
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success ring-2 ring-surface"></span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-small text-xs font-medium text-text-primary truncate">Elena Rostova</span>
+<span class="font-mono text-[10px] text-text-secondary">Sep 24</span>
+</div>
+<p class="font-small text-xs text-text-secondary truncate mt-0.5">Shared the updated cryptographic audit.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Workspace / Chat Stream (Background Canvas) -->
+<main class="flex-1 bg-background flex flex-col justify-between p-6">
+<!-- Top Thread Bar -->
+<div class="flex items-center justify-between pb-4 border-b border-border">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface border border-border flex items-center justify-center text-xs font-semibold text-text-primary">
+            SL
+          </div>
+<div>
+<div class="text-sm font-semibold text-text-primary">Sarah Lin</div>
+<div class="text-[11px] text-text-secondary flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span>Online • Peer-to-Peer Verified</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="videocam">videocam</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="search">search</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Stream Mock -->
+<div class="space-y-4 py-8 max-w-2xl mx-auto w-full opacity-60">
+<div class="flex justify-center">
+<span class="text-[11px] font-mono text-text-secondary px-3 py-1 rounded-full bg-surface border border-border">
+            End-to-End Encrypted Session Established
+          </span>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-7 h-7 rounded-full bg-surface border border-border flex items-center justify-center text-[10px] font-mono text-text-secondary shrink-0">
+            SL
+          </div>
+<div class="bg-surface border border-border rounded-xl p-3.5 max-w-md">
+<p class="text-xs text-text-primary">The WebRTC session handshake is configured with ChaCha20-Poly1305. Ready for review.</p>
+<span class="text-[10px] text-text-secondary font-mono mt-1 block">10:42 AM</span>
+</div>
+</div>
+<div class="flex items-start justify-end gap-3">
+<div class="bg-primary-container text-white rounded-xl p-3.5 max-w-md">
+<p class="text-xs text-white">Confirmed. Keys are verified locally on my node.</p>
+<span class="text-[10px] text-emerald-100 font-mono mt-1 block text-right">10:44 AM</span>
+</div>
+</div>
+</div>
+<!-- Chat Input Area (Blurred in background) -->
+<div class="pt-4 border-t border-border">
+<div class="bg-surface border border-border rounded-xl px-4 py-3 flex items-center gap-3">
+<button class="text-text-secondary hover:text-text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+</button>
+<input class="bg-transparent text-xs text-text-primary placeholder-text-secondary flex-1 outline-none" disabled="" placeholder="Send an encrypted message..." type="text"/>
+<button class="p-1.5 rounded-lg bg-primary-container text-white">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+</main>
+<!-- FOCUSED MODAL OVERLAY: Raycast / Linear Command Style -->
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="w-full max-w-[500px] bg-surface border border-border rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.6)] p-6 relative flex flex-col">
+<!-- Modal Header -->
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-h2 text-xl font-bold text-text-primary tracking-tight">New Message</h2>
+<p class="text-xs text-text-secondary mt-1 font-small">Select a contact or enter a username to start a private conversation.</p>
+</div>
+<button aria-label="Close modal" class="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-[#1E222A] transition-colors" title="Close">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- Search Field -->
+<div class="mt-4 bg-background border border-border rounded-xl px-3.5 py-3 flex items-center gap-3 focus-within:border-primary-container transition-colors">
+<span class="material-symbols-outlined text-text-secondary text-[18px]" data-icon="search">search</span>
+<input autofocus="" class="text-sm text-text-primary placeholder-text-secondary bg-transparent outline-none flex-1 font-body-md border-0 p-0 focus:ring-0" placeholder="Search by name, @username, or email..." type="text"/>
+<kbd class="text-[10px] text-text-secondary bg-surface border border-border px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
+</div>
+<!-- Contacts List Section -->
+<div class="mt-5 space-y-1.5 max-h-72 overflow-y-auto pr-1">
+<div class="text-text-secondary text-[11px] font-semibold uppercase tracking-wider px-2 mb-2">
+            RECENT CONTACTS
+          </div>
+<!-- Contact Row 1: Selected / Highlighted -->
+<div class="bg-[#1E222A] border border-border rounded-lg p-2.5 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-border text-text-primary font-medium text-xs relative flex items-center justify-center shrink-0">
+                SL
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-[#1E222A]"></span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-semibold text-sm text-text-primary leading-snug">Sarah Lin</span>
+<span class="text-xs text-text-secondary font-mono">@sarahlin</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-background border border-border text-xs text-text-secondary px-2 py-0.5 rounded font-mono">Direct</span>
+<span class="material-symbols-outlined text-primary-container text-[18px]" data-icon="check">check</span>
+</div>
+</div>
+<!-- Contact Row 2 -->
+<div class="border border-transparent hover:border-border hover:bg-[#1E222A] rounded-lg p-2.5 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface border border-border text-text-primary font-medium text-xs relative flex items-center justify-center shrink-0">
+                MV
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-medium text-sm text-text-primary leading-snug">Marcus Vance</span>
+<span class="text-xs text-text-secondary font-mono">@marcusv</span>
+</div>
+</div>
+<span class="text-xs text-text-secondary">Active 15m ago</span>
+</div>
+<!-- Contact Row 3 -->
+<div class="border border-transparent hover:border-border hover:bg-[#1E222A] rounded-lg p-2.5 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface border border-border text-text-primary font-medium text-xs relative flex items-center justify-center shrink-0">
+                ER
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-medium text-sm text-text-primary leading-snug">Elena Rostova</span>
+<span class="text-xs text-text-secondary font-mono">@elena_r</span>
+</div>
+</div>
+<div class="text-xs text-success flex items-center gap-1.5 font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span>
+<span>Online</span>
+</div>
+</div>
+<!-- Contact Row 4 -->
+<div class="border border-transparent hover:border-border hover:bg-[#1E222A] rounded-lg p-2.5 flex items-center justify-between cursor-pointer transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface border border-border text-text-secondary font-medium text-xs relative flex items-center justify-center shrink-0">
+                DK
+                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-border rounded-full ring-2 ring-surface"></span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-medium text-sm text-text-primary leading-snug">David Kim</span>
+<span class="text-xs text-text-secondary font-mono">@davidkim</span>
+</div>
+</div>
+<span class="text-xs text-text-secondary">Offline</span>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="mt-6 pt-4 border-t border-border flex items-center justify-between">
+<div class="text-xs text-text-secondary">
+            Want to message multiple people? 
+            <button class="text-primary-container font-medium hover:underline ml-1">Create a group</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-2 text-sm text-text-secondary hover:text-text-primary font-medium transition-colors rounded-lg">
+              Cancel
+            </button>
+<button class="bg-primary-container hover:brightness-105 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+<span>Start Chat</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Shared Footer Component Representation -->
+<footer class="bg-background border-t border-border w-full z-10 shrink-0">
+<div class="flex flex-col sm:flex-row justify-between items-center w-full px-8 py-3 max-w-7xl mx-auto gap-4 font-small text-small">
+<div class="text-text-secondary text-xs">
+        © 2025 Aether Chat Inc. End-to-end encrypted WebRTC platform.
+      </div>
+<div class="flex items-center gap-6 text-xs text-text-secondary">
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#">Privacy Policy</a>
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#">Terms of Service</a>
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#">Security</a>
+<a class="hover:text-text-primary transition-colors duration-150 ease-out" href="#">System Status</a>
+</div>
+</div>
+</footer>
+</body></html>
