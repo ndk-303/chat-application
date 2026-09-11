@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Settings - Voice &amp; Video</title>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary": "#c6c6ca",
+            "inverse-on-surface": "#2a313b",
+            "on-error": "#690005",
+            "surface-container-lowest": "#080f17",
+            "on-secondary-fixed": "#191c21",
+            "inverse-surface": "#dce3f0",
+            "on-surface-variant": "#bccac2",
+            "surface": "#16191E",
+            "on-primary-fixed-variant": "#00513c",
+            "border": "#23272F",
+            "background": "#0D0F12",
+            "surface-dim": "#0d141d",
+            "on-secondary-container": "#b3b5bc",
+            "error": "#EF4444",
+            "primary-fixed": "#7af9cc",
+            "on-background": "#dce3f0",
+            "tertiary-container": "#919296",
+            "secondary-fixed": "#e1e2e9",
+            "surface-container": "#192029",
+            "on-error-container": "#ffdad6",
+            "surface-container-highest": "#2e353f",
+            "outline-variant": "#3d4a43",
+            "surface-bright": "#333a44",
+            "surface-container-high": "#232a34",
+            "success": "#10B981",
+            "on-tertiary-fixed-variant": "#45474a",
+            "surface-tint": "#5bdcb0",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-tertiary": "#2f3034",
+            "primary-container": "#00a67e",
+            "on-primary-container": "#003224",
+            "on-primary-fixed": "#002116",
+            "inverse-primary": "#006c51",
+            "error-container": "#93000a",
+            "on-surface": "#dce3f0",
+            "secondary-fixed-dim": "#c4c6cd",
+            "text-secondary": "#9CA3AF",
+            "primary": "#5bdcb0",
+            "on-primary": "#003828",
+            "primary-fixed-dim": "#5bdcb0",
+            "on-secondary-fixed-variant": "#44474d",
+            "surface-variant": "#2e353f",
+            "text-primary": "#F3F4F6",
+            "secondary": "#c4c6cd",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "surface-container-low": "#151c25",
+            "secondary-container": "#44474d",
+            "tertiary-fixed": "#e2e2e6",
+            "on-tertiary-container": "#292b2e",
+            "outline": "#86948c",
+            "on-secondary": "#2e3036"
+          },
+          borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          spacing: {
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          },
+          fontFamily: {
+            mono: ["JetBrains Mono", "monospace"],
+            small: ["Inter", "sans-serif"],
+            h2: ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            h1: ["Inter", "sans-serif"]
+          },
+          fontSize: {
+            mono: ["0.875rem", { fontWeight: "500" }],
+            small: ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            h2: ["1.5rem", { lineHeight: "1.3", fontWeight: "600" }],
+            "body-md": ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+            h1: ["2.25rem", { lineHeight: "1.25", fontWeight: "700" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-background text-text-primary font-body-md min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary antialiased">
+<!-- Top App Navigation Bar (Shared Component Anchor) -->
+<header class="bg-surface dark:bg-surface border-b border-border dark:border-border sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-6 max-w-7xl mx-auto h-16">
+<!-- Left Branding & Technical Mesh Status -->
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="w-7 h-7 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-base">forum</span>
+</span>
+<span class="font-h2 text-h2 font-semibold text-text-primary dark:text-text-primary tracking-tight">Aether Chat</span>
+</div>
+<span class="text-xs font-mono text-text-secondary bg-surface-container-high px-2 py-0.5 rounded-lg border border-border">v2.4.1</span>
+<div class="hidden sm:flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high border border-border text-xs font-mono text-text-secondary">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span>E2EE Mesh Active</span>
+</div>
+</div>
+<!-- Center Primary Navigation -->
+<nav class="hidden md:flex items-center space-x-8 font-body-md text-body-md">
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-colors duration-150 ease-out" href="#">Chats</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-colors duration-150 ease-out" href="#">Calls</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-colors duration-150 ease-out" href="#">Contacts</a>
+<!-- Active Tab: Settings -->
+<a class="text-primary dark:text-primary border-b-2 border-primary dark:border-primary font-medium pb-1" href="#">Settings</a>
+</nav>
+<!-- Right Trailing Controls & User Profile -->
+<div class="flex items-center space-x-3">
+<button class="hidden lg:flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-surface-container-high hover:bg-surface-bright text-text-secondary hover:text-text-primary text-xs font-mono border border-border transition-colors duration-150 ease-out">
+<span>Back to Chats</span>
+<kbd class="px-1 py-0.5 rounded bg-surface border border-border text-[10px]">Esc</kbd>
+</button>
+<button class="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out" title="Help &amp; Documentation">
+<span class="material-symbols-outlined text-lg">help_outline</span>
+</button>
+<div class="flex items-center space-x-2 pl-2 border-l border-border">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-border flex items-center justify-center font-mono text-xs font-semibold text-text-primary">
+            AR
+          </div>
+<span class="hidden xl:inline text-xs font-medium text-text-primary">Alex Rivera</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Application Body Layout -->
+<div class="flex-1 flex max-w-7xl w-full mx-auto">
+<!-- Settings Sub-Navigation Sidebar -->
+<aside class="w-64 border-r border-border bg-surface shrink-0 hidden md:flex flex-col justify-between p-4">
+<div class="space-y-6">
+<div class="px-2">
+<span class="text-xs font-mono tracking-wider text-text-secondary">SYSTEM PREFERENCES</span>
+</div>
+<nav class="space-y-1">
+<!-- Inactive tab -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg">tune</span>
+<span>General &amp; Appearance</span>
+</a>
+<!-- Active tab: Voice & Video -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-surface-bright text-text-primary font-medium border-l-2 border-primary-container text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg text-primary">mic</span>
+<span class="font-medium text-text-primary">Voice &amp; Video</span>
+</a>
+<!-- Inactive tabs -->
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg">lock</span>
+<span>Privacy &amp; Security</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg">notifications</span>
+<span>Notifications</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg">devices</span>
+<span>Connected Devices</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright text-small font-small transition-colors duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-lg">info</span>
+<span>About &amp; Licenses</span>
+</a>
+</nav>
+</div>
+<!-- Telemetry Bottom Card -->
+<div class="p-3 rounded-lg bg-surface-container border border-border space-y-1.5">
+<div class="flex items-center justify-between text-xs font-mono text-text-secondary">
+<span class="flex items-center space-x-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span>Cloud E2EE synced</span>
+</span>
+<span class="text-primary font-medium">42ms</span>
+</div>
+<div class="text-[11px] font-mono text-text-secondary tracking-tight">Client build 2410-b9a3</div>
+</div>
+</aside>
+<!-- Main Content Panel Canvas -->
+<main class="flex-1 bg-background p-6 md:p-8 overflow-y-auto">
+<div class="max-w-4xl mx-auto space-y-8">
+<!-- Page Header & Breadcrumb -->
+<header class="space-y-1 border-b border-border pb-5">
+<div class="flex items-center space-x-2 text-xs font-mono text-text-secondary">
+<span>Settings</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-text-primary">Voice &amp; Video</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div>
+<h1 class="font-h1 text-h1 text-text-primary">Voice &amp; Video</h1>
+<p class="text-small font-small text-text-secondary mt-1">
+                Hardware devices, WebRTC audio processing, and video stream codecs.
+              </p>
+</div>
+<div class="hidden sm:flex items-center space-x-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono bg-surface-container border border-border text-text-secondary">
+                WebRTC v1.0.4-preview
+              </span>
+</div>
+</div>
+</header>
+<!-- SECTION 1: AUDIO DEVICES -->
+<section class="space-y-4">
+<div class="flex items-center space-x-2 text-text-primary font-h2 text-sm font-semibold tracking-wide">
+<span class="material-symbols-outlined text-primary text-lg">volume_up</span>
+<span>AUDIO DEVICES</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Input Device Card -->
+<div class="bg-surface border border-border rounded-xl p-5 space-y-4">
+<div class="flex justify-between items-center">
+<label class="block text-xs font-mono text-text-secondary uppercase tracking-wider">Input Device</label>
+<span class="text-xs font-mono text-success flex items-center space-x-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+<span>Ready</span>
+</span>
+</div>
+<div class="relative">
+<select class="w-full bg-background border border-border rounded-xl py-2.5 pl-3 pr-10 text-small font-small text-text-primary appearance-none focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
+<option>Studio Microphone (Built-in)</option>
+<option>AirPods Pro (Bluetooth Low-Latency)</option>
+<option>USB Audio Interface (Direct Line-In)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-3 text-text-secondary text-sm">unfold_more</span>
+</div>
+<!-- Input Volume Slider -->
+<div class="space-y-2 pt-1">
+<div class="flex justify-between text-xs font-mono text-text-secondary">
+<span>Input Volume</span>
+<span class="text-text-primary">82%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary-container" max="100" min="0" type="range" value="82"/>
+</div>
+<!-- Live Mic Test Meter (16 Tick Bars) -->
+<div class="space-y-2 pt-2 border-t border-border">
+<div class="flex justify-between items-center text-xs font-mono text-text-secondary">
+<span>Live Input Meter</span>
+<span class="text-text-secondary">-18 dBFS</span>
+</div>
+<div class="flex items-center justify-between gap-1 h-4 bg-background px-2.5 py-1 rounded-lg border border-border">
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container"></div>
+<div class="h-2 w-full rounded-sm bg-primary-container opacity-80"></div>
+<div class="h-2 w-full rounded-sm bg-surface-container-high"></div>
+<div class="h-2 w-full rounded-sm bg-surface-container-high"></div>
+<div class="h-2 w-full rounded-sm bg-surface-container-high"></div>
+<div class="h-2 w-full rounded-sm bg-surface-container-high"></div>
+</div>
+</div>
+</div>
+<!-- Output Device Card -->
+<div class="bg-surface border border-border rounded-xl p-5 space-y-4 flex flex-col justify-between">
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<label class="block text-xs font-mono text-text-secondary uppercase tracking-wider">Output Device</label>
+<span class="text-xs font-mono text-text-secondary">Stereo 48kHz</span>
+</div>
+<div class="relative">
+<select class="w-full bg-background border border-border rounded-xl py-2.5 pl-3 pr-10 text-small font-small text-text-primary appearance-none focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
+<option>Headphones (AirPods Pro / Built-in)</option>
+<option>Internal MacBook Speakers</option>
+<option>External Display Audio (HDMI)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-3 text-text-secondary text-sm">unfold_more</span>
+</div>
+<!-- Output Volume Slider -->
+<div class="space-y-2 pt-1">
+<div class="flex justify-between text-xs font-mono text-text-secondary">
+<span>Output Volume</span>
+<span class="text-text-primary">64%</span>
+</div>
+<input class="w-full h-1.5 bg-surface-container rounded-lg appearance-none cursor-pointer accent-primary-container" max="100" min="0" type="range" value="64"/>
+</div>
+</div>
+<!-- Test Sound Action Button -->
+<div class="pt-4 border-t border-border flex items-center justify-between">
+<span class="text-xs font-mono text-text-secondary">Verify output latency</span>
+<button class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-surface-container border border-border hover:bg-surface-bright text-text-primary text-xs font-mono transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-sm text-primary">play_arrow</span>
+<span>Test Sound</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: AUDIO PROCESSING & DSP -->
+<section class="space-y-4">
+<div class="flex items-center space-x-2 text-text-primary font-h2 text-sm font-semibold tracking-wide">
+<span class="material-symbols-outlined text-primary text-lg">graphic_eq</span>
+<span>AUDIO PROCESSING &amp; DSP</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Echo Cancellation -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between space-y-3">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-small font-medium text-text-primary">Echo Cancellation</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-surface-container-high border border-border text-text-secondary">AEC3</span>
+</div>
+<p class="text-xs text-text-secondary leading-relaxed">Suppresses acoustic feedback loops from unmuted speakers.</p>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-border">
+<span class="text-xs font-mono text-primary font-medium">Enabled</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<!-- AI Noise Suppression -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between space-y-3">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-small font-medium text-text-primary">Noise Suppression</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-surface-container-high border border-border text-primary">Neural DSP</span>
+</div>
+<p class="text-xs text-text-secondary leading-relaxed">Deep-filter isolation for keystrokes, fan hum, and room reverb.</p>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-border">
+<span class="text-xs font-mono text-primary font-medium">Crisp Isolation</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+<!-- Automatic Gain Control -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col justify-between space-y-3">
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<span class="text-small font-medium text-text-primary">Automatic Gain</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-surface-container-high border border-border text-text-secondary">AGC</span>
+</div>
+<p class="text-xs text-text-secondary leading-relaxed">Dynamically balances quiet whispering and sudden peaks.</p>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-border">
+<span class="text-xs font-mono text-primary font-medium">Enabled</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: CAMERA & VIDEO STREAM -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2 text-text-primary font-h2 text-sm font-semibold tracking-wide">
+<span class="material-symbols-outlined text-primary text-lg">videocam</span>
+<span>CAMERA &amp; VIDEO STREAM</span>
+</div>
+<span class="text-xs font-mono text-text-secondary">Hardware Accelerated</span>
+</div>
+<div class="bg-surface border border-border rounded-xl p-5 space-y-5">
+<!-- Camera Selection Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+<div>
+<label class="block text-xs font-mono text-text-secondary uppercase tracking-wider mb-2">Camera Source</label>
+<div class="relative">
+<select class="w-full bg-background border border-border rounded-xl py-2.5 pl-3 pr-10 text-small font-small text-text-primary appearance-none focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-colors">
+<option>FaceTime HD Camera 1080p</option>
+<option>External 4K Pro Brio Stream</option>
+<option>Virtual Camera (OBS WebRTC Source)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-3 text-text-secondary text-sm">unfold_more</span>
+</div>
+</div>
+<!-- Mirror & Blur Options -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 pt-4 sm:pt-6">
+<!-- Mirror Toggle -->
+<button class="flex items-center space-x-2 px-3 py-2 rounded-xl bg-surface-container border border-border hover:bg-surface-bright text-text-primary text-xs font-mono transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-sm text-text-secondary">flip</span>
+<span>Mirror Video: On</span>
+</button>
+<!-- Background Blur Switch -->
+<div class="flex items-center space-x-3 px-3 py-1.5 rounded-xl bg-surface-container border border-border">
+<span class="text-xs font-mono text-text-secondary">Background Blur</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-8 h-4 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Video Preview Container (16:9) -->
+<div class="relative w-full aspect-video rounded-xl overflow-hidden bg-background border border-border">
+<img alt="Alex Rivera live camera preview" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1Ud9MjBtYbl2A8EmRd869bu3B-rStDqtu91Jng_ApMUAEfBN4WH9ySDSaLbSNCyiUtUartP52ocXFFEvLGCuv2OazEBEKdrQTLifESoiDJ4Vc_c1uh9wZLhebiwGL9AqIDltP0OHCZ-56VUx_aYErAGSvoJ5_dG046hXllfkvMW98dkoeLNo8UJm2DFKRPRLW5tg5hX1spt_4Ww-OiTKU9wqE7X3nh_937i1TQcHt-jiAXWGaHsi3Uacr1g"/>
+<!-- Video Overlay Badges -->
+<div class="absolute top-3 left-3 flex items-center space-x-2 bg-background/80 backdrop-blur-md px-3 py-1 rounded-lg border border-border/80">
+<span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+<span class="text-xs font-mono text-text-primary">1080p · 60fps · WebRTC Feed</span>
+</div>
+<div class="absolute bottom-3 right-3 flex items-center space-x-2 bg-background/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-border/80 text-xs font-mono text-text-secondary">
+<span class="material-symbols-outlined text-xs">speed</span>
+<span>Bitrate: 3.4 Mbps</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: WEBRTC ENCODING & PROTOCOL -->
+<section class="space-y-4">
+<div class="flex items-center space-x-2 text-text-primary font-h2 text-sm font-semibold tracking-wide">
+<span class="material-symbols-outlined text-primary text-lg">lock_reset</span>
+<span>WEBRTC ENCODING &amp; PROTOCOL</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Preferred Video Codec Card -->
+<div class="bg-surface border border-border rounded-xl p-5 space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs font-mono text-text-secondary uppercase tracking-wider">Video Codec</span>
+<span class="text-xs font-mono text-text-secondary">Hardware Decode</span>
+</div>
+<!-- Segmented Codec Pill Control -->
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-background border border-border rounded-xl">
+<!-- AV1 (Active Emerald) -->
+<button class="px-2 py-2 rounded-lg bg-primary-container text-white text-xs font-mono font-medium shadow-sm flex flex-col items-center justify-center">
+<span>AV1</span>
+<span class="text-[9px] opacity-80">Recommended</span>
+</button>
+<button class="px-2 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface text-xs font-mono transition-colors flex flex-col items-center justify-center">
+<span>VP9</span>
+<span class="text-[9px] opacity-60">High Efficiency</span>
+</button>
+<button class="px-2 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface text-xs font-mono transition-colors flex flex-col items-center justify-center">
+<span>H.264</span>
+<span class="text-[9px] opacity-60">Legacy</span>
+</button>
+</div>
+<div class="pt-2 flex items-center justify-between text-xs font-mono text-text-secondary">
+<span>Bandwidth Savings</span>
+<span class="text-success font-medium">~35% vs VP8</span>
+</div>
+</div>
+<!-- Audio Spec & Network Relay Policy Card -->
+<div class="bg-surface border border-border rounded-xl p-5 space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-xs font-mono text-text-secondary uppercase tracking-wider">Audio Spec</span>
+<span class="px-2 py-0.5 rounded bg-surface-container border border-border text-xs font-mono text-primary">
+                  Opus 48kHz Fullband
+                </span>
+</div>
+<div class="space-y-2 pt-1">
+<label class="block text-xs font-mono text-text-secondary">Network Relay Policy</label>
+<div class="p-2.5 rounded-lg bg-background border border-border text-xs text-text-secondary leading-relaxed space-y-1.5">
+<div class="flex items-center justify-between">
+<span class="text-text-primary font-mono font-medium">Prefer Direct P2P Mesh</span>
+<span class="text-[10px] font-mono text-success bg-surface-container px-1.5 py-0.5 rounded border border-border">DTLS-SRTP Active</span>
+</div>
+<p class="text-[11px] font-mono text-text-secondary">
+                    Fallback to zero-knowledge encrypted TURN server if strict symmetric NAT prevents direct peer handshake.
+                  </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FOOTER ACTIONS & AUTO-SAVED STATUS -->
+<footer class="pt-4 border-t border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="flex items-center space-x-2 text-xs font-mono text-text-secondary">
+<span class="material-symbols-outlined text-sm text-success">check_circle</span>
+<span>All changes automatically verified and stored to system keychain.</span>
+</div>
+<div class="flex items-center space-x-3">
+<button class="px-4 py-2 rounded-xl bg-surface border border-border hover:bg-surface-bright text-text-secondary hover:text-text-primary text-xs font-mono transition-colors duration-150 ease-out">
+              Reset to Defaults
+            </button>
+<button class="px-5 py-2 rounded-xl bg-primary-container text-white text-xs font-mono font-medium hover:brightness-110 transition-all duration-150 ease-out">
+              Save Profile
+            </button>
+</div>
+</footer>
+</div>
+</main>
+</div>
+</body></html>

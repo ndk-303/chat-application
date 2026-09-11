@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Connected Devices &amp; Sessions — Aether Chat</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed-dim": "#c4c6cd",
+            "inverse-primary": "#006c51",
+            "on-error": "#690005",
+            "tertiary": "#c6c6ca",
+            "primary-container": "#00a67e",
+            "surface-container": "#192029",
+            "outline-variant": "#3d4a43",
+            "on-tertiary-fixed": "#1a1c1f",
+            "surface-bright": "#333a44",
+            "on-secondary": "#2e3036",
+            "primary": "#5bdcb0",
+            "on-primary-fixed": "#002116",
+            "outline": "#86948c",
+            "primary-fixed-dim": "#5bdcb0",
+            "border": "#23272F",
+            "surface-container-high": "#232a34",
+            "text-secondary": "#9CA3AF",
+            "on-tertiary-fixed-variant": "#45474a",
+            "surface-tint": "#5bdcb0",
+            "on-secondary-fixed-variant": "#44474d",
+            "on-primary-container": "#003224",
+            "surface": "#16191E",
+            "on-secondary-fixed": "#191c21",
+            "error-container": "#93000a",
+            "on-primary": "#003828",
+            "surface-container-highest": "#2e353f",
+            "secondary": "#c4c6cd",
+            "inverse-surface": "#dce3f0",
+            "surface-dim": "#0d141d",
+            "on-secondary-container": "#b3b5bc",
+            "text-primary": "#F3F4F6",
+            "secondary-fixed": "#e1e2e9",
+            "on-primary-fixed-variant": "#00513c",
+            "secondary-container": "#44474d",
+            "on-surface-variant": "#bccac2",
+            "success": "#10B981",
+            "on-surface": "#dce3f0",
+            "tertiary-container": "#919296",
+            "tertiary-fixed": "#e2e2e6",
+            "on-tertiary": "#2f3034",
+            "background": "#0D0F12",
+            "on-error-container": "#ffdad6",
+            "on-background": "#dce3f0",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "surface-variant": "#2e353f",
+            "error": "#EF4444",
+            "primary-fixed": "#7af9cc",
+            "inverse-on-surface": "#2a313b",
+            "surface-container-lowest": "#080f17",
+            "on-tertiary-container": "#292b2e",
+            "surface-container-low": "#151c25"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h2": ["Inter"]
+          },
+          "fontSize": {
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0F12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #333a44;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary font-body-md text-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-white">
+<!-- TopNavBar (Executed strictly from Shared Components JSON + Design System tokens) -->
+<header class="sticky top-0 z-50 bg-surface dark:bg-surface border-b border-border dark:border-border">
+<div class="flex justify-between items-center w-full px-6 max-w-7xl mx-auto h-16">
+<!-- Brand & Security Badge -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center border border-border text-primary">
+<span class="material-symbols-outlined fill-icon text-lg">shield</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-h2 text-h2 font-semibold text-text-primary dark:text-text-primary tracking-tight">Aether Chat</span>
+<span class="font-mono text-xs text-text-secondary bg-surface-container px-1.5 py-0.5 rounded border border-border">v2.4.1</span>
+</div>
+</div>
+<div class="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-full bg-surface-container border border-border">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+</span>
+<span class="font-small text-xs font-medium text-text-secondary">E2EE Mesh Active</span>
+</div>
+</div>
+<!-- Navigation Links (Active mapping: Settings) -->
+<nav class="hidden md:flex items-center gap-8 font-body-md text-body-md">
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out" href="#chats">Chats</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out" href="#calls">Calls</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out" href="#contacts">Contacts</a>
+<a class="text-primary dark:text-primary border-b-2 border-primary dark:border-primary font-medium pb-1 transition-all duration-150 ease-out" href="#settings">Settings</a>
+</nav>
+<!-- Trailing Cluster -->
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright transition-colors duration-150 text-text-secondary hover:text-text-primary text-small">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<span>Back to Chats</span>
+<kbd class="font-mono text-[10px] bg-background px-1.5 py-0.5 rounded border border-border text-text-secondary">Esc</kbd>
+</button>
+<button aria-label="Help and documentation" class="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-bright rounded-lg transition-colors duration-150">
+<span class="material-symbols-outlined text-xl">help_outline</span>
+</button>
+<div class="h-6 w-px bg-border mx-1"></div>
+<!-- User Profile Pill -->
+<div class="flex items-center gap-2.5 pl-1">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-border flex items-center justify-center font-mono text-xs font-semibold text-primary">
+              AR
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-success border-2 border-surface"></span>
+</div>
+<div class="hidden xl:flex flex-col text-left">
+<span class="font-small text-xs font-medium text-text-primary leading-tight">Alex Rivera</span>
+<span class="font-mono text-[10px] text-text-secondary leading-none">0x9f4a..77b1</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Application Shell -->
+<div class="flex flex-1 w-full max-w-7xl mx-auto overflow-hidden">
+<!-- Left Preferences Sub-Nav (Settings Sidebar) -->
+<aside class="w-72 flex-shrink-0 border-r border-border p-6 flex flex-col justify-between hidden md:flex">
+<div class="space-y-6">
+<div>
+<h2 class="font-mono text-[11px] uppercase tracking-wider text-text-secondary px-3 mb-3">Preferences</h2>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150" href="#general">
+<span class="material-symbols-outlined text-lg">tune</span>
+<span class="font-small text-small">General &amp; Appearance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150" href="#voice">
+<span class="material-symbols-outlined text-lg">mic</span>
+<span class="font-small text-small">Voice &amp; Video</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150" href="#privacy">
+<span class="material-symbols-outlined text-lg">lock</span>
+<span class="font-small text-small">Privacy &amp; Security</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150" href="#notifications">
+<span class="material-symbols-outlined text-lg">notifications</span>
+<span class="font-small text-small">Notifications</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-bright text-text-primary font-medium border-l-2 border-primary transition-all duration-150" href="#devices">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg text-primary">devices</span>
+<span class="font-small text-small">Connected Devices</span>
+</div>
+<span class="font-mono text-[11px] bg-background px-1.5 py-0.5 rounded border border-border text-primary">4</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150" href="#about">
+<span class="material-symbols-outlined text-lg">info</span>
+<span class="font-small text-small">About &amp; Licenses</span>
+</a>
+</nav>
+</div>
+<!-- Direct Sessions Quick State -->
+<div class="p-3.5 rounded-lg bg-surface border border-border">
+<div class="flex items-center justify-between mb-2">
+<span class="font-mono text-[11px] text-text-secondary uppercase">Mesh Network</span>
+<span class="font-mono text-xs text-primary">Healthy</span>
+</div>
+<p class="font-small text-xs text-text-secondary leading-relaxed">P2P topology connected across 3 relay bridges with zero plaintext exposure.</p>
+</div>
+</div>
+<!-- Sidebar Footer Meta -->
+<div class="pt-6 border-t border-border space-y-2">
+<div class="flex items-center justify-between text-text-secondary font-mono text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+            Cloud E2EE synced
+          </span>
+<span>42ms</span>
+</div>
+<div class="text-text-secondary font-mono text-[11px]">
+          Client build 2410-b9a3
+        </div>
+<div class="pt-2">
+<a class="inline-flex items-center gap-1 text-text-secondary hover:text-text-primary font-small text-xs transition-colors" href="#help">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+            Help &amp; Documentation
+          </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-6 md:p-10 space-y-8">
+<!-- Top Breadcrumb & Page Header -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-text-secondary font-small text-xs">
+<span>Settings</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-text-primary font-medium">Connected Devices &amp; Sessions</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-1">
+<div>
+<h1 class="font-h1 text-2xl md:text-3xl font-bold tracking-tight text-text-primary">Connected Devices &amp; Sessions</h1>
+<p class="font-body-md text-text-secondary text-sm mt-1">Manage active WebRTC nodes, linked mobile clients, and cryptographic session keys.</p>
+</div>
+<div class="flex items-center self-start md:self-auto gap-2">
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-border font-small text-xs text-text-primary">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+              4 Sessions Active
+            </span>
+</div>
+</div>
+</div>
+<!-- Section 1: Current Active Device -->
+<section class="space-y-3">
+<h3 class="font-mono text-xs uppercase tracking-wider text-text-secondary">Current Device Node</h3>
+<div class="bg-surface border border-border rounded-xl p-6 relative overflow-hidden transition-all duration-150">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-border">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container border border-border flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">laptop_mac</span>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h2 class="font-h2 text-base md:text-lg font-semibold text-text-primary">MacBook Pro 16" — Desktop App v2.4.1</h2>
+</div>
+<p class="font-small text-xs text-text-secondary mt-0.5">macOS Sequoia 15.1 · Native WebRTC Rust Core</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container border border-primary text-primary font-mono text-xs self-start sm:self-auto">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              Current Session
+            </span>
+</div>
+<!-- Metadata 4-Column Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-5">
+<div>
+<span class="block font-small text-xs text-text-secondary mb-1">IP Address</span>
+<span class="font-mono text-sm text-text-primary">192.0.2.45</span>
+</div>
+<div>
+<span class="block font-small text-xs text-text-secondary mb-1">Location</span>
+<span class="font-small text-sm text-text-primary">San Francisco, CA · US</span>
+</div>
+<div>
+<span class="block font-small text-xs text-text-secondary mb-1">WebRTC Node ID</span>
+<span class="font-mono text-sm text-primary">node_0x9f4a..77b1</span>
+</div>
+<div>
+<span class="block font-small text-xs text-text-secondary mb-1">Mesh Status</span>
+<span class="inline-flex items-center gap-1.5 font-small text-sm text-success">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+                Active now · Direct P2P
+              </span>
+</div>
+</div>
+<div class="mt-5 pt-4 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-text-secondary font-mono text-[11px]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">verified_user</span>
+<span>DTLS-SRTP Key negotiated 18m ago</span>
+</div>
+<span class="text-text-secondary">Session Ephemeral ID: <code class="text-text-primary">#eph-99824f</code></span>
+</div>
+</div>
+</section>
+<!-- Section 2: Other Active Sessions List -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h3 class="font-mono text-xs uppercase tracking-wider text-text-secondary">Other Active Sessions</h3>
+<span class="font-mono text-xs bg-surface-container px-2 py-0.5 rounded-full border border-border text-text-secondary">3</span>
+</div>
+<span class="font-small text-xs text-text-secondary hidden sm:inline">Encrypted using individual pairwise Double Ratchet keys</span>
+</div>
+<div class="space-y-3">
+<!-- Item 1: Mobile -->
+<div class="bg-surface border border-border rounded-xl p-5 hover:border-surface-bright transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-border flex items-center justify-center text-text-secondary mt-0.5">
+<span class="material-symbols-outlined text-xl">smartphone</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h4 class="font-body-md font-semibold text-text-primary text-sm">iPhone 15 Pro</h4>
+<span class="px-2 py-0.5 text-[10px] font-mono rounded bg-surface-container text-text-secondary border border-border">Mobile Push</span>
+</div>
+<p class="font-small text-xs text-text-secondary">iOS 18 · Aether Mobile v2.4.0</p>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-text-secondary pt-1">
+<span>Last active 14m ago</span>
+<span>·</span>
+<span>Cupertino, US</span>
+<span>·</span>
+<span class="text-text-primary">198.51.100.22</span>
+<span>·</span>
+<span class="text-primary-fixed-dim">Relay Mesh</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end md:self-center">
+<button class="px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-primary font-small text-xs transition-colors duration-150">
+                Revoke Session
+              </button>
+</div>
+</div>
+<!-- Item 2: Linux Workstation -->
+<div class="bg-surface border border-border rounded-xl p-5 hover:border-surface-bright transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-border flex items-center justify-center text-text-secondary mt-0.5">
+<span class="material-symbols-outlined text-xl">terminal</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h4 class="font-body-md font-semibold text-text-primary text-sm">Linux Workstation</h4>
+<span class="px-2 py-0.5 text-[10px] font-mono rounded bg-surface-container text-text-secondary border border-border">Web Client</span>
+</div>
+<p class="font-small text-xs text-text-secondary">Ubuntu 24.04 LTS · Chrome 130</p>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-text-secondary pt-1">
+<span>Last active Yesterday 18:32</span>
+<span>·</span>
+<span>Austin, TX, US</span>
+<span>·</span>
+<span class="text-text-primary">203.0.113.84</span>
+<span>·</span>
+<span class="text-primary-fixed-dim">Direct Node</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end md:self-center">
+<button class="px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-primary font-small text-xs transition-colors duration-150">
+                Revoke Session
+              </button>
+</div>
+</div>
+<!-- Item 3: Tablet -->
+<div class="bg-surface border border-border rounded-xl p-5 hover:border-surface-bright transition-colors duration-150 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container border border-border flex items-center justify-center text-text-secondary mt-0.5">
+<span class="material-symbols-outlined text-xl">tablet_mac</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<h4 class="font-body-md font-semibold text-text-primary text-sm">iPad Pro 12.9"</h4>
+<span class="px-2 py-0.5 text-[10px] font-mono rounded bg-surface-container text-text-secondary border border-border">Dormant</span>
+</div>
+<p class="font-small text-xs text-text-secondary">iPadOS 17.5 · Safari Web Client</p>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-text-secondary pt-1">
+<span>Last active 4 days ago</span>
+<span>·</span>
+<span>Seattle, WA, US</span>
+<span>·</span>
+<span class="text-text-primary">198.51.100.91</span>
+<span>·</span>
+<span class="text-text-secondary">Inactive</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end md:self-center">
+<button class="px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-primary font-small text-xs transition-colors duration-150">
+                Revoke Session
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Destructive Action Card -->
+<section>
+<div class="p-6 rounded-xl border border-error/30 bg-[#1A1315] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-lg bg-error/10 border border-error/20 flex items-center justify-center text-error flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-xl">gpp_maybe</span>
+</div>
+<div class="space-y-1">
+<h4 class="font-body-md font-semibold text-text-primary text-sm">Terminate All Other Active Sessions</h4>
+<p class="font-small text-xs text-text-secondary max-w-2xl leading-relaxed">
+                Lost a device? Terminating other sessions will invalidate their cryptographic Double Ratchet keys, purge local cache tokens, and force immediate re-authentication across all secondary devices.
+              </p>
+</div>
+</div>
+<button class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg bg-error text-white font-small text-xs font-semibold hover:bg-red-600 transition-colors duration-150">
+<span class="material-symbols-outlined text-base">logout</span>
+            Terminate All Other Sessions
+          </button>
+</div>
+</section>
+<!-- Section 4: Cryptographic Session Verification & Fingerprint Card -->
+<section class="space-y-3">
+<h3 class="font-mono text-xs uppercase tracking-wider text-text-secondary">Cryptographic Identity</h3>
+<div class="bg-surface border border-border rounded-xl p-6 space-y-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-border">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container border border-border flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl">vpn_key</span>
+</div>
+<div>
+<h4 class="font-body-md font-semibold text-text-primary text-sm">Ed25519 &amp; Signal Protocol Master Identity</h4>
+<p class="font-small text-xs text-text-secondary">Public key fingerprint for identity cross-verification</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-xs px-2.5 py-1 rounded bg-surface-container border border-border text-primary">
+                Fingerprint Verified
+              </span>
+</div>
+</div>
+<!-- Master Fingerprint Display -->
+<div class="space-y-2">
+<label class="block font-small text-xs text-text-secondary">Master Safety Fingerprint (64-character hex)</label>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+<div class="flex-1 bg-background border border-border rounded-lg p-3.5 font-mono text-xs text-text-primary tracking-wider select-all overflow-x-auto">
+                7F8A 9E21 410E DD71 BB90 3EF4 B4C2 9190 64A9 5012 CC4A 89FE 1109 B764 A881 2DC9
+              </div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center gap-1.5 px-3 py-3 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-secondary hover:text-text-primary font-small text-xs transition-colors duration-150 whitespace-nowrap">
+<span class="material-symbols-outlined text-base">content_copy</span>
+<span>Copy</span>
+</button>
+<button class="flex items-center justify-center gap-1.5 px-3.5 py-3 rounded-lg bg-primary-container text-white font-small text-xs font-medium hover:opacity-90 transition-opacity duration-150 whitespace-nowrap">
+<span class="material-symbols-outlined text-base">qr_code_2</span>
+<span>Verify via QR Code</span>
+</button>
+</div>
+</div>
+</div>
+<div class="pt-2 flex items-center gap-2.5 text-text-secondary font-small text-xs">
+<span class="material-symbols-outlined text-primary text-base">lock</span>
+<span>End-to-end encrypted session keys never leave your physical device hardware keychain. Ratchet state updates are zero-knowledge.</span>
+</div>
+</div>
+</section>
+<!-- Bottom Sticky Status Bar -->
+<footer class="pt-4 pb-8">
+<div class="p-4 rounded-xl bg-surface border border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2.5">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
+</span>
+<span class="font-small text-xs text-text-primary">
+              All session ratchets synchronized with local secure enclave (Apple SEP).
+            </span>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-secondary hover:text-text-primary font-small text-xs transition-colors">
+              Session Audit Log
+            </button>
+<button class="px-3 py-1.5 rounded-lg border border-border bg-surface-container hover:bg-surface-bright text-text-secondary hover:text-text-primary font-small text-xs transition-colors">
+              Rotate Keyring
+            </button>
+</div>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

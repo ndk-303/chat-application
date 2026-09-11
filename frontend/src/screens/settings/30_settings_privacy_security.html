@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aether Chat - Settings · Privacy &amp; Security</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#44474d",
+            "primary-fixed": "#7af9cc",
+            "surface-container-high": "#232a34",
+            "surface-variant": "#2e353f",
+            "surface-container-low": "#151c25",
+            "primary-container": "#00a67e",
+            "on-tertiary-container": "#292b2e",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "tertiary-fixed": "#e2e2e6",
+            "inverse-primary": "#006c51",
+            "surface-tint": "#5bdcb0",
+            "on-secondary-container": "#b3b5bc",
+            "text-primary": "#F3F4F6",
+            "secondary": "#c4c6cd",
+            "on-tertiary-fixed-variant": "#45474a",
+            "tertiary": "#c6c6ca",
+            "on-error": "#690005",
+            "on-secondary": "#2e3036",
+            "on-primary-container": "#003224",
+            "error": "#EF4444",
+            "secondary-fixed": "#e1e2e9",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-primary-fixed": "#002116",
+            "on-error-container": "#ffdad6",
+            "outline-variant": "#3d4a43",
+            "inverse-surface": "#dce3f0",
+            "on-secondary-fixed": "#191c21",
+            "surface-container": "#192029",
+            "success": "#10B981",
+            "surface-dim": "#0d141d",
+            "on-tertiary": "#2f3034",
+            "on-surface-variant": "#bccac2",
+            "on-primary-fixed-variant": "#00513c",
+            "on-secondary-fixed-variant": "#44474d",
+            "error-container": "#93000a",
+            "text-secondary": "#9CA3AF",
+            "primary-fixed-dim": "#5bdcb0",
+            "background": "#0D0F12",
+            "inverse-on-surface": "#2a313b",
+            "on-background": "#dce3f0",
+            "on-primary": "#003828",
+            "tertiary-container": "#919296",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-surface": "#dce3f0",
+            "border": "#23272F",
+            "surface-container-highest": "#2e353f",
+            "primary": "#5bdcb0",
+            "surface-container-lowest": "#080f17",
+            "surface": "#16191E",
+            "outline": "#86948c",
+            "surface-bright": "#333a44"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "small": ["Inter"],
+            "h2": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "small": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "h2": [
+              "1.5rem",
+              {
+                "lineHeight": "1.3",
+                "fontWeight": "600"
+              }
+            ],
+            "mono": [
+              "0.875rem",
+              {
+                "fontWeight": "500"
+              }
+            ],
+            "h1": [
+              "2.25rem",
+              {
+                "lineHeight": "1.25",
+                "fontWeight": "700"
+              }
+            ],
+            "body-md": [
+              "1rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1;
+    }
+    /* Custom clean scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0F12;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #23272F;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2e353f;
+    }
+  </style>
+</head>
+<body class="bg-background text-text-primary font-body-md text-body-md antialiased h-screen flex flex-col overflow-hidden selection:bg-primary-container selection:text-text-primary">
+<!-- Top Navigation Bar (Shared Component: TopNavBar Anchor) -->
+<header class="bg-surface dark:bg-surface border-b border-border dark:border-border w-full h-16 z-30 flex-shrink-0">
+<div class="flex justify-between items-center w-full px-6 max-w-7xl mx-auto h-16">
+<!-- Left Brand & Status Group -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-xl bg-primary-container/20 border border-primary-container/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-base">shield_lock</span>
+</div>
+<span class="font-h2 text-h2 font-semibold text-text-primary dark:text-text-primary tracking-tight">Aether Chat</span>
+</div>
+<span class="font-mono text-small text-text-secondary px-2 py-0.5 rounded-lg bg-surface-container border border-border">v2.4.1</span>
+<div class="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary font-small text-small font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+<span>E2EE Mesh Active</span>
+</div>
+</div>
+<!-- Navigation Links from JSON Anchor -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out font-small text-small" href="#">Chats</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out font-small text-small" href="#">Calls</a>
+<a class="text-text-secondary dark:text-text-secondary hover:text-text-primary dark:hover:text-text-primary pb-1 transition-all duration-150 ease-out font-small text-small" href="#">Contacts</a>
+<a class="text-primary dark:text-primary border-b-2 border-primary dark:border-primary font-medium pb-1 font-small text-small transition-all duration-150 ease-out" href="#">Settings</a>
+</nav>
+<!-- Trailing Controls & User Info -->
+<div class="flex items-center gap-3">
+<button class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright border border-border text-small font-small transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-base">arrow_back</span>
+<span>Back to Chats</span>
+<kbd class="font-mono text-[10px] px-1.5 py-0.5 bg-background border border-border rounded text-text-secondary">Esc</kbd>
+</button>
+<button aria-label="Help Documentation" class="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-bright rounded-lg transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-base">help_outline</span>
+</button>
+<div class="flex items-center gap-2.5 pl-2 border-l border-border">
+<div class="relative">
+<img class="w-8 h-8 rounded-full object-cover border border-border" data-alt="A portrait headshot of Alex Rivera with crisp natural lighting against a minimalist slate studio backdrop. The subject wears dark refined technical apparel suited for modern software engineering leadership. The atmosphere radiates calm confidence, focused professionalism, and disciplined tech craftsmanship matching dark interface aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU0PjTCSvlW3IZaOhz5nZ1SIuS8G03kgxjp5_l_zF4u5oPHriloATxFIBJNoFya74w-QnV-knQ_I8JwwClBZsMWLbMkt71DdK-u83yR7X7rVEHwUTAHyWxX0LaWYKGAEXjNUSXwJc_7ZnaIonNGa-N2IsVcflIYtJG57DcrID1giY_hm85PHYsM6xVEmoXox0_SyfUlnxt17i9kXI7Wib_Mfc4KA_9d_2jA7R--x9sdvd35iMgkDEM6ZBCHmZp344M-V8GihN-kfKv"/>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-primary-container border-2 border-surface"></span>
+</div>
+<div class="hidden xl:block text-left">
+<p class="font-small text-small font-medium text-text-primary leading-tight">Alex Rivera</p>
+<p class="font-small text-[11px] text-text-secondary leading-none mt-0.5">Key ID: 0x48f9</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Workspace Body with Side Navigation Rail and Main Canvas -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Preferences SideNav Rail (Integrated Semantic Navigation) -->
+<aside class="w-72 bg-surface border-r border-border flex flex-col justify-between p-4 flex-shrink-0 select-none">
+<div class="space-y-6">
+<div>
+<h3 class="px-3 font-mono text-[11px] font-semibold tracking-wider text-text-secondary uppercase">System Preferences</h3>
+<div class="mt-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">tune</span>
+<span>General &amp; Appearance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">mic</span>
+<span>Voice &amp; Video</span>
+</a>
+<!-- Active Item: Privacy & Security -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-bright text-text-primary font-medium border-l-2 border-primary font-small text-small transition-all duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-base text-primary fill-icon">shield</span>
+<span class="text-text-primary">Privacy &amp; Security</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">notifications</span>
+<span>Notifications</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">devices</span>
+<span>Connected Devices</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">info</span>
+<span>About &amp; Licenses</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Bottom Status Widget -->
+<div class="pt-4 border-t border-border space-y-2">
+<div class="p-3 bg-background rounded-xl border border-border">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-small text-small font-medium text-text-primary">Cloud E2EE synced</span>
+</div>
+<span class="font-mono text-small text-text-secondary">42ms</span>
+</div>
+<p class="font-mono text-[11px] text-text-secondary mt-1.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs">terminal</span>
+<span>Client build 2410-b9a3</span>
+</p>
+</div>
+<a class="flex items-center gap-2 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-bright transition-colors duration-150 ease-out font-small text-small" href="#">
+<span class="material-symbols-outlined text-base">help_outline</span>
+<span>Help &amp; Docs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas Area -->
+<main class="flex-1 overflow-y-auto bg-background p-6 lg:p-10">
+<div class="max-w-4xl mx-auto space-y-8 pb-16">
+<!-- Header Block -->
+<div class="space-y-2">
+<div class="flex items-center gap-2 text-text-secondary font-small text-small">
+<a class="hover:text-text-primary transition-colors" href="#">Settings</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-text-primary font-medium">Privacy &amp; Security</span>
+</div>
+<h1 class="font-h1 text-h1 font-bold text-text-primary tracking-tight">Privacy &amp; Security</h1>
+<p class="font-body-md text-body-md text-text-secondary">End-to-end cryptographic keys, peer encryption, and privacy protections.</p>
+</div>
+<!-- Section 1: Cryptographic Master Keys -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">Cryptographic Master Keys</h2>
+<span class="font-mono text-xs text-text-secondary">Protocol: Signal / WebRTC DataChannel</span>
+</div>
+<div class="bg-surface border border-border rounded-xl p-6 space-y-5">
+<!-- Header Row -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container/15 border border-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-xl fill-icon">verified_user</span>
+</div>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-text-primary">Ed25519 Identity Key</h3>
+<p class="font-small text-small text-text-secondary">Curve25519 master root key for peer key agreement (X3DH).</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary font-mono text-xs font-medium self-start sm:self-auto">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                Double Ratchet Protocol: Active
+              </span>
+</div>
+<!-- Key Fingerprint Box -->
+<div class="bg-background border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-1">
+<p class="font-mono text-xs text-text-secondary tracking-wide uppercase">Safety Number Fingerprint</p>
+<div class="font-mono text-small text-text-primary tracking-widest selection:bg-primary-container selection:text-text-primary">
+                  7F8A 9E21 410E DD71 BB90 3EF4 B4C2 9190
+                </div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-surface-bright border border-border text-text-primary rounded-lg font-small text-small transition-colors duration-150 ease-out" id="copyKeyBtn">
+<span class="material-symbols-outlined text-base">content_copy</span>
+<span>Copy Key</span>
+</button>
+<button aria-label="Show QR Code" class="p-2 bg-surface hover:bg-surface-bright border border-border text-text-secondary hover:text-text-primary rounded-lg transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-base">qr_code_2</span>
+</button>
+</div>
+</div>
+<p class="font-small text-small text-text-secondary leading-relaxed">
+              Your cryptographic identity never leaves your device. Public keys are exchanged directly over WebRTC signaling. Verify fingerprints out-of-band to prevent active interception.
+            </p>
+<!-- Action Bar -->
+<div class="pt-2 flex flex-wrap items-center gap-3">
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary-container hover:brightness-110 text-on-primary-container font-small text-small font-semibold transition-all duration-150 ease-out shadow-sm">
+<span class="material-symbols-outlined text-base">key</span>
+<span>Backup 12-Word Recovery Phrase</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-transparent hover:bg-surface-bright border border-border text-text-primary font-small text-small font-medium transition-colors duration-150 ease-out">
+<span class="material-symbols-outlined text-base">autorenew</span>
+<span>Rotate Pre-Keys</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section 2: Peer & Network Privacy -->
+<section class="space-y-3">
+<h2 class="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">Peer &amp; Network Privacy</h2>
+<div class="bg-surface border border-border rounded-xl divide-y divide-border">
+<!-- Row 1: IP Protection -->
+<div class="p-5 flex items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-primary">lan</span>
+<p class="font-body-md text-body-md font-medium text-text-primary">IP Address Protection</p>
+</div>
+<p class="font-small text-small text-text-secondary max-w-2xl">
+                  Route media through encrypted WebRTC relays (STUN/TURN) to prevent exposing your local IP to direct peers. Adds minor latency overhead (approx. 8–14ms).
+                </p>
+</div>
+<!-- Toggle active -->
+<label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- Row 2: Read Receipts -->
+<div class="p-5 flex items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-primary">done_all</span>
+<p class="font-body-md text-body-md font-medium text-text-primary">Send Read Receipts</p>
+</div>
+<p class="font-small text-small text-text-secondary max-w-2xl">
+                  Allow peers to see when you have decrypted and read incoming messages. When disabled, you also cannot view read receipts from other peers.
+                </p>
+</div>
+<!-- Toggle active -->
+<label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- Row 3: Live Typing Indicators -->
+<div class="p-5 flex items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-text-secondary">keyboard</span>
+<p class="font-body-md text-body-md font-medium text-text-primary">Live Typing Indicators</p>
+</div>
+<p class="font-small text-small text-text-secondary max-w-2xl">
+                  Broadcast ephemeral typing state to active chat peers in real-time. Ephemeral tokens are sent over lightweight Datachannels.
+                </p>
+</div>
+<!-- Toggle inactive -->
+<label class="relative inline-flex items-center cursor-pointer flex-shrink-0 mt-1">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Section 3: Blocked Peers -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">Blocked Peers</h2>
+<span class="font-mono text-xs text-text-secondary">P2P Blacklist</span>
+</div>
+<div class="bg-surface border border-border rounded-xl p-5 space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md font-medium text-text-primary">Restricted Peers</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container border border-border text-text-secondary font-mono text-xs">2 blocked</span>
+</div>
+<div class="divide-y divide-border border border-border rounded-lg overflow-hidden bg-background">
+<!-- Blocked Item 1 -->
+<div class="p-3.5 flex items-center justify-between hover:bg-surface transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-bright border border-border flex items-center justify-center font-mono text-small font-semibold text-text-secondary">
+                    SB
+                  </div>
+<div>
+<p class="font-small text-small font-medium text-text-primary leading-tight">spambot_49</p>
+<p class="font-mono text-[11px] text-text-secondary leading-none mt-1">@spambot49 · Blocked Sep 14</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg border border-border hover:bg-surface-bright text-text-secondary hover:text-text-primary font-small text-small transition-colors duration-150 ease-out">
+                  Unblock
+                </button>
+</div>
+<!-- Blocked Item 2 -->
+<div class="p-3.5 flex items-center justify-between hover:bg-surface transition-colors duration-150">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-bright border border-border flex items-center justify-center text-text-secondary">
+<span class="material-symbols-outlined text-base">block</span>
+</div>
+<div>
+<p class="font-small text-small font-medium text-text-primary leading-tight">Unknown Peer</p>
+<p class="font-mono text-[11px] text-text-secondary leading-none mt-1">ID: 0x94f1...8a2 · Blocked Aug 28</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg border border-border hover:bg-surface-bright text-text-secondary hover:text-text-primary font-small text-small transition-colors duration-150 ease-out">
+                  Unblock
+                </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Data & Danger Zone -->
+<section class="space-y-3">
+<h2 class="font-mono text-xs font-semibold tracking-wider text-text-secondary uppercase">Data &amp; Danger Zone</h2>
+<div class="bg-surface border border-border rounded-xl p-5 space-y-6">
+<!-- Sub-item 1: Clear Local Decrypted Media Cache -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<p class="font-body-md text-body-md font-medium text-text-primary">Clear Local Decrypted Media Cache</p>
+<span class="font-mono text-xs px-2 py-0.5 rounded bg-surface-container border border-border text-text-secondary">184 MB</span>
+</div>
+<p class="font-small text-small text-text-secondary max-w-xl">
+                  Removes cached images, voice memos, and temporary decrypted attachments from your browser storage.
+                </p>
+</div>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-bright border border-border text-text-primary font-small text-small font-medium transition-colors duration-150 ease-out self-start sm:self-auto flex-shrink-0">
+                Clear Cache
+              </button>
+</div>
+<!-- Sub-item 2: Export Encrypted Data Archive -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-border">
+<div class="space-y-1">
+<p class="font-body-md text-body-md font-medium text-text-primary">Export Encrypted Data Archive</p>
+<p class="font-small text-small text-text-secondary max-w-xl">
+                  Download zero-knowledge password-encrypted backup of your keys, contacts, and message logs.
+                </p>
+</div>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container hover:bg-surface-bright border border-border text-text-primary font-small text-small font-medium transition-colors duration-150 ease-out self-start sm:self-auto flex-shrink-0 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">download</span>
+<span>Export Backup</span>
+</button>
+</div>
+<!-- Danger Zone Divider & Item -->
+<div class="pt-6 border-t border-border">
+<div class="p-4 rounded-xl bg-error/5 border border-error/20 flex flex-col md:flex-row md:items-center justify-between gap-5">
+<div class="space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-base">warning</span>
+<p class="font-body-md text-body-md font-semibold text-text-primary">Delete Identity &amp; Wipe Local Keychain</p>
+</div>
+<p class="font-small text-small text-text-secondary max-w-xl">
+                    Permanently purges all Ed25519 identity keys, local sessions, and active WebRTC mesh connections. This action cannot be undone.
+                  </p>
+</div>
+<button class="px-4 py-2.5 rounded-lg border border-error/40 bg-error/10 hover:bg-error/20 text-error hover:text-white font-small text-small font-medium transition-all duration-150 ease-out flex items-center gap-2 self-start md:self-auto flex-shrink-0">
+<span class="material-symbols-outlined text-base">delete_forever</span>
+<span>Delete Identity &amp; Wipe Keychain</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<script>
+    // Copy key fingerprint interaction with feedback
+    const copyBtn = document.getElementById('copyKeyBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const keyText = '7F8A 9E21 410E DD71 BB90 3EF4 B4C2 9190';
+        navigator.clipboard.writeText(keyText).then(() => {
+          const originalHTML = copyBtn.innerHTML;
+          copyBtn.innerHTML = '<span class="material-symbols-outlined text-base text-primary">check</span><span class="text-primary font-medium">Copied!</span>';
+          setTimeout(() => {
+            copyBtn.innerHTML = originalHTML;
+          }, 2000);
+        });
+      });
+    }
+  </script>
+</body></html>
