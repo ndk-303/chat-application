@@ -3,401 +3,195 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Aether Chat Protocol - Node Onboarding</title>
+<title>Aether Chat — Profile Setup</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
-          "colors": {
-            "on-primary-fixed-variant": "#00513c",
-            "branco": "#FFFFFF",
-            "surface-container-low": "#1a1c1c",
-            "surface-dark": "#121214",
-            "tertiary-fixed-dim": "#ffaaf3",
-            "on-tertiary": "#5b005b",
-            "secondary-container": "#48494c",
+          colors: {
+            "surface-container-highest": "#2e353f",
             "outline": "#86948c",
-            "surface-container-lowest": "#0c0f0f",
-            "cinza-escuro": "#202124",
-            "on-secondary-container": "#b9b8bc",
-            "on-error": "#690005",
-            "on-secondary": "#2f3033",
-            "primary-fixed": "#7af9cc",
-            "background": "#121414",
-            "on-surface": "#e2e2e2",
-            "inverse-surface": "#e2e2e2",
-            "ciano": "#00FFFF",
-            "tertiary-fixed": "#ffd7f5",
-            "tertiary": "#ffaaf3",
-            "secondary": "#c7c6ca",
-            "verde-eletrico": "#00FF00",
-            "surface-dim": "#121414",
-            "on-tertiary-fixed-variant": "#810181",
-            "surface-tint": "#5bdcb0",
-            "on-secondary-fixed-variant": "#46474a",
-            "surface-variant": "#333535",
-            "on-surface-variant": "#bccac2",
-            "error-container": "#93000a",
-            "surface-container": "#1e2020",
-            "inverse-on-surface": "#2f3131",
-            "primary": "#5bdcb0",
-            "surface": "#121414",
-            "on-background": "#e2e2e2",
-            "surface-container-highest": "#333535",
-            "on-primary": "#003828",
-            "surface-bright": "#38393a",
-            "on-primary-fixed": "#002116",
-            "azul-ia": "#00A67E",
-            "roxo": "#800080",
-            "primary-container": "#00a67e",
-            "inverse-primary": "#006c51",
-            "on-tertiary-container": "#520052",
-            "cinza-claro": "#F0F0F0",
-            "surface-container-high": "#282a2b",
-            "outline-variant": "#3d4a43",
-            "secondary-fixed": "#e3e2e6",
-            "on-error-container": "#ffdad6",
             "primary-fixed-dim": "#5bdcb0",
-            "error": "#ffb4ab",
-            "on-tertiary-fixed": "#380038",
-            "on-secondary-fixed": "#1a1b1e",
-            "tertiary-container": "#db63d4",
-            "secondary-fixed-dim": "#c7c6ca",
-            "on-primary-container": "#003224"
+            "outline-variant": "#3d4a43",
+            "text-primary": "#F3F4F6",
+            "surface-container-high": "#232a34",
+            "surface": "#16191E",
+            "on-tertiary-container": "#292b2e",
+            "secondary-fixed-dim": "#c4c6cd",
+            "tertiary-container": "#919296",
+            "secondary-fixed": "#e1e2e9",
+            "on-secondary": "#2e3036",
+            "tertiary-fixed": "#e2e2e6",
+            "error-container": "#93000a",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#00513c",
+            "on-tertiary": "#2f3034",
+            "on-primary-container": "#003224",
+            "on-error": "#690005",
+            "primary-fixed": "#7af9cc",
+            "primary-container": "#00a67e",
+            "secondary-container": "#44474d",
+            "error": "#EF4444",
+            "primary": "#5bdcb0",
+            "inverse-primary": "#006c51",
+            "background": "#0D0F12",
+            "surface-container-lowest": "#080f17",
+            "tertiary": "#c6c6ca",
+            "on-secondary-container": "#b3b5bc",
+            "on-surface": "#dce3f0",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-surface-variant": "#bccac2",
+            "surface-bright": "#333a44",
+            "text-secondary": "#9CA3AF",
+            "inverse-surface": "#dce3f0",
+            "on-tertiary-fixed-variant": "#45474a",
+            "surface-container": "#192029",
+            "on-secondary-fixed-variant": "#44474d",
+            "border": "#23272F",
+            "on-primary": "#003828",
+            "inverse-on-surface": "#2a313b",
+            "surface-dim": "#0d141d",
+            "on-secondary-fixed": "#191c21",
+            "on-background": "#dce3f0",
+            "success": "#10B981",
+            "surface-container-low": "#151c25",
+            "surface-tint": "#5bdcb0",
+            "on-primary-fixed": "#002116",
+            "surface-variant": "#2e353f",
+            "secondary": "#c4c6cd"
           },
-          "borderRadius": {
+          borderRadius: {
             "DEFAULT": "0.125rem",
             "lg": "0.25rem",
             "xl": "0.5rem",
             "full": "0.75rem"
           },
-          "spacing": {
-            "margin": "1.5rem",
-            "gutter": "1.5rem",
-            "space-xs": "0.25rem",
-            "space-md": "1rem",
+          spacing: {
             "space-xl": "2rem",
-            "space-2xl": "4rem",
             "space-sm": "0.5rem",
-            "space-lg": "1.5rem"
+            "space-lg": "1.5rem",
+            "margin": "2rem",
+            "space-md": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem"
           },
-          "fontFamily": {
-            "headline-lg": ["Inter"],
-            "body-md": ["Inter"],
-            "mono-code": ["JetBrains Mono"],
-            "label-md": ["Inter"],
-            "headline-md": ["Inter"],
-            "hero": ["Inter"],
-            "headline-sm": ["Inter"],
-            "body-sm": ["Inter"],
-            "body-lg": ["Inter"]
+          fontFamily: {
+            "body-md": ["Inter", "sans-serif"],
+            "small": ["Inter", "sans-serif"],
+            "h2": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"],
+            "h1": ["Inter", "sans-serif"]
           },
-          "fontSize": {
-            "headline-lg": ["2.25rem", { "lineHeight": "1.2", "fontWeight": "700" }],
-            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
-            "mono-code": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
-            "label-md": ["0.875rem", { "lineHeight": "1.2", "fontWeight": "500" }],
-            "headline-md": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
-            "hero": ["clamp(2.5rem, 5vw, 4rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
-            "headline-sm": ["1.25rem", { "lineHeight": "1.4", "fontWeight": "600" }],
-            "body-sm": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
-            "body-lg": ["1.125rem", { "lineHeight": "1.6", "fontWeight": "400" }]
+          fontSize: {
+            "body-md": ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+            "small": ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "h2": ["1.5rem", { lineHeight: "1.3", fontWeight: "600" }],
+            "mono": ["0.875rem", { fontWeight: "500" }],
+            "h1": ["2.25rem", { lineHeight: "1.25", fontWeight: "700" }]
           }
-        },
-      },
-    }
+        }
+      }
+    };
   </script>
-<style>
-    .grid-bg {
-      background-size: 32px 32px;
-      background-image: 
-        linear-gradient(to right, rgba(61, 74, 67, 0.2) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(61, 74, 67, 0.2) 1px, transparent 1px);
-    }
-    @keyframes pulse-subtle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.9); }
-    }
-    .pulse-glow {
-      animation: pulse-subtle 2s ease-in-out infinite;
-    }
-  </style>
 </head>
-<body class="bg-cinza-escuro text-on-surface font-body-md text-body-md min-h-screen flex flex-col justify-between selection:bg-azul-ia selection:text-branco">
-<!-- Top Navigation Bar (Shared Component: TopNavBar) -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-space-lg h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
-<div class="flex items-center gap-space-lg">
-<div class="flex items-center gap-space-sm">
-<span class="w-3 h-3 rounded-full bg-azul-ia"></span>
-<span class="font-mono-code text-headline-sm font-semibold tracking-wider text-primary dark:text-primary uppercase">AETHER CHAT PROTOCOL</span>
-</div>
-<nav class="hidden md:flex items-center gap-space-lg ml-6">
-<a class="border-b-2 border-primary dark:border-primary text-primary dark:text-primary font-label-md text-label-md pb-1" href="#">Network Status</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Protocol Docs</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Telemetry</a>
-</nav>
-</div>
-<div class="flex items-center gap-space-md">
-<div class="hidden sm:flex items-center gap-2 text-outline-variant">
-<button class="p-2 text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" data-icon="terminal" title="Terminal Interface">
-<span class="material-symbols-outlined text-[20px]">terminal</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" data-icon="tune" title="System Settings">
-<span class="material-symbols-outlined text-[20px]">tune</span>
-</button>
-</div>
-<button class="px-3 py-1.5 rounded-xl border border-outline-variant font-mono-code text-body-sm text-on-surface hover:border-primary hover:text-primary transition-all duration-200">
-        System Specs
-      </button>
-<button class="px-4 py-1.5 rounded-xl bg-primary-container text-branco font-label-md text-label-md hover:bg-azul-ia/90 active:scale-98 transition-all duration-200 shadow-sm">
-        Connect Node
-      </button>
+<body class="bg-background text-text-primary min-h-screen flex flex-col justify-between items-center py-12 px-4 selection:bg-primary-container/20 selection:text-text-primary antialiased font-body-md text-body-md">
+<!-- Top Branding Header -->
+<header class="w-full flex justify-center items-center">
+<div class="rounded-full px-4 py-1.5 bg-surface border border-border flex items-center gap-2 shadow-sm transition-colors duration-150">
+<span class="w-2 h-2 rounded-full bg-primary-container inline-block"></span>
+<span class="font-body-md text-small text-text-primary font-medium tracking-tight">Aether</span>
 </div>
 </header>
-<!-- Main Canvas Container -->
-<main class="w-full flex-grow pt-24 pb-16 px-space-md sm:px-space-lg grid-bg flex items-center justify-center">
-<div class="w-full max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-<!-- Left Column: Node Initialization & Calibration Telemetry -->
-<section class="lg:col-span-7 flex flex-col gap-6">
-<!-- Status Indicator Pill -->
-<div class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-surface-container-lowest border border-outline-variant/60 w-fit">
-<span class="w-2 h-2 rounded-full bg-verde-eletrico pulse-glow shadow-[0_0_8px_#00FF00]"></span>
-<span class="font-mono-code text-body-sm text-ciano tracking-wider uppercase">FIRST-RUN CONFIGURATION // NODE PROVISIONING</span>
-</div>
-<!-- Headline & Description -->
-<div class="space-y-3">
-<h1 class="font-headline-lg text-headline-lg text-branco tracking-tight">Configure Your Node Identity</h1>
-<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
-            Calibrate your communication node, configure client cryptographic identity, and test real-time WebRTC media peripherals.
-          </p>
-</div>
-<!-- Multi-Step Progression Tracker -->
-<div class="flex items-center gap-4 py-2 border-y border-outline-variant/40">
-<div class="flex items-center gap-2">
-<span class="px-2.5 py-1 rounded-xl bg-azul-ia text-branco font-mono-code text-body-sm font-semibold">01 IDENTITY</span>
-</div>
-<span class="text-outline-variant font-mono-code text-body-sm">/</span>
-<div class="flex items-center gap-2">
-<span class="px-2.5 py-1 rounded-xl bg-surface-container-high text-ciano font-mono-code text-body-sm border border-ciano/30">02 PERIPHERALS</span>
-</div>
-<span class="text-outline-variant font-mono-code text-body-sm">/</span>
-<div class="flex items-center gap-2">
-<span class="px-2.5 py-1 rounded-xl text-on-surface-variant/40 font-mono-code text-body-sm">03 ENCRYPTION MESH</span>
-</div>
-</div>
-<!-- Diagnostic Telemetry Card -->
-<div class="rounded-xl bg-surface-container-low border border-outline-variant/60 p-5 space-y-5 shadow-[0_2px_12px_rgba(0,0,0,0.2)]">
-<!-- Card Header & Badge -->
-<div class="flex items-center justify-between pb-3 border-b border-outline-variant/40">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-[18px]">memory</span>
-<span class="font-mono-code text-body-sm text-on-surface tracking-wide">PERIPHERAL HARDWARE DIAGNOSTIC // WEBRTC-CORE</span>
-</div>
-<span class="font-mono-code text-body-sm px-2 py-0.5 rounded-lg bg-surface-container-highest text-secondary border border-outline-variant">#094-CFG</span>
-</div>
-<!-- Audio Input Test Bar (VU Meter) -->
-<div class="space-y-2">
-<div class="flex justify-between items-center text-body-sm">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-verde-eletrico text-[18px]">mic</span>
-<span class="font-mono-code text-on-surface">DEFAULT AUDIO INPUT</span>
-</div>
-<span class="font-mono-code text-verde-eletrico">-18 dBFS [ACTIVE INPUT]</span>
-</div>
-<!-- VU Meter Segments -->
-<div class="flex gap-1 h-2.5 w-full bg-surface-container-lowest p-1 rounded-lg border border-outline-variant/40">
-<div class="w-full flex gap-1 items-center">
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico/60 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-verde-eletrico/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-<div class="h-full flex-1 bg-outline-variant/40 rounded-[1px]"></div>
-</div>
-</div>
-</div>
-<!-- Video Camera Test Feed Viewport -->
-<div class="relative aspect-video rounded-xl bg-surface-container-lowest border border-outline-variant/60 overflow-hidden flex flex-col justify-between p-3 group">
-<!-- Simulated Camera Grid Background & Procedural Avatar Placeholder -->
-<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#00FFFF_1px,transparent_1px)] [background-size:16px_16px]"></div>
-<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-<svg class="w-28 h-28 opacity-40 text-ciano" fill="none" stroke="currentColor" viewbox="0 0 100 100">
-<circle cx="50" cy="50" r="44" stroke-dasharray="4 2" stroke-width="1"></circle>
-<circle cx="50" cy="50" r="30" stroke-width="1.5"></circle>
-<path d="M50 15 V85 M15 50 H85" stroke-width="0.75"></path>
-<polygon points="50,25 70,65 30,65" stroke-width="1.2"></polygon>
-<circle cx="50" cy="50" fill="#00FFFF" fill-opacity="0.3" r="6"></circle>
-</svg>
-</div>
-<!-- Video Top Badges -->
-<div class="relative z-10 flex justify-between items-center w-full">
-<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-surface-dark/80 backdrop-blur-sm border border-outline-variant text-verde-eletrico font-mono-code text-[11px]">
-<span class="w-1.5 h-1.5 rounded-full bg-verde-eletrico"></span>
-<span>VIDEO: 1080p60 WEBRTC READY</span>
-</div>
-<span class="px-2 py-0.5 rounded-lg bg-surface-dark/80 backdrop-blur-sm border border-outline-variant text-on-surface-variant font-mono-code text-[11px]">
-                CAM_DEV_01
-              </span>
-</div>
-<!-- Video Bottom Status Bar -->
-<div class="relative z-10 flex justify-between items-center w-full bg-surface-dark/90 px-3 py-1.5 rounded-lg border border-outline-variant/60 text-on-surface-variant">
-<span class="font-mono-code text-[11px] text-ciano">RTT: 14ms | CIPHER: AES-GCM-256</span>
-<span class="font-mono-code text-[11px] text-primary">SYNC OK</span>
-</div>
-</div>
-<!-- Hardware Specs Metric Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 font-mono-code text-body-sm">
-<div class="p-2.5 rounded-xl bg-surface-container border border-outline-variant/40">
-<div class="text-on-surface-variant text-[11px] uppercase">Audio Stream</div>
-<div class="text-on-surface font-medium text-body-sm mt-0.5">48kHz OPUS</div>
-</div>
-<div class="p-2.5 rounded-xl bg-surface-container border border-outline-variant/40">
-<div class="text-on-surface-variant text-[11px] uppercase">Packet Status</div>
-<div class="text-verde-eletrico font-medium text-body-sm mt-0.5">0.00% LOSS</div>
-</div>
-<div class="p-2.5 rounded-xl bg-surface-container border border-outline-variant/40">
-<div class="text-on-surface-variant text-[11px] uppercase">NAT Traversal</div>
-<div class="text-ciano font-medium text-body-sm mt-0.5">STUN/TURN OK</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Right Column: Onboarding Configuration Card -->
-<section class="lg:col-span-5 w-full">
-<div class="rounded-xl bg-cinza-escuro border border-cinza-claro/20 shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-6 sm:p-8 flex flex-col gap-6">
+<!-- Card Container -->
+<main class="w-full max-w-[480px] my-auto">
+<div class="bg-surface border border-border rounded-xl p-8 shadow-2xl relative">
 <!-- Card Header -->
-<div class="space-y-1">
-<h2 class="font-headline-sm text-headline-sm text-branco">Initialize Protocol Profile</h2>
-<p class="font-body-sm text-body-sm text-on-surface-variant">
-              Set your public node presence and client cryptographic identifiers.
-            </p>
+<div class="text-left">
+<h1 class="font-h1 text-h2 text-text-primary font-bold tracking-tight">Set up your profile</h1>
+<p class="text-text-secondary font-small text-small mt-1.5">Choose how you appear to contacts and colleagues.</p>
 </div>
-<!-- Avatar Setup Section -->
-<div class="flex items-center gap-4 py-2 border-y border-outline-variant/40">
-<!-- 80px Circular Avatar Container with Procedural SVG Glyph -->
-<div class="w-20 h-20 rounded-full bg-surface-container-lowest border-2 border-outline-variant flex items-center justify-center relative overflow-hidden flex-shrink-0">
-<svg class="w-16 h-16" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<circle cx="50" cy="50" r="46" stroke="#00A67E" stroke-dasharray="3 3" stroke-width="2"></circle>
-<polygon fill="none" points="50,15 82,32 82,68 50,85 18,68 18,32" stroke="#00FFFF" stroke-width="1.5"></polygon>
-<circle cx="50" cy="50" r="22" stroke="#00A67E" stroke-width="2"></circle>
-<circle cx="50" cy="50" fill="#00FFFF" r="8"></circle>
-<line stroke="#00A67E" stroke-width="2" x1="50" x2="50" y1="15" y2="28"></line>
-<line stroke="#00A67E" stroke-width="2" x1="50" x2="50" y1="72" y2="85"></line>
-<line stroke="#00FFFF" stroke-width="2" x1="18" x2="28" y1="50" y2="50"></line>
-<line stroke="#00FFFF" stroke-width="2" x1="72" x2="82" y1="50" y2="50"></line>
-</svg>
+<!-- Avatar Upload Section -->
+<div class="mt-6 pt-2 pb-1 flex items-center gap-4">
+<!-- Avatar Preview / Initial Badge -->
+<div class="relative w-[72px] h-[72px] rounded-full bg-background border border-border flex items-center justify-center text-text-primary font-semibold text-xl tracking-tight group cursor-pointer shrink-0">
+<span class="select-none font-h2 text-h2">AM</span>
+<div class="w-6 h-6 rounded-full bg-primary-container text-text-primary flex items-center justify-center absolute bottom-0 right-0 shadow ring-2 ring-surface hover:brightness-110 transition-all duration-150">
+<span class="material-symbols-outlined text-[14px] text-text-primary" data-icon="photo_camera">photo_camera</span>
 </div>
-<!-- Avatar Buttons -->
-<div class="flex flex-col gap-2 flex-grow">
-<button class="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-bright border border-outline-variant text-on-surface font-label-md text-body-sm transition-all duration-200 text-center" type="button">
-                Upload Custom Avatar
-              </button>
-<button class="px-3 py-1.5 rounded-xl border-[1.5px] border-outline-variant hover:border-primary text-primary font-label-md text-body-sm transition-all duration-200 text-center bg-transparent" type="button">
-                Generate Procedural Glyph
-              </button>
+</div>
+<!-- Avatar Controls -->
+<div class="flex flex-col gap-1">
+<div>
+<button class="px-3 py-1.5 rounded-lg bg-border/60 hover:bg-border border border-border text-text-primary font-small text-small font-medium transition-colors duration-150 flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-text-secondary" data-icon="upload">upload</span>
+<span>Upload new image</span>
+</button>
+</div>
+<span class="text-text-secondary font-small text-small text-[12px] leading-tight mt-0.5">JPG, PNG or GIF. Max 5MB</span>
 </div>
 </div>
 <!-- Form Inputs -->
-<form class="space-y-4" onsubmit="event.preventDefault();">
-<!-- Input 1: Node Display Name -->
-<div class="space-y-1.5">
-<label class="block font-label-md text-body-sm text-on-surface" for="node-name">
-                Node Display Name / Alias
-              </label>
-<input class="w-full rounded-xl bg-surface-container-lowest border border-outline-variant px-3.5 py-2.5 text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-transparent font-body-md text-body-md transition-all" id="node-name" placeholder="e.g. Alex Rivera" type="text"/>
+<form class="mt-6 space-y-4" onsubmit="event.preventDefault();">
+<!-- Field 1: Display Name -->
+<div>
+<label class="block text-text-secondary font-small text-[11px] font-medium tracking-wider mb-2" for="display_name">FULL NAME / DISPLAY NAME</label>
+<input class="w-full bg-background border border-border rounded-lg px-3.5 py-2.5 text-text-primary font-body-md text-small placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-transparent transition-all duration-150" id="display_name" placeholder="Alex Morgan" type="text" value="Alex Morgan"/>
 </div>
-<!-- Input 2: Node Bio -->
-<div class="space-y-1.5">
-<div class="flex justify-between items-center">
-<label class="block font-label-md text-body-sm text-on-surface" for="node-bio">
-                  Node Status Statement / Bio
-                </label>
-<span class="font-mono-code text-[11px] text-on-surface-variant/70">42/160</span>
+<!-- Field 2: Username -->
+<div>
+<label class="block text-text-secondary font-small text-[11px] font-medium tracking-wider mb-2" for="username">USERNAME</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-text-secondary font-mono text-mono select-none">@</span>
+<input class="w-full pl-8 pr-3.5 py-2.5 bg-background border border-border rounded-lg text-text-primary font-body-md text-small placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-transparent transition-all duration-150 font-mono text-mono" id="username" placeholder="alexmorgan" type="text" value="alexmorgan"/>
 </div>
-<textarea class="w-full rounded-xl bg-surface-container-lowest border border-outline-variant px-3.5 py-2 text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-transparent font-body-md text-body-md transition-all resize-none" id="node-bio" rows="3">Operating decentral node #42 on ephemeral relay mesh.</textarea>
 </div>
-<!-- Device Permission Toggles -->
-<div class="space-y-3 pt-2">
-<!-- Toggle 1 -->
-<label class="flex items-center justify-between cursor-pointer group">
-<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">
-                  Enable WebRTC Direct Peer Calling
-                </span>
-<div class="relative inline-flex items-center">
-<input checked="" class="sr-only peer" type="checkbox"/>
-<div class="w-10 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-azul-ia"></div>
+<!-- Field 3: Status / Bio -->
+<div>
+<label class="block text-text-secondary font-small text-[11px] font-medium tracking-wider mb-2" for="bio">STATUS / BIO</label>
+<textarea class="w-full bg-background border border-border rounded-lg px-3.5 py-2.5 text-text-primary font-body-md text-small placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-transparent transition-all duration-150 resize-none" id="bio" placeholder="Brief status or description (optional)" rows="2"></textarea>
 </div>
-</label>
-<!-- Toggle 2 -->
-<label class="flex items-center justify-between cursor-pointer group">
-<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">
-                  Auto-negotiate Ephemeral Encryption
-                </span>
-<div class="relative inline-flex items-center">
-<input checked="" class="sr-only peer" type="checkbox"/>
-<div class="w-10 h-5 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-azul-ia"></div>
+<!-- Device Check Row (Minimal WebRTC Check) -->
+<div class="bg-background border border-border rounded-lg p-3 flex items-center justify-between mt-5">
+<div class="flex items-center gap-2.5">
+<div class="flex items-center gap-1 text-text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="videocam">videocam</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="mic">mic</span>
 </div>
-</label>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-success inline-block"></span>
+<span class="text-text-primary font-small text-small font-medium">Camera &amp; microphone ready</span>
 </div>
-<!-- Form Actions -->
-<div class="pt-4 space-y-2">
-<button class="w-full py-3 rounded-xl bg-azul-ia text-branco font-headline-sm text-label-md font-semibold hover:brightness-110 active:scale-[0.99] transition-all duration-200 shadow-md flex items-center justify-center gap-2" type="submit">
-<span>Complete Provisioning & Enter Network</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</div>
+<button class="text-text-secondary hover:text-text-primary font-small text-small font-medium px-2 py-1 rounded hover:bg-surface border border-transparent hover:border-border transition-colors duration-150" type="button">
+            Test
+          </button>
+</div>
+<!-- Primary CTA Button -->
+<div class="pt-2">
+<button class="w-full bg-primary-container text-text-primary font-body-md text-small font-semibold rounded-lg py-3 flex items-center justify-center gap-2 hover:brightness-105 active:scale-[0.99] transition-all duration-150 shadow-sm cursor-pointer" type="submit">
+<span>Complete Setup &amp; Open Chat</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
 </button>
-<a class="font-mono-code text-body-sm text-azul-ia hover:underline text-center block pt-2 transition-colors" href="#">
-                Skip optional steps & enter chat
-              </a>
-</div>
-<!-- Footer Security Micro-copy -->
-<div class="text-center pt-2">
-<span class="font-mono-code text-[11px] text-on-surface-variant/50 tracking-wider">
-                🔒 ZERO-KNOWLEDGE LOCAL PROVISIONING
-              </span>
+<!-- Secondary / Skip action -->
+<a class="text-text-secondary hover:text-primary-container font-small text-small text-center block mt-4 transition-colors duration-150 font-medium" href="#">
+            Skip this step for now
+          </a>
 </div>
 </form>
 </div>
-</section>
-</div>
 </main>
-<!-- Global Footer (Shared Component: Footer) -->
-<footer class="w-full py-space-md px-space-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline-variant bg-surface-container-lowest dark:bg-surface-container-lowest z-40 gap-4">
-<div class="font-mono-code text-body-sm text-primary dark:text-primary uppercase">
-      © 2026 AETHER PROTOCOL LABS. ALL RIGHTS RESERVED. ENCRYPTED END-TO-END VIA WEBRTC.
-    </div>
-<div class="flex flex-wrap items-center gap-space-md">
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">
-        Security Architecture
-      </a>
-<span class="text-outline-variant/40 hidden md:inline">|</span>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">
-        Telemetry Feeds
-      </a>
-<span class="text-outline-variant/40 hidden md:inline">|</span>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">
-        Node Status
-      </a>
-<span class="text-outline-variant/40 hidden md:inline">|</span>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">
-        Privacy Protocol
-      </a>
-</div>
+<!-- Footer -->
+<footer class="w-full text-center">
+<p class="text-text-secondary font-small text-small tracking-wide select-none text-[13px]">
+      Aether Secure Communication • Privacy &amp; Terms
+    </p>
 </footer>
 </body></html>

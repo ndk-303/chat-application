@@ -3,78 +3,73 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AETHER CHAT PROTOCOL // Node Authentication</title>
-<!-- Google Fonts: Inter & JetBrains Mono -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<title>Aether Chat - Sign In</title>
 <!-- Material Symbols Outlined -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS CDN -->
+<!-- Tailwind CSS with Plugins -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Theme Configuration -->
 <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
           "colors": {
-            "on-tertiary-fixed": "#380038",
-            "primary-container": "#00a67e",
-            "inverse-surface": "#e2e2e2",
-            "background": "#121414",
-            "tertiary-container": "#db63d4",
-            "surface-dark": "#121214",
-            "on-surface-variant": "#bccac2",
-            "branco": "#FFFFFF",
-            "on-secondary-container": "#b9b8bc",
-            "inverse-on-surface": "#2f3131",
-            "azul-ia": "#00A67E",
-            "secondary-container": "#48494c",
-            "secondary-fixed-dim": "#c7c6ca",
-            "on-primary-fixed": "#002116",
-            "surface-tint": "#5bdcb0",
-            "secondary-fixed": "#e3e2e6",
-            "on-primary-container": "#003224",
-            "tertiary": "#ffaaf3",
-            "on-secondary-fixed": "#1a1b1e",
-            "verde-eletrico": "#00FF00",
-            "on-tertiary": "#5b005b",
-            "roxo": "#800080",
-            "primary-fixed": "#7af9cc",
-            "error-container": "#93000a",
-            "on-error-container": "#ffdad6",
-            "surface-container-high": "#282a2b",
-            "tertiary-fixed": "#ffd7f5",
+            "inverse-surface": "#dce3f0",
+            "on-tertiary-fixed": "#1a1c1f",
+            "text-secondary": "#9CA3AF",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "secondary-fixed": "#e1e2e9",
+            "on-secondary-fixed-variant": "#44474d",
             "primary-fixed-dim": "#5bdcb0",
-            "error": "#ffb4ab",
-            "outline-variant": "#3d4a43",
-            "ciano": "#00FFFF",
-            "cinza-escuro": "#202124",
-            "surface-dim": "#121414",
-            "surface-container-highest": "#333535",
-            "on-primary": "#003828",
-            "on-background": "#e2e2e2",
-            "on-tertiary-container": "#520052",
-            "surface-bright": "#38393a",
-            "surface-container-low": "#1a1c1c",
-            "outline": "#86948c",
-            "inverse-primary": "#006c51",
-            "surface": "#121414",
-            "on-surface": "#e2e2e2",
-            "on-secondary-fixed-variant": "#46474a",
-            "on-error": "#690005",
-            "surface-variant": "#333535",
-            "surface-container-lowest": "#0c0f0f",
-            "surface-container": "#1e2020",
-            "on-secondary": "#2f3033",
-            "tertiary-fixed-dim": "#ffaaf3",
-            "primary": "#5bdcb0",
+            "on-surface-variant": "#bccac2",
+            "surface-tint": "#5bdcb0",
             "on-primary-fixed-variant": "#00513c",
-            "secondary": "#c7c6ca",
-            "cinza-claro": "#F0F0F0",
-            "on-tertiary-fixed-variant": "#810181"
+            "on-error-container": "#ffdad6",
+            "secondary": "#c4c6cd",
+            "outline-variant": "#3d4a43",
+            "on-error": "#690005",
+            "on-secondary": "#2e3036",
+            "surface-variant": "#2e353f",
+            "inverse-primary": "#006c51",
+            "tertiary-fixed": "#e2e2e6",
+            "tertiary": "#c6c6ca",
+            "surface-container-lowest": "#080f17",
+            "surface-container-high": "#232a34",
+            "surface-container-low": "#151c25",
+            "success": "#10B981",
+            "surface-dim": "#0d141d",
+            "surface-container-highest": "#2e353f",
+            "on-primary-fixed": "#002116",
+            "on-primary": "#003828",
+            "on-primary-container": "#003224",
+            "surface-container": "#192029",
+            "on-background": "#dce3f0",
+            "on-surface": "#dce3f0",
+            "border": "#23272F",
+            "text-primary": "#F3F4F6",
+            "tertiary-container": "#919296",
+            "secondary-container": "#44474d",
+            "on-secondary-container": "#b3b5bc",
+            "primary": "#5bdcb0",
+            "surface-bright": "#333a44",
+            "primary-fixed": "#7af9cc",
+            "surface": "#16191E",
+            "secondary-fixed-dim": "#c4c6cd",
+            "on-secondary-fixed": "#191c21",
+            "on-tertiary-container": "#292b2e",
+            "inverse-on-surface": "#2a313b",
+            "on-tertiary-fixed-variant": "#45474a",
+            "background": "#0D0F12",
+            "on-tertiary": "#2f3034",
+            "error-container": "#93000a",
+            "error": "#EF4444",
+            "primary-container": "#00a67e",
+            "outline": "#86948c"
           },
           "borderRadius": {
             "DEFAULT": "0.125rem",
@@ -83,45 +78,46 @@
             "full": "0.75rem"
           },
           "spacing": {
-            "space-md": "1rem",
-            "margin": "1.5rem",
             "space-xl": "2rem",
             "space-lg": "1.5rem",
-            "gutter": "1.5rem",
-            "space-2xl": "4rem",
+            "space-sm": "0.5rem",
             "space-xs": "0.25rem",
-            "space-sm": "0.5rem"
+            "margin": "2rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem"
           },
           "fontFamily": {
-            "hero": ["Inter", "sans-serif"],
-            "body-lg": ["Inter", "sans-serif"],
-            "headline-lg": ["Inter", "sans-serif"],
-            "body-md": ["Inter", "sans-serif"],
-            "mono-code": ["JetBrains Mono", "monospace"],
-            "label-md": ["Inter", "sans-serif"],
-            "headline-md": ["Inter", "sans-serif"],
-            "headline-sm": ["Inter", "sans-serif"],
-            "body-sm": ["Inter", "sans-serif"]
+            "h2": ["Inter"],
+            "small": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "h1": ["Inter"],
+            "body-md": ["Inter"]
           },
           "fontSize": {
-            "hero": [
-              "clamp(2.5rem, 5vw, 4rem)",
+            "h2": [
+              "1.5rem",
               {
-                "lineHeight": "1.1",
-                "fontWeight": "700"
+                "lineHeight": "1.3",
+                "fontWeight": "600"
               }
             ],
-            "body-lg": [
-              "1.125rem",
+            "small": [
+              "0.875rem",
               {
-                "lineHeight": "1.6",
+                "lineHeight": "1.5",
                 "fontWeight": "400"
               }
             ],
-            "headline-lg": [
+            "mono": [
+              "0.875rem",
+              {
+                "fontWeight": "500"
+              }
+            ],
+            "h1": [
               "2.25rem",
               {
-                "lineHeight": "1.2",
+                "lineHeight": "1.25",
                 "fontWeight": "700"
               }
             ],
@@ -131,41 +127,6 @@
                 "lineHeight": "1.6",
                 "fontWeight": "400"
               }
-            ],
-            "mono-code": [
-              "0.875rem",
-              {
-                "lineHeight": "1.5",
-                "fontWeight": "400"
-              }
-            ],
-            "label-md": [
-              "0.875rem",
-              {
-                "lineHeight": "1.2",
-                "fontWeight": "500"
-              }
-            ],
-            "headline-md": [
-              "1.5rem",
-              {
-                "lineHeight": "1.3",
-                "fontWeight": "600"
-              }
-            ],
-            "headline-sm": [
-              "1.25rem",
-              {
-                "lineHeight": "1.4",
-                "fontWeight": "600"
-              }
-            ],
-            "body-sm": [
-              "0.875rem",
-              {
-                "lineHeight": "1.5",
-                "fontWeight": "400"
-              }
             ]
           }
         },
@@ -173,276 +134,141 @@
     }
   </script>
 <style>
-    /* Technical Grid Pattern */
-    .bg-tech-grid {
-      background-size: 32px 32px;
-      background-image: 
-        linear-gradient(to right, rgba(61, 74, 67, 0.15) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(61, 74, 67, 0.15) 1px, transparent 1px);
-    }
-    
-    /* Radar & Pulse Animations */
-    @keyframes telemetry-pulse {
-      0%, 100% { opacity: 0.3; transform: scale(0.98); }
-      50% { opacity: 0.8; transform: scale(1.02); }
-    }
-    .animate-telemetry {
-      animation: telemetry-pulse 4s ease-in-out infinite;
-    }
-
-    @keyframes live-ping {
-      0% { transform: scale(1); opacity: 1; }
-      75%, 100% { transform: scale(2.4); opacity: 0; }
-    }
-    .animate-live-ping {
-      animation: live-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-    }
-
-    /* Custom Toggle Switch */
-    .custom-checkbox:checked + .switch-bg {
-      background-color: #00A67E;
-    }
-    .custom-checkbox:checked + .switch-bg .switch-dot {
-      transform: translateX(14px);
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
     }
   </style>
 </head>
-<body class="bg-background text-on-surface antialiased selection:bg-azul-ia selection:text-white min-h-[1024px] flex flex-col justify-between overflow-x-hidden font-body-md text-body-md">
-<!-- TopNavBar (Shared Component) -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-space-lg h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
-<div class="flex items-center gap-space-lg">
-<a class="font-mono-code text-headline-sm font-semibold tracking-wider text-primary dark:text-primary uppercase flex items-center gap-2" href="#">
-<span class="w-2.5 h-2.5 rounded-full bg-azul-ia"></span>
-        AETHER CHAT PROTOCOL
-      </a>
-<nav class="hidden md:flex items-center gap-6 ml-6">
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Network Status</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Protocol Docs</a>
-<a class="border-b-2 border-primary dark:border-primary text-primary dark:text-primary font-label-md text-label-md pb-1" href="#">Telemetry</a>
-</nav>
+<body class="bg-background text-text-primary min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-white antialiased">
+<!-- Header Anchor -->
+<header class="w-full pt-8 pb-4 flex justify-center items-center">
+<div class="inline-flex items-center gap-2 group cursor-pointer">
+<div class="w-6 h-6 rounded-lg bg-surface border border-border flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
 </div>
-<div class="flex items-center gap-space-md">
-<div class="flex items-center gap-2 text-on-surface-variant">
-<button class="p-1.5 rounded-xl hover:text-primary transition-colors duration-200" title="Terminal Access">
-<span class="material-symbols-outlined text-base">terminal</span>
-</button>
-<button class="p-1.5 rounded-xl hover:text-primary transition-colors duration-200" title="Configuration">
-<span class="material-symbols-outlined text-base">tune</span>
-</button>
-</div>
-<div class="h-4 w-px bg-outline-variant mx-1"></div>
-<button class="hidden sm:inline-flex font-mono-code text-body-sm text-secondary hover:text-primary px-3 py-1.5 rounded-xl border border-outline-variant/60 hover:border-primary/40 transition-all duration-200">
-        System Specs
-      </button>
-<button class="font-label-md text-label-md bg-azul-ia text-branco hover:brightness-110 px-4 py-2 rounded-xl transition-all duration-200 active:scale-[0.98]">
-        Connect Node
-      </button>
+<span class="font-h2 text-h2 text-text-primary font-bold tracking-tight">Aether</span>
 </div>
 </header>
-<!-- Main Split-Screen Canvas -->
-<main class="w-full flex-grow flex items-center justify-center pt-24 pb-16 px-space-md md:px-space-lg bg-tech-grid relative">
-<!-- Ambient Radial Glows -->
-<div class="absolute top-1/4 left-10 w-96 h-96 bg-azul-ia/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
-<div class="absolute bottom-1/4 right-10 w-96 h-96 bg-ciano/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
-<div class="max-w-[1280px] w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-<!-- Left Column: Branding, Telemetry & Neural Pulse Graphic -->
-<section class="lg:col-span-7 flex flex-col justify-center space-y-6">
-<!-- Live Node Status Indicator -->
-<div class="inline-flex items-center gap-3 w-fit px-3.5 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/60">
-<span class="relative flex h-2 w-2">
-<span class="animate-live-ping absolute inline-flex h-full w-full rounded-full bg-verde-eletrico opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-verde-eletrico"></span>
-</span>
-<span class="font-mono-code text-mono-code text-xs uppercase tracking-wider text-ciano font-medium">
-            SECURE CHANNEL // WEBRTC READY
+<!-- Central Authentication Canvas -->
+<main class="w-full flex-grow flex items-center justify-center px-4 py-8">
+<div class="w-full max-w-[420px] bg-surface border border-border rounded-xl p-8 shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all">
+<!-- Card Heading -->
+<div class="mb-6">
+<h1 class="font-h2 text-h2 text-text-primary">Welcome back</h1>
+<p class="font-small text-small text-text-secondary mt-1.5">Sign in to your account to continue</p>
+</div>
+<!-- Auth Form -->
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- Email Input Group -->
+<div>
+<label class="font-small text-small text-text-secondary block mb-2 font-medium tracking-wide" for="email">
+            Email address
+          </label>
+<div class="relative">
+<input autocomplete="email" class="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 font-small text-small text-text-primary placeholder:text-text-secondary/50 focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-colors" id="email" name="email" placeholder="you@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Input Group -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<label class="font-small text-small text-text-secondary font-medium tracking-wide" for="password">
+              Password
+            </label>
+<a class="font-small text-small text-primary-container hover:underline transition-all" href="#forgot">
+              Forgot password?
+            </a>
+</div>
+<div class="relative flex items-center">
+<input autocomplete="current-password" class="w-full bg-background border border-border rounded-xl px-3.5 py-2.5 pr-10 font-small text-small text-text-primary placeholder:text-text-secondary/50 focus:border-primary-container focus:ring-1 focus:ring-primary-container focus:outline-none transition-colors" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 text-text-secondary hover:text-text-primary transition-colors focus:outline-none flex items-center" id="togglePassword" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Controls: Remember Me -->
+<div class="flex items-center pt-1">
+<label class="relative flex items-center gap-2.5 cursor-pointer select-none">
+<input class="w-4 h-4 rounded bg-background border-border text-primary-container focus:ring-primary-container focus:ring-offset-background focus:ring-offset-1 focus:ring-1 cursor-pointer transition-colors" name="remember" type="checkbox"/>
+<span class="font-small text-small text-text-secondary">Remember me on this device</span>
+</label>
+</div>
+<!-- Primary CTA -->
+<button class="w-full mt-2 py-2.5 px-4 bg-primary-container hover:brightness-105 active:scale-[0.99] text-white font-small text-small font-semibold rounded-xl transition-all duration-150 ease-out shadow-sm flex items-center justify-center gap-2" type="submit">
+<span>Sign In</span>
+</button>
+<!-- Divider -->
+<div class="relative my-6 flex items-center justify-center">
+<div class="w-full border-t border-border"></div>
+<span class="absolute bg-surface px-3 font-small text-small text-text-secondary text-xs">
+            or continue with
           </span>
 </div>
-<!-- Hero Headline & Core Abstract -->
-<div class="space-y-4">
-<h1 class="font-hero text-hero text-branco tracking-tight">
-            Intelligent Real-Time Communication
-          </h1>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-            Zero-latency neural peer-to-peer data transport. Fully decentralized, ephemeral, and cryptographic session negotiation.
-          </p>
-</div>
-<!-- Telemetry HUD & Diagnostics Card -->
-<div class="bg-cinza-escuro border border-outline-variant/40 rounded-xl p-5 shadow-sm relative overflow-hidden backdrop-blur-md">
-<!-- Diagnostics Header -->
-<div class="flex items-center justify-between border-b border-outline-variant/30 pb-3 mb-4">
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-3 bg-azul-ia"></span>
-<span class="font-mono-code text-xs uppercase tracking-widest text-secondary">
-                TELEMETRY MESH // RUNTIME VERIFICATION
-              </span>
-</div>
-<span class="font-mono-code text-[11px] text-primary bg-primary/10 px-2 py-0.5 rounded">NODE #094-A</span>
-</div>
-<!-- Neural Network Pulse Visualizer -->
-<div class="relative w-full h-36 bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex items-center justify-center overflow-hidden mb-4">
-<svg class="w-full h-full animate-telemetry" fill="none" viewbox="0 0 540 140" xmlns="http://www.w3.org/2000/svg">
-<!-- Grid Matrix Trace -->
-<path d="M0 70H540" stroke="#3D4A43" stroke-dasharray="4 4" stroke-width="0.8"></path>
-<path d="M120 0V140M270 0V140M420 0V140" stroke="#3D4A43" stroke-dasharray="4 4" stroke-width="0.8"></path>
-<!-- Primary Neural Circuit Lines -->
-<path d="M40 70 L110 35 L190 95 L270 45 L350 85 L430 30 L500 70" stroke="#00A67E" stroke-linecap="round" stroke-width="1.8"></path>
-<path d="M40 70 L130 100 L210 50 L270 90 L370 40 L450 105 L500 70" opacity="0.75" stroke="#00FFFF" stroke-dasharray="3 3" stroke-width="1.2"></path>
-<path d="M110 35 L210 50 M190 95 L270 45 M270 90 L350 85 M350 85 L450 105" opacity="0.6" stroke="#800080" stroke-width="0.9"></path>
-<!-- Active Data Nodes -->
-<g>
-<circle cx="110" cy="35" fill="#00A67E" r="4.5"></circle>
-<circle cx="110" cy="35" opacity="0.5" r="8" stroke="#00A67E" stroke-width="0.8"></circle>
-<circle cx="190" cy="95" fill="#00FFFF" r="3.5"></circle>
-<circle cx="270" cy="45" fill="#5BDCB0" r="5"></circle>
-<circle cx="270" cy="45" opacity="0.4" r="10" stroke="#5BDCB0" stroke-width="0.7"></circle>
-<circle cx="350" cy="85" fill="#00FFFF" r="3.5"></circle>
-<circle cx="430" cy="30" fill="#00A67E" r="4"></circle>
-<circle cx="270" cy="90" fill="#800080" r="3"></circle>
-</g>
-<!-- Realtime Pulse Packet Animation -->
-<circle cx="270" cy="45" fill="#00FF00" r="2.5">
-<animate attributename="opacity" dur="2s" repeatcount="indefinite" values="0.2;1;0.2"></animate>
-</circle>
+<!-- SSO Options -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Google SSO -->
+<button class="flex items-center justify-center gap-2.5 py-2.5 px-3 bg-surface hover:bg-surface-variant/40 border border-border rounded-xl text-text-primary font-small text-small transition-colors duration-150 ease-out" type="button">
+<svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
 </svg>
-<!-- Overlay Diagnostic Feed -->
-<div class="absolute bottom-2 left-3 flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-verde-eletrico"></span>
-<span class="font-mono-code text-[10px] text-on-surface-variant tracking-tight">
-                SYNAPSE LINK: OK [STREAMING PEER PACKETS]
-              </span>
-</div>
-<div class="absolute top-2 right-3 font-mono-code text-[10px] text-ciano">
-              RT_LATENCY: 12ms
-            </div>
-</div>
-<!-- Technical Metrics Grid -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-<div class="p-2.5 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/30">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase">LATENCY</div>
-<div class="font-mono-code text-sm font-semibold text-ciano">12ms</div>
-</div>
-<div class="p-2.5 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/30">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase">PEER NODES</div>
-<div class="font-mono-code text-sm font-semibold text-branco">1,482 ACTIVE</div>
-</div>
-<div class="p-2.5 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/30">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase">CIPHER</div>
-<div class="font-mono-code text-sm font-semibold text-primary">AES-256-GCM</div>
-</div>
-<div class="p-2.5 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/30">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase">PROTOCOL</div>
-<div class="font-mono-code text-sm font-semibold text-secondary">WEBRTC-V3</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Right Column: Authentication Card -->
-<section class="lg:col-span-5 flex justify-center lg:justify-end">
-<div class="w-full max-w-[480px] bg-cinza-escuro border border-[#F0F0F0]/20 rounded-xl p-8 shadow-[0_2px_12px_rgba(0,0,0,0.06)] relative backdrop-blur-md">
-<!-- Top Accent Band -->
-<div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-azul-ia to-transparent rounded-t-xl"></div>
-<!-- Card Header -->
-<div class="mb-6">
-<h2 class="font-headline-sm text-headline-sm font-semibold text-branco tracking-tight">
-              Node Authentication
-            </h2>
-<p class="font-body-sm text-body-sm text-cinza-claro/70 mt-1">
-              Enter your protocol credentials to negotiate node access.
-            </p>
-</div>
-<!-- Authentication Form -->
-<form class="space-y-5" onsubmit="event.preventDefault();">
-<!-- Input 1: Protocol ID / Email -->
-<div class="space-y-2">
-<label class="block font-label-md text-xs font-medium text-cinza-claro/80 uppercase tracking-wider" for="protocol-id">
-                Protocol ID / Email
-              </label>
-<div class="relative">
-<input class="w-full bg-[#121414]/70 border border-[#F0F0F0]/20 rounded-xl px-4 py-3 text-branco placeholder-cinza-claro/30 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-transparent transition-all duration-200" id="protocol-id" placeholder="node_peer@aether.mesh" required="" type="text"/>
-<span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none text-xl">
-                  alternate_email
-                </span>
-</div>
-</div>
-<!-- Input 2: Access Key / Password -->
-<div class="space-y-2">
-<div class="flex justify-between items-center">
-<label class="block font-label-md text-xs font-medium text-cinza-claro/80 uppercase tracking-wider" for="access-key">
-                  Access Key / Password
-                </label>
-</div>
-<div class="relative">
-<input class="w-full bg-[#121414]/70 border border-[#F0F0F0]/20 rounded-xl px-4 py-3 pr-11 text-branco placeholder-cinza-claro/30 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-transparent transition-all duration-200" id="access-key" placeholder="••••••••••••••••" required="" type="password"/>
-<button class="absolute right-3.5 top-1/2 -translate-y-1/2 text-outline-variant hover:text-branco transition-colors focus:outline-none" id="togglePassword" title="Toggle Password Visibility" type="button">
-<span class="material-symbols-outlined text-xl" id="eyeIcon">visibility</span>
+<span class="font-medium">Google</span>
 </button>
-</div>
-</div>
-<!-- Options Row: Session Toggle + Access Recovery -->
-<div class="flex items-center justify-between pt-1">
-<label class="inline-flex items-center gap-2.5 cursor-pointer select-none group">
-<input checked="" class="sr-only custom-checkbox" id="persist-session" type="checkbox"/>
-<div class="w-8 h-4 bg-surface-container-highest rounded-full transition-colors duration-200 relative switch-bg group-hover:opacity-90">
-<div class="switch-dot absolute left-0.5 top-0.5 w-3 h-3 bg-branco rounded-full transition-transform duration-200"></div>
-</div>
-<span class="font-body-sm text-xs text-cinza-claro/80 group-hover:text-cinza-claro transition-colors">Keep session active</span>
-</label>
-<a class="font-label-md text-xs font-medium text-azul-ia hover:underline transition-colors" href="#">
-                Recover access
-              </a>
-</div>
-<!-- CTA Actions -->
-<div class="space-y-3 pt-3">
-<button class="w-full py-3 px-6 rounded-xl font-label-md text-label-md font-semibold text-branco bg-azul-ia hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 shadow-sm" type="submit">
-<span>Initialize Session</span>
-<span class="material-symbols-outlined text-base">login</span>
-</button>
-<button class="w-full py-3 px-6 rounded-xl font-label-md text-label-md font-medium text-branco bg-transparent border-[1.5px] border-[#F0F0F0]/30 hover:bg-white/5 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2" type="button">
-<span>Create New Identity</span>
-<span class="material-symbols-outlined text-base">person_add</span>
+<!-- GitHub SSO -->
+<button class="flex items-center justify-center gap-2.5 py-2.5 px-3 bg-surface hover:bg-surface-variant/40 border border-border rounded-xl text-text-primary font-small text-small transition-colors duration-150 ease-out" type="button">
+<svg class="w-4 h-4 text-text-primary flex-shrink-0" fill="currentColor" viewbox="0 0 24 24">
+<path clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill-rule="evenodd"></path>
+</svg>
+<span class="font-medium">GitHub</span>
 </button>
 </div>
 </form>
-<!-- Security Certification Badge -->
-<div class="mt-7 pt-4 border-t border-outline-variant/30 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-primary text-base">security</span>
-<span class="font-mono-code text-[11px] text-on-surface-variant tracking-wider uppercase">
-              E2E 4096-bit RSA handshake
-            </span>
+<!-- Bottom Card Prompt -->
+<div class="mt-6 pt-4 text-center border-t border-border/60">
+<p class="font-small text-small text-text-secondary">
+          Don't have an account? 
+          <a class="text-primary-container font-medium hover:underline transition-all ml-1" href="#signup">
+            Sign up
+          </a>
+</p>
 </div>
-</div>
-</section>
 </div>
 </main>
-<!-- Footer (Shared Component) -->
-<footer class="w-full py-space-md px-space-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline-variant bg-surface-container-lowest dark:bg-surface-container-lowest gap-4">
-<div class="flex items-center gap-3">
-<span class="font-mono-code text-body-sm text-primary dark:text-primary uppercase font-medium">AETHER PROTOCOL</span>
-<span class="text-outline-variant hidden md:inline">|</span>
-<p class="font-body-sm text-body-sm text-on-surface-variant text-center md:text-left">
-        © 2026 AETHER PROTOCOL LABS. ALL RIGHTS RESERVED. ENCRYPTED END-TO-END VIA WEBRTC.
-      </p>
-</div>
-<div class="flex items-center gap-5 flex-wrap justify-center">
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Security Architecture</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Telemetry Feeds</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Node Status</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Privacy Protocol</a>
-</div>
+<!-- Minimalist Footer -->
+<footer class="w-full py-6 flex justify-center items-center">
+<p class="font-small text-small text-text-secondary text-xs tracking-wide">
+      Aether Secure Communication • Privacy &amp; Terms
+    </p>
 </footer>
-<!-- Inline Interaction Logic -->
+<!-- Micro-interactions Script -->
 <script>
-    // Password Visibility Toggle
-    const toggleBtn = document.getElementById('togglePassword');
-    const accessKeyInput = document.getElementById('access-key');
-    const eyeIcon = document.getElementById('eyeIcon');
+    document.addEventListener('DOMContentLoaded', () => {
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
 
-    if (toggleBtn && accessKeyInput && eyeIcon) {
-      toggleBtn.addEventListener('click', () => {
-        const isPassword = accessKeyInput.getAttribute('type') === 'password';
-        accessKeyInput.setAttribute('type', isPassword ? 'text' : 'password');
-        eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
-      });
-    }
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', () => {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          const iconSpan = togglePassword.querySelector('span');
+          if (iconSpan) {
+            iconSpan.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+          }
+        });
+      }
+    });
   </script>
 </body></html>

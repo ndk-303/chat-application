@@ -3,15 +3,12 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Aether Chat Protocol // Ephemeral Verification</title>
-<!-- Fonts: Inter & JetBrains Mono -->
+<title>Aether Chat - Verify Email</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<!-- Material Symbols Outlined -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS v3 -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
     tailwind.config = {
@@ -19,61 +16,57 @@
       theme: {
         extend: {
           "colors": {
-            "surface": "#121414",
-            "tertiary": "#ffaaf3",
-            "surface-container-lowest": "#0c0f0f",
-            "on-secondary": "#2f3033",
-            "on-primary-fixed-variant": "#00513c",
-            "on-secondary-container": "#b9b8bc",
-            "surface-dark": "#121214",
-            "background": "#121414",
-            "on-background": "#e2e2e2",
-            "primary": "#5bdcb0",
+            "on-primary": "#003828",
+            "on-primary-container": "#003224",
+            "secondary": "#c4c6cd",
             "primary-container": "#00a67e",
-            "on-tertiary": "#5b005b",
-            "surface-container-low": "#1a1c1c",
-            "surface-tint": "#5bdcb0",
-            "inverse-surface": "#e2e2e2",
-            "primary-fixed-dim": "#5bdcb0",
-            "roxo": "#800080",
+            "surface": "#16191E",
+            "inverse-surface": "#dce3f0",
+            "on-tertiary-fixed-variant": "#45474a",
+            "inverse-on-surface": "#2a313b",
+            "primary": "#5bdcb0",
+            "on-tertiary-container": "#292b2e",
+            "on-tertiary": "#2f3034",
+            "tertiary-fixed": "#e2e2e6",
+            "surface-container": "#192029",
             "error-container": "#93000a",
-            "surface-dim": "#121414",
-            "on-tertiary-fixed": "#380038",
-            "tertiary-container": "#db63d4",
-            "on-tertiary-container": "#520052",
-            "surface-container-highest": "#333535",
-            "secondary-fixed-dim": "#c7c6ca",
-            "cinza-escuro": "#202124",
-            "primary-fixed": "#7af9cc",
-            "azul-ia": "#00A67E",
-            "surface-container-high": "#282a2b",
-            "on-surface": "#e2e2e2",
-            "cinza-claro": "#F0F0F0",
-            "inverse-on-surface": "#2f3131",
-            "surface-container": "#1e2020",
-            "outline-variant": "#3d4a43",
-            "surface-bright": "#38393a",
-            "branco": "#FFFFFF",
-            "ciano": "#00FFFF",
-            "tertiary-fixed": "#ffd7f5",
+            "surface-variant": "#2e353f",
+            "surface-dim": "#0d141d",
+            "on-tertiary-fixed": "#1a1c1f",
+            "on-secondary-fixed": "#191c21",
+            "tertiary-container": "#919296",
+            "surface-container-lowest": "#080f17",
             "on-error-container": "#ffdad6",
-            "secondary-container": "#48494c",
+            "primary-fixed-dim": "#5bdcb0",
+            "secondary-container": "#44474d",
+            "on-primary-fixed-variant": "#00513c",
+            "on-background": "#dce3f0",
+            "surface-container-high": "#232a34",
+            "on-secondary-container": "#b3b5bc",
+            "on-error": "#690005",
+            "on-surface": "#dce3f0",
+            "secondary-fixed": "#e1e2e9",
+            "background": "#0D0F12",
+            "outline-variant": "#3d4a43",
+            "text-primary": "#F3F4F6",
+            "tertiary-fixed-dim": "#c6c6ca",
+            "on-secondary": "#2e3036",
+            "outline": "#86948c",
+            "secondary-fixed-dim": "#c4c6cd",
+            "border": "#23272F",
+            "surface-bright": "#333a44",
+            "success": "#10B981",
             "on-surface-variant": "#bccac2",
             "on-primary-fixed": "#002116",
-            "on-primary": "#003828",
-            "secondary": "#c7c6ca",
-            "verde-eletrico": "#00FF00",
-            "inverse-primary": "#006c51",
-            "secondary-fixed": "#e3e2e6",
-            "surface-variant": "#333535",
-            "tertiary-fixed-dim": "#ffaaf3",
-            "error": "#ffb4ab",
-            "on-primary-container": "#003224",
-            "on-tertiary-fixed-variant": "#810181",
-            "outline": "#86948c",
-            "on-secondary-fixed": "#1a1b1e",
-            "on-secondary-fixed-variant": "#46474a",
-            "on-error": "#690005"
+            "on-secondary-fixed-variant": "#44474d",
+            "surface-container-highest": "#2e353f",
+            "text-secondary": "#9CA3AF",
+            "surface-container-low": "#151c25",
+            "primary-fixed": "#7af9cc",
+            "tertiary": "#c6c6ca",
+            "surface-tint": "#5bdcb0",
+            "error": "#EF4444",
+            "inverse-primary": "#006c51"
           },
           "borderRadius": {
             "DEFAULT": "0.125rem",
@@ -82,278 +75,125 @@
             "full": "0.75rem"
           },
           "spacing": {
-            "space-sm": "0.5rem",
             "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin": "2rem",
             "gutter": "1.5rem",
-            "space-xs": "0.25rem",
-            "space-md": "1rem",
-            "margin": "1.5rem",
             "space-xl": "2rem",
-            "space-2xl": "4rem"
+            "space-xs": "0.25rem",
+            "space-md": "1rem"
           },
           "fontFamily": {
-            "body-sm": ["Inter"],
-            "label-md": ["Inter"],
-            "mono-code": ["JetBrains Mono"],
-            "headline-sm": ["Inter"],
-            "headline-lg": ["Inter"],
+            "mono": ["JetBrains Mono"],
+            "small": ["Inter"],
+            "h2": ["Inter"],
             "body-md": ["Inter"],
-            "hero": ["Inter"],
-            "body-lg": ["Inter"],
-            "headline-md": ["Inter"]
+            "h1": ["Inter"]
           },
           "fontSize": {
-            "body-sm": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
-            "label-md": ["0.875rem", { "lineHeight": "1.2", "fontWeight": "500" }],
-            "mono-code": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
-            "headline-sm": ["1.25rem", { "lineHeight": "1.4", "fontWeight": "600" }],
-            "headline-lg": ["2.25rem", { "lineHeight": "1.2", "fontWeight": "700" }],
+            "mono": ["0.875rem", { "fontWeight": "500" }],
+            "small": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "h2": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }],
             "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
-            "hero": ["clamp(2.5rem, 5vw, 4rem)", { "lineHeight": "1.1", "fontWeight": "700" }],
-            "body-lg": ["1.125rem", { "lineHeight": "1.6", "fontWeight": "400" }],
-            "headline-md": ["1.5rem", { "lineHeight": "1.3", "fontWeight": "600" }]
+            "h1": ["2.25rem", { "lineHeight": "1.25", "fontWeight": "700" }]
           }
         },
       },
     }
   </script>
 <style>
-    /* Subtle terminal grid background pattern */
-    .terminal-grid {
-      background-size: 32px 32px;
-      background-image: 
-        linear-gradient(to right, rgba(61, 74, 67, 0.15) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(61, 74, 67, 0.15) 1px, transparent 1px);
-    }
-    @keyframes pulse-glow {
-      0%, 100% { opacity: 0.9; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.96); }
-    }
-    .animate-pulse-glow {
-      animation: pulse-glow 2.5s infinite ease-in-out;
-    }
-    @keyframes cursor-blink {
+    @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
     }
-    .animate-cursor {
-      animation: cursor-blink 1s steps(2, start) infinite;
+    .caret-blink {
+      animation: blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
   </style>
 </head>
-<body class="bg-surface text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col justify-between selection:bg-primary-container selection:text-white">
-<!-- TopNavBar (Shared Component JSON anchor) -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-space-lg h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
-<div class="flex items-center gap-8">
-<a class="font-mono-code text-headline-sm font-semibold tracking-wider text-primary dark:text-primary uppercase flex items-center gap-2" href="#">
-<span class="w-2.5 h-2.5 rounded-sm bg-primary inline-block"></span>
-        AETHER CHAT PROTOCOL
-      </a>
-<!-- Desktop Navigation Links -->
-<nav class="hidden md:flex items-center gap-6">
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Network Status</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#">Protocol Docs</a>
-<a class="border-b-2 border-primary dark:border-primary text-primary dark:text-primary font-label-md text-label-md pb-1" href="#">Telemetry</a>
-</nav>
-</div>
-<!-- Trailing Actions Cluster -->
-<div class="flex items-center gap-3">
-<div class="hidden sm:flex items-center gap-2 mr-2">
-<button aria-label="Terminal" class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
-</button>
-<button aria-label="Settings" class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200 flex items-center justify-center">
-<span class="material-symbols-outlined" data-icon="tune">tune</span>
-</button>
-</div>
-<button class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 border border-outline-variant rounded text-on-surface hover:bg-surface-container font-label-md text-label-md transition-all duration-200">
-<span>System Specs</span>
-</button>
-<button class="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-container hover:bg-[#00916d] text-white font-label-md text-label-md rounded font-medium shadow-sm transition-all duration-200 active:scale-[0.98]">
-<span class="material-symbols-outlined text-sm" data-icon="power">power</span>
-<span>Connect Node</span>
-</button>
+<body class="bg-background text-text-primary min-h-screen flex flex-col justify-between items-center py-10 px-4 antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Branding Header -->
+<header class="w-full flex justify-center items-center">
+<div class="inline-flex items-center gap-2.5 bg-surface border border-border px-4 py-1.5 rounded-full shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-h2 text-small text-text-primary font-semibold tracking-tight">Aether</span>
 </div>
 </header>
-<!-- Main Canvas Container -->
-<main class="w-full flex-grow pt-24 pb-16 flex items-center justify-center terminal-grid relative">
-<!-- Subdued radial gradient for ambient depth -->
-<div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_35%,rgba(0,166,126,0.06)_0%,transparent_50%),radial-gradient(circle_at_80%_65%,rgba(0,255,255,0.04)_0%,transparent_50%)]"></div>
-<div class="max-w-[1280px] w-full mx-auto px-6 sm:px-8 relative z-10">
-<!-- Asymmetric 2-Column Split: Telemetry vs Auth Card -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-<!-- Left Column: Cryptographic Challenge Telemetry (lg:col-span-7) -->
-<div class="lg:col-span-7 flex flex-col justify-center">
-<!-- Ephemeral Status Pill -->
-<div class="inline-flex items-center gap-2 mb-4">
-<span class="font-mono-code text-xs uppercase tracking-wider text-[#00FFFF] bg-[#00FFFF]/10 border border-[#00FFFF]/30 px-3 py-1 rounded-full flex items-center gap-2 shadow-[0_0_10px_rgba(0,255,255,0.15)]">
-<span class="w-2 h-2 rounded-full bg-verde-eletrico animate-pulse-glow inline-block"></span>
-              EPHEMERAL OTP // CHALLENGE HANDSHAKE
-            </span>
-</div>
-<!-- Hero Headline -->
-<h1 class="font-headline-lg text-headline-lg lg:text-[2.75rem] font-bold text-branco tracking-tight leading-tight mb-4">
-            Authorize Node Identity
-          </h1>
-<!-- Body Description -->
-<p class="font-body-md text-body-md text-cinza-claro/70 max-w-lg mb-8 leading-relaxed">
-            Decentralized two-way cryptographic verification. An ephemeral 6-digit challenge payload has been dispatched to your specified channel.
-          </p>
-<!-- Telemetry Visual Panel Box -->
-<div class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-6 shadow-sm backdrop-blur-sm relative overflow-hidden">
-<!-- Header bar of telemetry box -->
-<div class="flex justify-between items-center pb-4 border-b border-outline-variant/40 mb-4">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-base" data-icon="memory">memory</span>
-<span class="font-mono-code text-xs text-cinza-claro/70 tracking-wider">CLIENT CHALLENGE ENGINE // TOTP-SHA256</span>
-</div>
-<span class="font-mono-code text-xs text-verde-eletrico bg-verde-eletrico/10 border border-verde-eletrico/30 px-2 py-0.5 rounded">#094-A</span>
-</div>
-<!-- Vector Diagram: Encrypted Transfer & Harmonic synthesis -->
-<div class="w-full bg-[#121414] border border-outline-variant/40 rounded-lg p-4 mb-4 relative overflow-hidden">
-<div class="flex justify-between items-center text-[10px] font-mono-code text-on-surface-variant mb-2">
-<span class="flex items-center gap-1.5 text-primary">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
-                  PACKET TRANSFER: ACTIVE
-                </span>
-<span class="text-cinza-claro/60">PORT 443 / DTLS-SRTP</span>
-</div>
-<!-- SVG Wave & Packet Flow Visualization -->
-<svg class="w-full h-24 stroke-current" fill="none" viewbox="0 0 540 100" xmlns="http://www.w3.org/2000/svg">
-<!-- Background grid ticks -->
-<line stroke="#3d4a43" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="540" y1="20" y2="20"></line>
-<line stroke="#3d4a43" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="540" y1="50" y2="50"></line>
-<line stroke="#3d4a43" stroke-dasharray="2 4" stroke-width="0.5" x1="0" x2="540" y1="80" y2="80"></line>
-<!-- Wave line 1: Cyan high frequency -->
-<path class="opacity-80" d="M0,50 C60,20 90,80 150,50 C210,20 240,80 300,50 C360,20 390,80 450,50 C480,35 510,65 540,50" stroke="#00FFFF" stroke-linecap="round" stroke-width="1.5"></path>
-<!-- Wave line 2: Green Harmonic sub-wave -->
-<path class="opacity-90" d="M0,50 C80,75 140,25 220,50 C300,75 360,25 440,50 C490,65 520,35 540,50" stroke="#00A67E" stroke-dasharray="4 2" stroke-width="1.75"></path>
-<!-- Pulsating Data Nodes -->
-<circle class="animate-pulse" cx="150" cy="50" fill="#00FFFF" r="4"></circle>
-<circle cx="300" cy="50" fill="#00A67E" r="4.5"></circle>
-<circle class="animate-pulse" cx="450" cy="50" fill="#00FFFF" r="4"></circle>
-<!-- Node labels -->
-<text fill="#bccac2" font-family="JetBrains Mono" font-size="8" x="142" y="38">NODE_01</text>
-<text fill="#00A67E" font-family="JetBrains Mono" font-size="8" x="290" y="70">SYN_ACK</text>
-<text fill="#bccac2" font-family="JetBrains Mono" font-size="8" x="440" y="38">NODE_04</text>
-</svg>
-<!-- Diagnostic status line -->
-<div class="flex justify-between items-center text-[10px] font-mono-code pt-2 border-t border-outline-variant/30 text-cinza-claro/50">
-<span>DIGEST: 0x7E3A..91C2</span>
-<span class="text-ciano">ENTROPY: 99.98%</span>
-</div>
-</div>
-<!-- Monospace Metrics Grid (4-columns) -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-<div class="bg-surface-container/60 border border-outline-variant/40 rounded p-2.5">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase mb-1 tracking-wider">CHALLENGE TYPE</div>
-<div class="font-mono-code text-xs text-branco font-semibold">TOTP / SHA-256</div>
-</div>
-<div class="bg-surface-container/60 border border-outline-variant/40 rounded p-2.5">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase mb-1 tracking-wider">HASH FINGERPRINT</div>
-<div class="font-mono-code text-xs text-[#00FFFF] font-semibold">8a4f..3c99</div>
-</div>
-<div class="bg-surface-container/60 border border-outline-variant/40 rounded p-2.5">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase mb-1 tracking-wider">DISPATCH RELAY</div>
-<div class="font-mono-code text-xs text-primary font-semibold">us-east-mesh-04</div>
-</div>
-<div class="bg-surface-container/60 border border-outline-variant/40 rounded p-2.5">
-<div class="font-mono-code text-[10px] text-on-surface-variant uppercase mb-1 tracking-wider">HANDSHAKE</div>
-<div class="font-mono-code text-xs text-branco font-semibold">WEBRTC-V3</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Right Column: Verification Card (lg:col-span-5) -->
-<div class="lg:col-span-5">
-<div class="bg-cinza-escuro border border-cinza-claro/20 rounded-xl p-8 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-md relative">
+<!-- Centered Auth Card Container -->
+<main class="w-full max-w-[440px] my-auto">
+<section class="bg-surface border border-border rounded-xl p-8 shadow-2xl transition-all">
 <!-- Card Header -->
-<div class="mb-6">
-<h2 class="font-headline-sm text-headline-sm lg:text-2xl font-bold text-branco mb-2 tracking-tight">
-                Enter Verification Code
-              </h2>
-<p class="font-body-sm text-body-sm text-cinza-claro/70 leading-normal">
-                Enter the 6-digit challenge code dispatched to <span class="text-white font-medium">user@domain.com</span>.
-              </p>
+<div class="text-left">
+<div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-surface-container border border-border mb-4 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
 </div>
-<!-- 6-Digit OTP Code Matrix -->
-<div class="flex gap-2.5 sm:gap-3 justify-between mb-6">
-<!-- Block 1 (Filled: 4) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border border-cinza-claro/20 flex items-center justify-center font-mono-code text-2xl font-bold text-white transition-all shadow-inner">
-                4
-              </div>
-<!-- Block 2 (Filled: 8) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border border-cinza-claro/20 flex items-center justify-center font-mono-code text-2xl font-bold text-white transition-all shadow-inner">
-                8
-              </div>
-<!-- Block 3 (Filled: 2) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border border-cinza-claro/20 flex items-center justify-center font-mono-code text-2xl font-bold text-white transition-all shadow-inner">
-                2
-              </div>
-<!-- Block 4 (Active / Focused with cursor) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border-2 border-primary-container flex items-center justify-center font-mono-code text-2xl font-bold text-white shadow-[0_0_12px_rgba(0,166,126,0.35)] relative">
-<span class="w-0.5 h-7 bg-primary-container animate-cursor"></span>
+<h1 class="font-h2 text-h2 text-text-primary tracking-tight font-bold">Check your email</h1>
+<p class="font-small text-small text-text-secondary mt-2 leading-relaxed">
+          We sent a 6-digit verification code to <span class="text-text-primary font-medium">alex@example.com</span>.
+        </p>
 </div>
-<!-- Block 5 (Pending) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border border-cinza-claro/15 flex items-center justify-center font-mono-code text-2xl text-cinza-claro/30 transition-all">
-<span class="w-1.5 h-1.5 rounded-full bg-cinza-claro/20"></span>
+<!-- OTP Entry Matrix -->
+<div class="flex items-center justify-between gap-2.5 sm:gap-3 mt-7">
+<!-- Slot 1: Filled -->
+<div class="w-12 h-14 rounded-lg bg-background border border-border flex items-center justify-center font-mono text-2xl font-semibold text-text-primary">
+          7
+        </div>
+<!-- Slot 2: Filled -->
+<div class="w-12 h-14 rounded-lg bg-background border border-border flex items-center justify-center font-mono text-2xl font-semibold text-text-primary">
+          2
+        </div>
+<!-- Slot 3: Filled -->
+<div class="w-12 h-14 rounded-lg bg-background border border-border flex items-center justify-center font-mono text-2xl font-semibold text-text-primary">
+          9
+        </div>
+<!-- Slot 4: Active / Focused with Animated Caret -->
+<div class="w-12 h-14 rounded-lg bg-background border border-primary-container ring-2 ring-primary-container/30 flex items-center justify-center font-mono text-2xl font-semibold text-text-primary relative">
+<span class="w-0.5 h-6 bg-primary-container caret-blink"></span>
 </div>
-<!-- Block 6 (Pending) -->
-<div class="w-[46px] sm:w-[52px] h-[56px] sm:h-[60px] rounded-xl bg-surface border border-cinza-claro/15 flex items-center justify-center font-mono-code text-2xl text-cinza-claro/30 transition-all">
-<span class="w-1.5 h-1.5 rounded-full bg-cinza-claro/20"></span>
+<!-- Slot 5: Empty -->
+<div class="w-12 h-14 rounded-lg bg-background border border-border flex items-center justify-center font-mono text-2xl font-semibold text-text-secondary/30">
+          -
+        </div>
+<!-- Slot 6: Empty -->
+<div class="w-12 h-14 rounded-lg bg-background border border-border flex items-center justify-center font-mono text-2xl font-semibold text-text-secondary/30">
+          -
+        </div>
+</div>
+<!-- Timer & Resend Row -->
+<div class="flex items-center justify-center gap-2 mt-6">
+<span class="font-small text-small text-text-secondary font-medium">
+          Didn't receive the code?
+        </span>
+<div class="inline-flex items-center gap-1.5 font-small text-small text-text-secondary font-medium">
+<span class="text-text-secondary">Resend in</span>
+<span class="font-mono text-small text-primary font-medium tracking-tight">00:48</span>
 </div>
 </div>
-<!-- Cooldown & Progress Tracker -->
-<div class="mb-6">
-<div class="flex justify-between items-center font-mono-code text-xs text-cinza-claro/70 mb-2">
-<span>Payload expires in <strong class="text-white font-medium">04:59</strong></span>
-<span>Cooldown: <span class="text-primary font-medium">00:42s</span></span>
-</div>
-<!-- Progress bar track -->
-<div class="bg-surface rounded-full h-1.5 w-full overflow-hidden border border-cinza-claro/10">
-<div class="bg-primary-container h-full w-3/4 rounded-full transition-all duration-300"></div>
-</div>
-</div>
-<!-- Interactive Action Cluster -->
-<div class="space-y-3 mb-6">
-<!-- Primary Authorize Button -->
-<button class="w-full bg-azul-ia hover:bg-[#00916d] active:scale-[0.99] text-white font-label-md text-label-md font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all duration-200">
-<span class="material-symbols-outlined text-lg" data-icon="verified_user">verified_user</span>
-<span>Authorize Node &amp; Connect</span>
+<!-- Action Button -->
+<button class="w-full mt-6 py-3 px-4 bg-primary-container hover:brightness-105 active:brightness-95 text-white font-small text-small font-semibold rounded-lg flex items-center justify-center gap-2 transition-all duration-150 ease-out shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-container focus:ring-offset-2 focus:ring-offset-surface" type="button">
+<span>Verify & Continue</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
 </button>
-<!-- Secondary Ghost Resend Button -->
-<button class="w-full border-[1.5px] border-cinza-claro/20 hover:border-cinza-claro/40 text-cinza-claro/80 hover:text-white hover:bg-cinza-claro/5 active:scale-[0.99] font-label-md text-label-md font-medium py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-all duration-200">
-<span class="material-symbols-outlined text-base text-primary" data-icon="sync">sync</span>
-<span>Resend Verification Code</span>
-</button>
+<!-- Secondary Email Change Action -->
+<div class="mt-4 text-center">
+<a class="inline-block font-small text-small text-text-secondary hover:text-primary transition-colors duration-150 ease-out font-medium focus:outline-none" href="#change-email">
+          Use a different email address
+        </a>
 </div>
-<!-- Auxiliary Nav Link -->
-<a class="font-mono-code text-xs text-primary hover:underline text-center block mb-6 transition-colors" href="#">
-              ← Change verification destination or channel
-            </a>
-<!-- Card Footer Security Note -->
-<div class="pt-6 border-t border-cinza-claro/10 flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-cinza-claro/50 text-sm" data-icon="lock">lock</span>
-<span class="font-mono-code text-[11px] text-cinza-claro/50 tracking-wider uppercase">
-                ZERO-KNOWLEDGE EPHEMERAL CHALLENGE
-              </span>
+<!-- Security Guarantee Pill -->
+<div class="mt-6 pt-5 border-t border-border flex items-center justify-center gap-2 text-text-secondary">
+<span class="material-symbols-outlined text-[15px] text-primary" data-icon="lock">lock</span>
+<span class="font-small text-small text-text-secondary">End-to-end encrypted protocol</span>
 </div>
-</div>
-</div>
-</div>
-</div>
+</section>
 </main>
-<!-- Footer (Shared Component JSON anchor) -->
-<footer class="w-full py-space-md px-space-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline-variant bg-surface-container-lowest dark:bg-surface-container-lowest gap-4">
-<div class="font-mono-code text-body-sm text-primary dark:text-primary uppercase flex items-center gap-2 text-xs">
-<span class="w-1.5 h-1.5 rounded-full bg-verde-eletrico"></span>
-      © 2026 AETHER PROTOCOL LABS. ALL RIGHTS RESERVED. ENCRYPTED END-TO-END VIA WEBRTC.
-    </div>
-<div class="flex flex-wrap items-center gap-6">
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Security Architecture</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Telemetry Feeds</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Node Status</a>
-<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200 text-xs" href="#">Privacy Protocol</a>
-</div>
+<!-- Screen Footer -->
+<footer class="w-full flex justify-center items-center">
+<p class="font-small text-small text-text-secondary text-center tracking-normal">
+      Aether Secure Communication • Privacy & Terms
+    </p>
 </footer>
 </body></html>
