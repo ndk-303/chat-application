@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { CallProvider } from '../../context/CallContext';
 import CallOverlay from '../../components/call/CallOverlay';
+import NotificationsDrawer from '../../components/notifications/NotificationsDrawer';
 import Avatar from '../../components/ui/Avatar';
 
 export default function MainLayout({
@@ -18,6 +19,7 @@ export default function MainLayout({
   const { isConnected } = useSocket();
   const router = useRouter();
   const pathname = usePathname();
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -73,7 +75,7 @@ export default function MainLayout({
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
-                onClick={() => router.push('/settings/notifications')}
+                onClick={() => setIsNotificationsOpen(true)}
                 className="p-1.5 text-text-secondary hover:text-text-primary rounded-sm hover:bg-surface-hover transition-colors"
                 title="Notifications"
               >
@@ -150,6 +152,10 @@ export default function MainLayout({
       </div>
 
       <CallOverlay />
+      <NotificationsDrawer
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+      />
     </CallProvider>
   );
 }
