@@ -8,6 +8,8 @@ import { useSocket } from '../../context/SocketContext';
 import { CallProvider } from '../../context/CallContext';
 import CallOverlay from '../../components/call/CallOverlay';
 import NotificationsDrawer from '../../components/notifications/NotificationsDrawer';
+import ReconnectingBanner from '../../components/network/ReconnectingBanner';
+import CommandPaletteModal from '../../components/search/CommandPaletteModal';
 import Avatar from '../../components/ui/Avatar';
 
 export default function MainLayout({
@@ -20,6 +22,18 @@ export default function MainLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -52,6 +66,9 @@ export default function MainLayout({
   return (
     <CallProvider>
       <div className="bg-background text-text-primary h-screen w-screen overflow-hidden flex flex-col antialiased select-none">
+        {/* Reconnecting Alert Banner */}
+        <ReconnectingBanner />
+
         {/* Top App Bar */}
         <header className="w-full bg-background border-b border-border z-30 flex-shrink-0">
           <div className="flex justify-between items-center w-full px-6 py-2.5">
@@ -73,6 +90,18 @@ export default function MainLayout({
             </div>
 
             <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setIsSearchOpen(true)}
+                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs text-text-secondary hover:text-text-primary hover:border-text-secondary/40 transition-colors"
+                title="Search (Cmd+K)"
+              >
+                <span className="material-symbols-outlined text-sm">search</span>
+                <span>Tìm kiếm...</span>
+                <kbd className="px-1.5 py-0.2 text-[10px] font-mono bg-surface-bright rounded border border-border">
+                  ⌘K
+                </kbd>
+              </button>
               <button
                 type="button"
                 onClick={() => setIsNotificationsOpen(true)}
@@ -155,6 +184,10 @@ export default function MainLayout({
       <NotificationsDrawer
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
+      />
+      <CommandPaletteModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
       />
     </CallProvider>
   );
