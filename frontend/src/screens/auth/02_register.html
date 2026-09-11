@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Register // AETHER CHAT PROTOCOL</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "verde-eletrico": "#00FF00",
+            "inverse-on-surface": "#2f3131",
+            "surface-dark": "#121214",
+            "tertiary-fixed": "#ffd7f5",
+            "cinza-escuro": "#202124",
+            "tertiary-fixed-dim": "#ffaaf3",
+            "secondary-fixed-dim": "#c7c6ca",
+            "azul-ia": "#00A67E",
+            "cinza-claro": "#F0F0F0",
+            "on-primary-fixed": "#002116",
+            "surface-tint": "#5bdcb0",
+            "surface-container-lowest": "#0c0f0f",
+            "on-error": "#690005",
+            "on-primary-fixed-variant": "#00513c",
+            "on-surface": "#e2e2e2",
+            "surface-dim": "#121414",
+            "roxo": "#800080",
+            "on-secondary-fixed": "#1a1b1e",
+            "on-background": "#e2e2e2",
+            "on-secondary-container": "#b9b8bc",
+            "ciano": "#00FFFF",
+            "on-tertiary-fixed-variant": "#810181",
+            "inverse-surface": "#e2e2e2",
+            "surface-container-high": "#282a2b",
+            "on-secondary": "#2f3033",
+            "primary-fixed-dim": "#5bdcb0",
+            "inverse-primary": "#006c51",
+            "on-surface-variant": "#bccac2",
+            "on-secondary-fixed-variant": "#46474a",
+            "surface-container-highest": "#333535",
+            "surface-variant": "#333535",
+            "primary-fixed": "#7af9cc",
+            "outline": "#86948c",
+            "primary": "#5bdcb0",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#db63d4",
+            "surface-bright": "#38393a",
+            "tertiary": "#ffaaf3",
+            "on-primary": "#003828",
+            "on-tertiary": "#5b005b",
+            "secondary-fixed": "#e3e2e6",
+            "surface-container": "#1e2020",
+            "surface": "#121414",
+            "primary-container": "#00a67e",
+            "error-container": "#93000a",
+            "on-tertiary-fixed": "#380038",
+            "on-tertiary-container": "#520052",
+            "on-primary-container": "#003224",
+            "error": "#ffb4ab",
+            "branco": "#FFFFFF",
+            "secondary-container": "#48494c",
+            "secondary": "#c7c6ca",
+            "surface-container-low": "#1a1c1c",
+            "outline-variant": "#3d4a43",
+            "background": "#121414"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-2xl": "4rem",
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "mono-code": [
+              "JetBrains Mono"
+            ],
+            "hero": [
+              "Inter"
+            ],
+            "label-md": [
+              "Inter"
+            ],
+            "body-md": [
+              "Inter"
+            ],
+            "headline-sm": [
+              "Inter"
+            ],
+            "headline-md": [
+              "Inter"
+            ],
+            "headline-lg": [
+              "Inter"
+            ],
+            "body-lg": [
+              "Inter"
+            ],
+            "body-sm": [
+              "Inter"
+            ]
+          },
+          "fontSize": {
+            "mono-code": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ],
+            "hero": [
+              "clamp(2.5rem, 5vw, 4rem)",
+              {
+                "lineHeight": "1.1",
+                "fontWeight": "700"
+              }
+            ],
+            "label-md": [
+              "0.875rem",
+              {
+                "lineHeight": "1.2",
+                "fontWeight": "500"
+              }
+            ],
+            "body-md": [
+              "1rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "headline-sm": [
+              "1.25rem",
+              {
+                "lineHeight": "1.4",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-md": [
+              "1.5rem",
+              {
+                "lineHeight": "1.3",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-lg": [
+              "2.25rem",
+              {
+                "lineHeight": "1.2",
+                "fontWeight": "700"
+              }
+            ],
+            "body-lg": [
+              "1.125rem",
+              {
+                "lineHeight": "1.6",
+                "fontWeight": "400"
+              }
+            ],
+            "body-sm": [
+              "0.875rem",
+              {
+                "lineHeight": "1.5",
+                "fontWeight": "400"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 1.25rem;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: 'liga';
+    }
+    .grid-matrix {
+      background-image: 
+        linear-gradient(to right, rgba(240, 240, 240, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(240, 240, 240, 0.04) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+  </style>
+</head>
+<body class="bg-cinza-escuro text-on-surface font-body-md text-body-md antialiased min-h-screen flex flex-col justify-between grid-matrix relative selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-space-lg h-16 bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant">
+<div class="flex items-center gap-space-md">
+<span class="font-mono-code text-headline-sm font-semibold tracking-wider text-primary dark:text-primary uppercase flex items-center gap-2">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+        AETHER CHAT PROTOCOL
+      </span>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#network">Network Status</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#docs">Protocol Docs</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-label-md text-label-md hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#telemetry">Telemetry</a>
+</nav>
+<div class="flex items-center space-x-3">
+<button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-outline-variant text-on-surface-variant hover:text-on-surface hover:border-outline transition-colors text-label-md font-label-md" type="button">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>System Specs</span>
+</button>
+<button class="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-azul-ia text-branco hover:brightness-105 active:scale-[0.98] transition-all font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span>Connect Node</span>
+</button>
+</div>
+</header>
+<!-- Main Canvas Content -->
+<main class="w-full max-w-[1280px] mx-auto pt-24 pb-16 px-space-md md:px-space-lg flex-1 flex items-center">
+<div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+<!-- Left Column: Cryptographic Identity Telemetry -->
+<section class="lg:col-span-7 flex flex-col space-y-6">
+<!-- Status Indicator Pill -->
+<div class="inline-flex items-center gap-2 self-start px-3 py-1 rounded-xl border border-ciano/40 bg-surface-container-lowest/80 backdrop-blur-sm">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-verde-eletrico opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-verde-eletrico"></span>
+</span>
+<span class="font-mono-code text-xs text-ciano tracking-wide font-medium">CRYPTOGRAPHIC HANDSHAKE READY</span>
+</div>
+<!-- Headline & Subtitle -->
+<div class="space-y-3">
+<h1 class="font-hero text-hero text-branco tracking-tight">
+            Establish Protocol Identity
+          </h1>
+<p class="text-on-surface-variant font-body-lg text-body-lg max-w-xl">
+            Decentralized ephemeral keypair negotiation. Generate client-side cryptographic fingerprints with zero server trust.
+          </p>
+</div>
+<!-- Keypair Generation Telemetry Panel -->
+<div class="rounded-xl border border-outline-variant bg-surface-container-low/90 backdrop-blur-sm p-5 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="hub">hub</span>
+<span class="font-mono-code text-xs text-on-surface tracking-wider">CLIENT ENTROPY HARVEST // SHA-256</span>
+</div>
+<span class="font-mono-code text-xs text-verde-eletrico px-2 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">#094-A</span>
+</div>
+<!-- Public Fingerprint Box -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded bg-surface-container-lowest border border-outline-variant/40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-ciano text-base" data-icon="fingerprint">fingerprint</span>
+<div class="flex flex-col">
+<span class="font-mono-code text-xs text-outline">Fingerprint ID</span>
+<span class="font-mono-code text-sm text-primary font-semibold tracking-wide">0x7F4B...99E1</span>
+</div>
+</div>
+<div class="flex items-center gap-3 self-end sm:self-auto">
+<span class="font-mono-code text-xs px-2 py-1 rounded bg-surface-container-high text-on-surface-variant border border-outline-variant/60">RSA-4096 / SECP256K1</span>
+<button class="text-on-surface-variant hover:text-primary transition-colors" title="Copy Fingerprint" type="button">
+<span class="material-symbols-outlined text-base" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<!-- Neural / Cryptographic Vector Graphic Display -->
+<div class="relative w-full h-36 rounded bg-surface-container-lowest/70 border border-outline-variant/30 flex items-center justify-center overflow-hidden">
+<svg class="w-full h-full text-outline-variant/40" fill="none" viewbox="0 0 500 140" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="cyber-grad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#00A67E" stop-opacity="0.8"></stop>
+<stop offset="50%" stop-color="#00FFFF" stop-opacity="0.6"></stop>
+<stop offset="100%" stop-color="#800080" stop-opacity="0.8"></stop>
+</lineargradient>
+</defs>
+<path d="M10 70 Q 70 20, 130 70 T 250 70 T 370 70 T 490 70" fill="none" stroke="url(#cyber-grad)" stroke-width="1.5"></path>
+<path d="M10 70 Q 70 120, 130 70 T 250 70 T 370 70 T 490 70" fill="none" opacity="0.4" stroke="#00A67E" stroke-dasharray="4 4" stroke-width="1"></path>
+<!-- Mesh Lines -->
+<line opacity="0.6" stroke="#800080" stroke-width="1" x1="130" x2="190" y1="70" y2="30"></line>
+<line opacity="0.6" stroke="#00FFFF" stroke-width="1" x1="130" x2="190" y1="70" y2="110"></line>
+<line opacity="0.6" stroke="#00A67E" stroke-width="1" x1="250" x2="310" y1="70" y2="30"></line>
+<line opacity="0.6" stroke="#800080" stroke-width="1" x1="250" x2="310" y1="70" y2="110"></line>
+<!-- Active Synapse Nodes -->
+<circle cx="130" cy="70" fill="#00FF00" r="4"></circle>
+<circle cx="190" cy="30" fill="#00FFFF" r="3"></circle>
+<circle cx="190" cy="110" fill="#800080" r="3"></circle>
+<circle cx="250" cy="70" fill="#00A67E" r="5"></circle>
+<circle cx="310" cy="30" fill="#800080" r="3"></circle>
+<circle cx="310" cy="110" fill="#00FFFF" r="3"></circle>
+<circle cx="370" cy="70" fill="#00FF00" r="4"></circle>
+</svg>
+<div class="absolute bottom-2 left-3 font-mono-code text-[10px] text-outline tracking-wider">
+              QUANTUM-RESISTANT LATTICE SYNTHESIS
+            </div>
+</div>
+<!-- Telemetry Metric Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono-code">
+<div class="p-2.5 rounded bg-surface-container-lowest/60 border border-outline-variant/30">
+<span class="block text-[10px] text-outline uppercase tracking-wider">GENERATED BITS</span>
+<span class="text-xs text-on-surface font-semibold">4,096</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-lowest/60 border border-outline-variant/30">
+<span class="block text-[10px] text-outline uppercase tracking-wider">ENTROPY SCORE</span>
+<span class="text-xs text-verde-eletrico font-semibold">99.8%</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-lowest/60 border border-outline-variant/30">
+<span class="block text-[10px] text-outline uppercase tracking-wider">CIPHER</span>
+<span class="text-xs text-ciano font-semibold">AES-256-GCM</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-lowest/60 border border-outline-variant/30">
+<span class="block text-[10px] text-outline uppercase tracking-wider">HANDSHAKE</span>
+<span class="text-xs text-tertiary font-semibold">WEBRTC-V3</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Registration Card -->
+<section class="lg:col-span-5 w-full">
+<div class="rounded-xl border border-cinza-claro/20 bg-surface-container-low p-8 shadow-[0_2px_12px_rgba(0,0,0,0.06)] relative backdrop-blur-md">
+<!-- Card Header -->
+<div class="mb-6 space-y-1">
+<h2 class="font-headline-sm text-headline-sm font-bold text-branco">Generate Identity</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Create a decentralized node keypair to enter the encrypted peer network.
+            </p>
+</div>
+<!-- Registration Form -->
+<form class="space-y-4" onsubmit="event.preventDefault();">
+<!-- 1. Handle Input -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-cinza-claro/80" for="handle">Identity Handle / Username</label>
+<div class="relative flex items-center">
+<input class="w-full rounded-xl bg-surface-dim border border-outline-variant text-branco placeholder:text-outline/60 text-body-sm font-body-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-azul-ia transition-all" id="handle" name="handle" placeholder="e.g. neuro_vector" required="" type="text"/>
+<span class="absolute right-3 font-mono-code text-on-surface-variant text-sm select-none">@</span>
+</div>
+</div>
+<!-- 2. Email Input -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-cinza-claro/80" for="recovery-email">Recovery Email</label>
+<div class="relative flex items-center">
+<input class="w-full rounded-xl bg-surface-dim border border-outline-variant text-branco placeholder:text-outline/60 text-body-sm font-body-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-azul-ia transition-all" id="recovery-email" name="recovery-email" placeholder="name@domain.com" required="" type="email"/>
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant pointer-events-none text-base" data-icon="mail">mail</span>
+</div>
+</div>
+<!-- 3. Password Input -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-cinza-claro/80" for="access-key">Master Access Key / Password</label>
+<div class="relative flex items-center">
+<input class="w-full rounded-xl bg-surface-dim border border-outline-variant text-branco placeholder:text-outline/60 text-body-sm font-body-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-azul-ia transition-all" id="access-key" name="access-key" placeholder="••••••••••••••••••••" required="" type="password"/>
+<button class="material-symbols-outlined absolute right-3 text-on-surface-variant hover:text-branco transition-colors text-base" data-icon="visibility" type="button">visibility</button>
+</div>
+</div>
+<!-- 4. Password Strength Meter -->
+<div class="space-y-1.5 pt-0.5">
+<div class="grid grid-cols-4 gap-1.5">
+<div class="h-1.5 rounded-full bg-azul-ia"></div>
+<div class="h-1.5 rounded-full bg-azul-ia"></div>
+<div class="h-1.5 rounded-full bg-azul-ia"></div>
+<div class="h-1.5 rounded-full bg-azul-ia"></div>
+</div>
+<div class="flex justify-between items-center text-[10px] font-mono-code">
+<span class="text-verde-eletrico font-medium">HIGH ENTROPY 256-BIT</span>
+<span class="text-outline">SECURE LEVEL 4</span>
+</div>
+</div>
+<!-- 5. Confirm Password -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-xs text-cinza-claro/80" for="confirm-key">Confirm Master Key</label>
+<div class="relative flex items-center">
+<input class="w-full rounded-xl bg-surface-dim border border-outline-variant text-branco placeholder:text-outline/60 text-body-sm font-body-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-azul-ia focus:border-azul-ia transition-all" id="confirm-key" name="confirm-key" placeholder="••••••••••••••••••••" required="" type="password"/>
+<span class="material-symbols-outlined absolute right-3 text-on-surface-variant pointer-events-none text-base" data-icon="lock">lock</span>
+</div>
+</div>
+<!-- Terms Checkbox -->
+<div class="flex items-start gap-2.5 pt-2">
+<input class="mt-1 h-4 w-4 rounded bg-surface-dim border-outline-variant text-azul-ia focus:ring-azul-ia focus:ring-offset-cinza-escuro" id="terms" required="" type="checkbox"/>
+<label class="font-body-sm text-xs text-cinza-claro/70 leading-relaxed cursor-pointer" for="terms">
+                Acknowledge protocol cryptographic terms and peer-to-peer data replication policy
+              </label>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full py-3 rounded-xl bg-azul-ia text-branco font-label-md text-body-md font-semibold flex items-center justify-center gap-2 hover:brightness-105 active:translate-y-px transition-all shadow-md mt-4" type="submit">
+<span class="material-symbols-outlined text-lg" data-icon="key">key</span>
+<span>Generate Identity</span>
+</button>
+<!-- Secondary Link -->
+<a class="font-mono-code text-sm text-azul-ia hover:underline text-center block pt-2 transition-all" href="#login">
+              Existing Identity? Initialize Session
+            </a>
+<!-- Security Badge Footer Inside Card -->
+<div class="pt-4 border-t border-outline-variant/40 flex items-center justify-center gap-1.5 font-mono-code text-[11px] text-cinza-claro/60">
+<span class="material-symbols-outlined text-sm text-verde-eletrico" data-icon="verified_user">verified_user</span>
+<span>ZERO-KNOWLEDGE LOCAL ENCRYPTION</span>
+</div>
+</form>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-space-md px-space-lg flex flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline-variant bg-surface-container-lowest dark:bg-surface-container-lowest gap-4">
+<div class="font-mono-code text-body-sm text-primary dark:text-primary uppercase tracking-wider text-center md:text-left">
+      © 2026 AETHER PROTOCOL LABS. ALL RIGHTS RESERVED. ENCRYPTED END-TO-END VIA WEBRTC.
+    </div>
+<div class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#security">Security Architecture</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#telemetry-feed">Telemetry Feeds</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#nodes">Node Status</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-mono-code text-mono-code hover:text-on-surface dark:hover:text-on-surface transition-colors duration-200" href="#privacy">Privacy Protocol</a>
+</div>
+</footer>
+</body></html>
