@@ -3,6 +3,10 @@ export interface User {
   displayName: string;
   email: string;
   avatar?: string;
+  bio?: string;
+  phone?: string;
+  address?: string;
+  customStatus?: string;
   status?: 'online' | 'offline' | 'away' | 'busy';
   statusPreference?: 'online' | 'hidden';
   lastSeen?: string;
@@ -23,9 +27,14 @@ export interface FriendEntry {
   displayName: string;
   email: string;
   avatar?: string;
-  status: 'online' | 'offline' | 'away' | 'busy';
+  bio?: string;
+  phone?: string;
+  address?: string;
+  customStatus?: string;
+  status?: 'online' | 'offline' | 'away' | 'busy';
   lastSeen?: string;
-  friendshipId: string;
+  friendshipId?: string;
+  friendshipCreatedAt?: string;
 }
 
 export interface ConversationMember {

@@ -152,7 +152,14 @@ class ApiClient {
     return this.request('/users/me');
   }
 
-  async updateProfile(data: { displayName?: string }) {
+  async updateProfile(data: {
+    displayName?: string;
+    bio?: string;
+    phone?: string;
+    address?: string;
+    customStatus?: string;
+    status?: 'online' | 'offline' | 'away' | 'busy';
+  }) {
     return this.request<{ message: string; user: any }>('/users/me', {
       method: 'PATCH',
       body: JSON.stringify(data),
