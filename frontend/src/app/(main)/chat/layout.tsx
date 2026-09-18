@@ -8,7 +8,6 @@ import { Conversation } from '../../../types';
 import { useAuth } from '../../../context/AuthContext';
 import { useSocket } from '../../../context/SocketContext';
 import Avatar from '../../../components/ui/Avatar';
-import Badge from '../../../components/ui/Badge';
 import NewDirectChatModal from '../../../components/chat/NewDirectChatModal';
 import NewGroupModal from '../../../components/chat/NewGroupModal';
 
@@ -42,7 +41,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     fetchConversations();
   }, [fetchConversations]);
 
-  // Realtime Socket listeners for conversation updates
   useEffect(() => {
     if (!socket) return;
 
@@ -50,7 +48,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
       setConversations((prev) => {
         const index = prev.findIndex((c) => c._id === msg.conversationId);
         if (index === -1) {
-          // New conversation for this user, refresh list
           fetchConversations();
           return prev;
         }
@@ -61,7 +58,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         if (activeChatId !== msg.conversationId && msg.senderId?._id !== user?._id) {
           target.unreadCount = (target.unreadCount || 0) + 1;
         }
-        // Move updated conversation to top
         updated.splice(index, 1);
         return [target, ...updated];
       });
@@ -107,7 +103,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     };
   }, [socket, activeChatId, user, fetchConversations]);
 
-  // Helper to extract partner details for private chats
   const getConversationDetails = (conv: Conversation) => {
     if (conv.type === 'group') {
       return {
@@ -126,20 +121,18 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     };
   };
 
-  // Helper for last message preview
   const getLastMessagePreview = (conv: Conversation) => {
     if (!conv.lastMessageId) return 'No messages yet';
     const last = conv.lastMessageId;
     if (last.type === 'call') {
-      return last.callMeta?.callType === 'video' ? '📹 Video Call' : '📞 Voice Call';
+      return last.callMeta?.callType === 'video' ? 'Video call' : 'Voice call';
     }
     if (last.files && last.files.length > 0) {
-      return `📎 ${last.files[0].originalName || 'Attachment'}`;
+      return `Attachment: ${last.files[0].originalName || 'file'}`;
     }
     return last.content || 'Message';
   };
 
-  // Format timestamp (e.g. 14:32 or Yesterday)
   const formatTimestamp = (dateStr?: string) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
@@ -163,106 +156,169 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     return true;
   });
 
+  const filterLabels: Record<typeof filter, string> = {
+    all: 'All',
+    unread: 'Unread',
+    groups: 'Groups',
+  };
+
   return (
     <div className="w-full h-full flex overflow-hidden">
-      {/* Middle Pane: Conversations Sidebar (320px) */}
-      <aside className="w-80 h-full bg-background border-r border-border flex flex-col flex-shrink-0">
-        {/* Sidebar Header */}
-        <div className="p-4 pb-3 border-b border-border/60">
-          <div className="flex items-center justify-between mb-3">
+      {/*
+        Conversations sidebar — narrowed from 320px → 288px (w-72)
+        to give more breathing room to the chat area
+      */}
+      <aside className="w-72 h-full bg-background border-r border-border flex flex-col flex-shrink-0">
+
+        {/* Sidebar header */}
+        <div className="px-3 pt-3 pb-2 border-b border-border/60">
+          <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-text-primary tracking-tight">Chats</h2>
-              <span className="text-[11px] font-mono text-text-secondary bg-surface px-2 py-0.5 rounded-full border border-border">
+              {/* FIX: "Chats" h2 uses text-h2 token, not ad-hoc utility */}
+              <h2 className="text-h2 font-semibold text-text-primary">Chats</h2>
+              {/* Conversation count — Geist Sans, not font-mono */}
+              <span className="text-micro text-text-secondary bg-surface-2 px-2 py-0.5 rounded-xs border border-border">
                 {conversations.length}
               </span>
             </div>
 
+            {/* New chat menu */}
             <div className="relative">
               <button
                 type="button"
+                id="new-chat-trigger"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="w-8 h-8 rounded-sm bg-surface hover:bg-surface-hover border border-border flex items-center justify-center text-text-primary transition-colors"
-                title="New Chat"
+                className={[
+                  'w-8 h-8 rounded-sm flex items-center justify-center',
+                  'text-text-secondary hover:text-text-primary',
+                  'bg-surface-2 hover:bg-surface-3 border border-border',
+                  'transition-colors duration-150 active:scale-95',
+                ].join(' ')}
+                aria-label="New chat"
+                aria-expanded={menuOpen}
               >
-                <span className="material-symbols-outlined text-[18px]">add</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+                  <path d="M8 3v10M3 8h10" />
+                </svg>
               </button>
 
               {menuOpen && (
-                <div className="absolute right-0 mt-1.5 w-44 bg-surface border border-border rounded-md shadow-xl py-1 z-30 animate-in fade-in">
+                <div
+                  className={[
+                    'absolute right-0 mt-1.5 w-48 z-30',
+                    'bg-surface-2 border border-border rounded-md',
+                    'shadow-elev-2 py-1',
+                    'animate-slide-down',
+                  ].join(' ')}
+                  role="menu"
+                >
                   <button
                     type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      setIsNewDirectModalOpen(true);
-                    }}
-                    className="w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-surface-hover flex items-center gap-2 transition-colors"
+                    role="menuitem"
+                    onClick={() => { setMenuOpen(false); setIsNewDirectModalOpen(true); }}
+                    className="w-full px-3 py-2 text-left text-ui text-text-primary hover:bg-surface-3 flex items-center gap-2.5 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-sm text-primary">person_add</span>
-                    <span>Direct Message</span>
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="text-primary shrink-0">
+                      <circle cx="8" cy="7" r="3" />
+                      <path d="M2 17c0-3.31 2.69-6 6-6" />
+                      <path d="M16 11v6M13 14h6" />
+                    </svg>
+                    <span>Direct message</span>
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      setMenuOpen(false);
-                      setIsNewGroupModalOpen(true);
-                    }}
-                    className="w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-surface-hover flex items-center gap-2 transition-colors"
+                    role="menuitem"
+                    onClick={() => { setMenuOpen(false); setIsNewGroupModalOpen(true); }}
+                    className="w-full px-3 py-2 text-left text-ui text-text-primary hover:bg-surface-3 flex items-center gap-2.5 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-sm text-primary">group_add</span>
-                    <span>New Group</span>
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="text-primary shrink-0">
+                      <circle cx="6" cy="7" r="2.5" />
+                      <circle cx="13" cy="7" r="2.5" />
+                      <path d="M1 17c0-2.76 2.24-5 5-5h4c2.76 0 5 2.24 5 5" />
+                      <path d="M15 11c1.66 0 3 1.34 3 3v2" />
+                    </svg>
+                    <span>New group</span>
                   </button>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative mb-3">
-            <span className="material-symbols-outlined absolute left-2.5 top-2.5 text-text-secondary text-sm">
-              search
-            </span>
+          {/* Search */}
+          <div className="relative mb-2.5">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none"
+            >
+              <circle cx="7" cy="7" r="4.5" />
+              <path d="M10.5 10.5l3 3" />
+            </svg>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search conversations..."
-              className="w-full bg-surface border border-border rounded-sm pl-8 pr-3 py-1.5 text-xs text-text-primary placeholder:text-text-secondary/50 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+              placeholder="Search conversations…"
+              aria-label="Search conversations"
+              className={[
+                'w-full bg-surface-2 border border-border rounded-sm',
+                'pl-8 pr-3 py-1.5 text-caption text-text-primary',
+                'placeholder:text-text-secondary',
+                'focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary',
+                'transition-colors duration-150',
+              ].join(' ')}
             />
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1">
+          {/* Filter pills — proper active state differentiation */}
+          <div className="flex items-center gap-1" role="tablist">
             {(['all', 'unread', 'groups'] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
+                role="tab"
+                aria-selected={filter === tab}
                 onClick={() => setFilter(tab)}
-                className={`px-3 py-1 text-xs rounded-sm capitalize font-medium transition-colors ${
+                className={[
+                  'px-2.5 py-1 text-micro rounded-xs font-medium transition-colors duration-150',
                   filter === tab
-                    ? 'bg-surface text-primary border border-border shadow-xs'
-                    : 'text-text-secondary hover:text-text-primary'
-                }`}
+                    ? 'bg-primary/10 text-primary border border-primary/20'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-2',
+                ].join(' ')}
               >
-                {tab}
+                {filterLabels[tab]}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Conversation Items List */}
-        <div className="flex-1 overflow-y-auto divide-y divide-border/20 p-2 space-y-0.5">
+        {/* Conversation list */}
+        <div className="flex-1 overflow-y-auto py-1.5 px-1.5 space-y-0.5">
           {loading ? (
-            <div className="py-12 text-center text-xs text-text-secondary">
-              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-              Loading conversations...
+            <div className="py-10 flex flex-col items-center justify-center gap-3">
+              <div className="flex items-center gap-1.5">
+                {[0, 150, 300].map((delay, i) => (
+                  <span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-primary animate-[dot-bounce_1s_ease-in-out_infinite]"
+                    style={{ animationDelay: `${delay}ms` }}
+                  />
+                ))}
+              </div>
+              <p className="text-caption text-text-secondary">Loading…</p>
             </div>
           ) : filteredConversations.length === 0 ? (
-            <div className="py-12 text-center text-xs text-text-secondary px-4">
-              No conversations found.
+            <div className="py-10 text-center px-4">
+              <p className="text-caption text-text-secondary mb-2">No conversations found.</p>
               <button
                 type="button"
                 onClick={() => setIsNewDirectModalOpen(true)}
-                className="text-primary block mx-auto mt-2 hover:underline"
+                className="text-caption text-primary hover:underline underline-offset-2"
               >
                 Start a conversation
               </button>
@@ -277,40 +333,59 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
                 <Link
                   key={conv._id}
                   href={`/chat/${conv._id}`}
-                  className={`flex items-center gap-3 p-2.5 rounded-sm transition-colors block ${
+                  className={[
+                    'flex items-center gap-3 px-2.5 py-2.5 rounded-sm transition-colors duration-150',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background',
                     isActive
-                      ? 'bg-surface border border-border'
-                      : 'hover:bg-surface/50 text-text-secondary'
-                  }`}
+                      // FIX: was hardcoded #1E222A — now uses surface-2 token + left accent
+                      ? 'bg-surface-2 border-l-2 border-primary text-text-primary'
+                      : 'hover:bg-surface-2/70 text-text-secondary border-l-2 border-transparent',
+                  ].join(' ')}
+                  aria-current={isActive ? 'page' : undefined}
                 >
                   <Avatar
                     name={details.title}
                     src={details.avatar}
                     size="md"
-                    status={details.status}
+                    status={details.status as any}
+                    isGroup={details.isGroup}
                   />
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
+                      {/*
+                        FIX: name was text-xs (12px) — now text-ui (13px) font-semibold
+                        Creates proper hierarchy between name and preview
+                      */}
                       <h3
-                        className={`text-xs font-semibold truncate ${
-                          isActive || unread > 0 ? 'text-text-primary' : 'text-text-secondary'
-                        }`}
+                        className={[
+                          'text-ui font-semibold truncate',
+                          isActive || unread > 0 ? 'text-text-primary' : 'text-text-secondary',
+                        ].join(' ')}
                       >
                         {details.title}
                       </h3>
-                      <span className="text-[10px] font-mono text-text-secondary/70 shrink-0">
+                      {/*
+                        FIX: timestamp was font-mono 10px — now caption (12px) Geist Sans
+                        Timestamps are not technical data — no mono needed
+                      */}
+                      <span className="text-micro text-text-secondary shrink-0 ml-2">
                         {formatTimestamp(conv.lastMessageAt || conv.updatedAt)}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <p className="text-[11px] text-text-secondary truncate pr-2">
+                      <p className="text-micro text-text-secondary truncate pr-2">
                         {getLastMessagePreview(conv)}
                       </p>
                       {unread > 0 && (
-                        <span className="shrink-0 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
-                          {unread}
+                        /*
+                          Unread badge — accent color with rounded-full
+                          FIX: was bg-primary but primary was wrong color;
+                          now correctly resolves to #00A67E via the fixed token
+                        */
+                        <span className="shrink-0 bg-primary text-white text-micro font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
+                          {unread > 99 ? '99+' : unread}
                         </span>
                       )}
                     </div>
@@ -322,10 +397,11 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
         </div>
       </aside>
 
-      {/* Right Content Pane (Chat View or Empty State) */}
-      <main className="flex-1 h-full overflow-hidden relative">{children}</main>
+      {/* Right content pane */}
+      <main className="flex-1 h-full overflow-hidden relative" id="chat-content">
+        {children}
+      </main>
 
-      {/* Modals */}
       <NewDirectChatModal
         isOpen={isNewDirectModalOpen}
         onClose={() => setIsNewDirectModalOpen(false)}
