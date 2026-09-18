@@ -1,24 +1,42 @@
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '../context/AuthContext';
 import { SocketProvider } from '../context/SocketContext';
 
-const inter = Inter({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-geist',
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-geist-mono',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Aether Chat — Intelligent WebRTC Communication',
-  description: 'Ultra-clean, distraction-free modern real-time WebRTC communication platform.',
+  title: 'Aether Chat — Private WebRTC Communication',
+  description: 'End-to-end encrypted real-time communication. Crystal-clear audio and video, always private.',
+  metadataBase: new URL('https://aether.chat'),
+  openGraph: {
+    title: 'Aether Chat',
+    description: 'End-to-end encrypted real-time communication.',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Aether Chat',
+    description: 'End-to-end encrypted real-time communication.',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -27,14 +45,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        />
-      </head>
-      <body className="min-h-screen bg-background text-text-primary antialiased selection:bg-primary/20 selection:text-primary">
+    <html lang="en" className={`dark ${geist.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen bg-background text-text-primary antialiased">
+        {/* Skip to content — keyboard accessibility */}
+        <a href="#main-content" className="skip-to-content">
+          Skip to content
+        </a>
         <AuthProvider>
           <SocketProvider>
             {children}
