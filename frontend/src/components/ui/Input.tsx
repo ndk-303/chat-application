@@ -8,21 +8,48 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: React.ReactNode;
 }
 
+/**
+ * Input — Phase 2 redesign
+ *
+ * Changes vs. v1:
+ * - Label: Geist Sans (not mono), 12px/caption size, sentence-case
+ * - Border radius: --radius-sm (8px) from token schema
+ * - Focus ring: 2px solid primary (WCAG 2.4.11 compliant, was 1px)
+ * - Focus border transitions to primary accent
+ * - Error state: full red ring + red border
+ * - Background: bg-background (base canvas), sits below surface card
+ * - Text size bumped from 14px (sm) to 15px (body) for readability
+ */
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, leftIcon, rightIcon, className = '', id, ...props }, ref) => {
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+
+    const inputBase = [
+      'block w-full bg-background text-text-primary text-body',
+      'border rounded-sm px-3.5 py-2.5',
+      'placeholder:text-text-tertiary',
+      'transition-colors duration-150',
+      'focus:outline-none focus:ring-2 focus:ring-offset-0',
+    ].join(' ');
+
+    const inputState = error
+      ? 'border-error focus:ring-error focus:border-error'
+      : 'border-border focus:ring-primary focus:border-primary';
+
+    const paddingLeft = leftIcon ? 'pl-10' : '';
+    const paddingRight = rightIcon ? 'pr-10' : '';
 
     return (
       <div className="w-full">
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-medium text-text-secondary mb-1.5"
+            className="block text-caption font-medium text-text-secondary mb-1.5"
           >
             {label}
           </label>
         )}
-        <div className="relative rounded-sm shadow-sm">
+        <div className="relative">
           {leftIcon && (
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-secondary">
               {leftIcon}
@@ -31,11 +58,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             id={inputId}
             ref={ref}
-            className={`block w-full rounded-sm bg-background border ${
-              error ? 'border-error focus:ring-error' : 'border-border focus:ring-primary focus:border-primary'
-            } text-text-primary text-sm placeholder:text-gray-500 py-2.5 px-3.5 transition-colors focus:outline-none focus:ring-1 ${
-              leftIcon ? 'pl-10' : ''
-            } ${rightIcon ? 'pr-10' : ''} ${className}`}
+            className={`${inputBase} ${inputState} ${paddingLeft} ${paddingRight} ${className}`}
             {...props}
           />
           {rightIcon && (
@@ -44,9 +67,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <p className="mt-1.5 text-xs text-error">{error}</p>}
+        {error && (
+          <p className="mt-1.5 text-caption text-error" role="alert">
+            {error}
+          </p>
+        )}
         {helperText && !error && (
-          <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>
+          <p className="mt-1.5 text-caption text-text-secondary">{helperText}</p>
         )}
       </div>
     );
