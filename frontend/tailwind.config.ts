@@ -52,7 +52,7 @@ const config: Config = {
 
       // ─── Typography ──────────────────────────────────────────────────────────
       fontFamily: {
-        sans: ["var(--font-geist)", "Geist", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        sans: ["var(--font-geist-sans)", "Geist", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
         mono: ["var(--font-geist-mono)", "Geist Mono", "monospace"],
       },
 
