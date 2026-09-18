@@ -24,9 +24,7 @@ function VerifyOtpContent() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (emailParam) {
-      setEmail(emailParam);
-    }
+    if (emailParam) setEmail(emailParam);
   }, [emailParam]);
 
   useEffect(() => {
@@ -78,11 +76,11 @@ function VerifyOtpContent() {
     setSuccess('');
     try {
       await api.resendVerification(email);
-      setSuccess('Mã xác thực mới đã được gửi vào email của bạn.');
+      setSuccess('A new verification code has been sent to your email.');
       setResendTimer(60);
       setCanResend(false);
     } catch (err: any) {
-      setError(err.message || 'Không thể gửi lại mã');
+      setError(err.message || 'Could not resend code. Please try again.');
     }
   };
 
@@ -90,11 +88,11 @@ function VerifyOtpContent() {
     if (e) e.preventDefault();
     const code = digits.join('');
     if (code.length !== 6) {
-      setError('Vui lòng nhập đủ 6 chữ số mã xác thực');
+      setError('Please enter all 6 digits of the verification code.');
       return;
     }
     if (!email) {
-      setError('Vui lòng cung cấp email');
+      setError('Email address is required.');
       return;
     }
 
@@ -103,12 +101,12 @@ function VerifyOtpContent() {
 
     try {
       await verifyEmail(email, code);
-      setSuccess('Xác thực thành công! Đang chuyển hướng...');
+      setSuccess('Verification successful! Redirecting…');
       setTimeout(() => {
         router.push('/welcome');
       }, 1200);
     } catch (err: any) {
-      setError(err.message || 'Mã xác thực không hợp lệ hoặc đã hết hạn');
+      setError(err.message || 'Invalid or expired verification code.');
     } finally {
       setLoading(false);
     }
@@ -116,95 +114,129 @@ function VerifyOtpContent() {
 
   return (
     <div className="w-full max-w-[440px] my-auto">
-      <section className="bg-surface border border-border rounded-xl p-8 shadow-2xl transition-all">
-        {/* Card Header */}
-        <div className="text-left">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-surface-container border border-border mb-4 text-primary">
-            <span className="material-symbols-outlined text-[20px]">mail</span>
+      <section
+        className={[
+          'bg-surface border border-border rounded-xl p-8',
+          'shadow-elev-3 shadow-inner-highlight',
+        ].join(' ')}
+      >
+        {/* Icon + Heading */}
+        <div className="mb-6">
+          {/* Mail icon — inline SVG, no Material Symbols */}
+          <div className="w-11 h-11 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-primary mb-5">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="M2 7l10 7 10-7" />
+            </svg>
           </div>
-          <h1 className="text-2xl text-text-primary tracking-tight font-bold">Check your email</h1>
-          <p className="text-sm text-text-secondary mt-2 leading-relaxed">
+          <h1 className="text-display font-bold text-text-primary">
+            Check your email
+          </h1>
+          <p className="text-caption text-text-secondary mt-2 leading-relaxed">
             We sent a 6-digit verification code to{' '}
             <span className="text-text-primary font-medium">{email || 'your email'}</span>.
           </p>
         </div>
 
+        {/* Error */}
         {error && (
-          <div className="mt-4 p-3 rounded-sm bg-error/10 border border-error/20 text-xs text-error flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">error</span>
+          <div
+            className="mb-5 p-3 rounded-sm bg-error/10 border border-error/20 text-caption text-error flex items-center gap-2"
+            role="alert"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0">
+              <circle cx="8" cy="8" r="6.5" />
+              <path d="M8 5v3.5M8 11v.5" />
+            </svg>
             <span>{error}</span>
           </div>
         )}
 
+        {/* Success */}
         {success && (
-          <div className="mt-4 p-3 rounded-sm bg-success/10 border border-success/20 text-xs text-success flex items-center gap-2">
-            <span className="material-symbols-outlined text-sm">check_circle</span>
+          <div
+            className="mb-5 p-3 rounded-sm bg-success/10 border border-success/20 text-caption text-success flex items-center gap-2"
+            role="status"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="shrink-0">
+              <circle cx="8" cy="8" r="6.5" />
+              <path d="M5 8l2 2 4-4" />
+            </svg>
             <span>{success}</span>
           </div>
         )}
 
-        {/* OTP Entry Matrix */}
-        <div className="flex items-center justify-between gap-2.5 sm:gap-3 mt-7">
-          {digits.map((digit, idx) => (
-            <input
-              key={idx}
-              ref={(el) => {
-                inputRefs.current[idx] = el;
-              }}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleDigitChange(idx, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(idx, e)}
-              className={`w-12 h-14 rounded-lg bg-background border ${
-                digit
-                  ? 'border-primary text-text-primary'
-                  : 'border-border text-text-secondary'
-              } text-center font-mono text-2xl font-semibold focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all`}
-            />
-          ))}
-        </div>
+        {/*
+          OTP Input Matrix
+          NOTE: font-mono is CORRECT here — OTP codes are technical data.
+          This is one of the only 3 sanctioned uses of font-mono.
+        */}
+        <form onSubmit={handleVerify}>
+          <div className="flex items-center justify-between gap-2.5 sm:gap-3 mt-2 mb-7">
+            {digits.map((digit, idx) => (
+              <input
+                key={idx}
+                ref={(el) => { inputRefs.current[idx] = el; }}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleDigitChange(idx, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(idx, e)}
+                aria-label={`Digit ${idx + 1} of 6`}
+                className={[
+                  'w-12 h-14 rounded-md bg-background text-center',
+                  'text-h1 font-mono font-semibold text-text-primary',
+                  'border transition-all duration-150',
+                  'focus:outline-none focus:ring-2 focus:ring-primary',
+                  digit
+                    ? 'border-primary ring-1 ring-primary/30 text-text-primary'
+                    : 'border-border text-text-secondary',
+                ].join(' ')}
+              />
+            ))}
+          </div>
 
-        {/* Timer & Resend Row */}
-        <div className="flex items-center justify-center gap-2 mt-6">
-          <span className="text-sm text-text-secondary font-medium">Didn&apos;t receive the code?</span>
-          {canResend ? (
-            <button
-              type="button"
-              onClick={handleResend}
-              className="text-sm text-primary hover:underline font-medium focus:outline-none"
-            >
-              Resend now
-            </button>
-          ) : (
-            <div className="inline-flex items-center gap-1.5 text-sm text-text-secondary font-medium">
-              <span>Resend in</span>
-              <span className="font-mono text-primary font-medium tracking-tight">
-                00:{resendTimer < 10 ? `0${resendTimer}` : resendTimer}
+          {/* Timer + Resend */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="text-caption text-text-secondary">Didn&apos;t receive the code?</span>
+            {canResend ? (
+              <button
+                type="button"
+                onClick={handleResend}
+                className="text-caption text-primary hover:underline underline-offset-2 font-medium focus-visible:outline-none active:scale-95"
+              >
+                Resend now
+              </button>
+            ) : (
+              <span className="text-caption text-text-secondary">
+                Resend in{' '}
+                {/* font-mono justified: countdown timer is technical data */}
+                <span className="font-mono text-primary font-medium">
+                  00:{resendTimer < 10 ? `0${resendTimer}` : resendTimer}
+                </span>
               </span>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Action Button */}
-        <Button
-          type="button"
-          onClick={() => handleVerify()}
-          loading={loading}
-          className="w-full mt-6 py-3 rounded-sm font-semibold flex items-center justify-center gap-2 shadow-sm"
-        >
-          <span>Verify & Continue</span>
-          <span className="material-symbols-outlined text-sm">arrow_forward</span>
-        </Button>
+          {/* Action */}
+          <Button
+            type="submit"
+            loading={loading}
+            className="w-full"
+            size="lg"
+          >
+            Verify &amp; Continue
+          </Button>
+        </form>
 
-        {/* Secondary Email Change Action */}
-        <div className="mt-6 text-center border-t border-border/60 pt-4">
+        {/* Secondary action */}
+        <div className="mt-6 text-center border-t border-border/50 pt-5">
           <Link
             href="/register"
-            className="text-xs text-text-secondary hover:text-text-primary transition-colors"
+            className="text-caption text-text-secondary hover:text-text-primary transition-colors underline-offset-2 hover:underline"
           >
-            Entered wrong email? Create account again
+            Entered the wrong email? Create account again
           </Link>
         </div>
       </section>
@@ -216,7 +248,15 @@ export default function VerifyOtpPage() {
   return (
     <Suspense
       fallback={
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="flex items-center gap-1.5" aria-label="Loading">
+          {[0, 150, 300].map((delay, i) => (
+            <span
+              key={i}
+              className="w-2 h-2 rounded-full bg-primary animate-[dot-bounce_1s_ease-in-out_infinite]"
+              style={{ animationDelay: `${delay}ms` }}
+            />
+          ))}
+        </div>
       }
     >
       <VerifyOtpContent />
